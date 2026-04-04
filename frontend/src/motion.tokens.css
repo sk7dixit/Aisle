@@ -1,0 +1,121 @@
+/* ================================
+   ShopLens Motion Tokens
+   ================================ */
+
+/* ---- EASINGS ---- */
+:root {
+    /* Primary easing: smooth, natural */
+    --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    /* Fast feedback (micro-interactions) */
+    --ease-fast: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    /* Gentle exit / fade */
+    --ease-soft: cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* ---- DURATIONS ---- */
+:root {
+    /* Micro (buttons, toggles) */
+    --dur-xxs: 80ms;
+    --dur-xs: 120ms;
+
+    /* Standard UI motion */
+    --dur-sm: 160ms;
+    --dur-md: 200ms;
+
+    /* Page & modal transitions */
+    --dur-lg: 220ms;
+    --dur-xl: 280ms;
+}
+
+/* ---- COMMON TRANSITIONS ---- */
+.motion-card {
+    transition:
+        transform var(--dur-sm) var(--ease-standard),
+        box-shadow var(--dur-sm) var(--ease-standard),
+        opacity var(--dur-xs) var(--ease-soft);
+}
+
+.motion-button {
+    transition:
+        transform var(--dur-xs) var(--ease-fast),
+        background-color var(--dur-xs) var(--ease-fast),
+        color var(--dur-xs) var(--ease-fast);
+}
+
+/* ---- PAGE ENTER ---- */
+.motion-page-enter {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: pageEnter var(--dur-md) var(--ease-standard) forwards;
+}
+
+@keyframes pageEnter {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- MODAL / BOTTOM SHEET ---- */
+.motion-sheet-enter {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: sheetEnter var(--dur-lg) var(--ease-standard) forwards;
+}
+
+@keyframes sheetEnter {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- STAGGER (Categories grid) ---- */
+.motion-stagger {
+    opacity: 0;
+    transform: scale(0.96);
+    animation: staggerIn var(--dur-sm) var(--ease-standard) forwards;
+}
+
+@keyframes staggerIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ---- TOAST ---- */
+.motion-toast {
+    animation:
+        toastIn var(--dur-sm) var(--ease-standard) forwards,
+        toastOut var(--dur-sm) var(--ease-soft) 900ms forwards;
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes toastOut {
+    to {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+/* ---- REDUCED MOTION ---- */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}

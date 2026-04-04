@@ -37,6 +37,44 @@ const shopSchema = mongoose.Schema(
         isOpen: {
             type: Boolean,
             default: true,
+        },
+        shopImage: {
+            type: String, // URL to the image
+            default: null
+        },
+        category: {
+            type: String,
+            default: 'General'
+        },
+        customCategoryInput: {
+            type: String,
+            default: null
+        },
+        openingHours: {
+            type: String,
+            default: '9:00 AM - 9:00 PM'
+        },
+        // AI Categorization Fields
+        sellerSelectedCategory: {
+            type: String,
+            default: 'General'
+        },
+        aiSuggestedCategory: {
+            type: String,
+            default: null
+        },
+        aiConfidence: {
+            type: Number,
+            default: 0
+        },
+        finalCategory: {
+            type: String,
+            default: 'General'
+        },
+        categoryStatus: {
+            type: String,
+            enum: ['auto', 'suggested', 'unclassified', 'admin_verified'],
+            default: 'unclassified'
         }
     },
     {

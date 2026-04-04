@@ -1,0 +1,581 @@
+import React, { useState, useEffect } from 'react';
+import { getGenericImage } from '../../utils/GenericImages';
+import { useParams, useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { FaMapMarkerAlt, FaStar, FaSearch, FaChevronLeft, FaExclamationCircle } from 'react-icons/fa';
+import { useInterested } from '../../context/InterestedContext';
+import { useActivity } from '../../context/ActivityContext';
+import CertaintyBadge from '../../components/common/CertaintyBadge';
+import RatingForm from '../../components/customer/RatingForm';
+
+import io from 'socket.io-client'; // Real-time sync
+
+// Helper for image URLs
+const getImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('data:')) return path; // Base64
+    if (path.startsWith('http')) return path; // External or full URL
+    // Prepend Backend URL (Hardcoded for now as per env context)
+    return `http://localhost:5000${path.startsWith('/') ? '' : '/'}${path}`;
+};
+
+const ShopProfile = () => {
+    const { shopId } = useParams();
+    const navigate = useNavigate();
+    const { hasActiveVisit, trustScore } = useActivity();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [activeCategory, setActiveCategory] = useState('All');
+
+    // States for Real Data
+    const [shop, setShop] = useState(null);
+    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState(['All']);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [hasVisited, setHasVisited] = useState(false);
+    const [hasReviewed, setHasReviewed] = useState(false);
+    const [showRatingForm, setShowRatingForm] = useState(false);
+
+    useEffect(() => {
+        const loadShopData = async () => {
+            if (!shopId) return;
+            setLoading(true);
+            setError(null);
+            console.log("Shop ID from URL:", shopId);
+
+            try {
+                // Determine if ID is mock or real for demonstration
+                // For this step, we hit the real endpoint
+                const response = await axios.get(`/api/customer/shop/${shopId}`);
+                const data = response.data;
+
+                setShop(data.shop);
+
+                // Flatten products from categories
+                const allItems = [];
+                const catList = ['All'];
+
+                if (data.categories) {
+                    data.categories.forEach(cat => {
+                        catList.push(cat.categoryName);
+                        cat.items.forEach(item => {
+                            // Fix: validation for price field existence
+                            const rawPrice = item.sellingPrice !== undefined ? item.sellingPrice : item.price;
+
+                            allItems.push({
+                                ...item,
+                                id: item._id, // Ensure ID consistency
+                                price: typeof rawPrice === 'string' && rawPrice.startsWith('₹') ? rawPrice : `₹${rawPrice || 0}`,
+                                mrp: item.mrp ? (typeof item.mrp === 'string' && item.mrp.startsWith('₹') ? item.mrp : `₹${item.mrp}`) : null,
+                                status: item.stockStatus, // AVAILABLE, LIMITED, OUT_STOCK
+                                image: item.imageUrl || item.image, // Fix: Map backend imageUrl to frontend image prop
+                                fallbackImage: getGenericImage(item.categorySlug || item.category) // Robust Fallback
+                            });
+                        });
+                    });
+                }
+
+                setProducts(allItems);
+                setCategories(catList);
+            } catch (err) {
+                console.error("Error fetching shop data:", err);
+                setError(err.response?.data?.message || "Failed to load shop details.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadShopData();
+    }, [shopId]);
+
+    // Real-Time Socket Sync (Step 8 Improvement)
+    useEffect(() => {
+        if (!shopId) return;
+
+        const socket = io('http://localhost:5000'); // Use env if available in real prod
+
+        socket.emit('customer:join_shop', shopId);
+        console.log(`🔌 Joining socket room: shop_${shopId}`);
+
+        socket.on('shop_status_updated', (data) => {
+            console.log("⚡ Real-time Shop Update:", data);
+            setShop(prev => {
+                if (!prev) return prev;
+                return {
+                    ...prev,
+                    shopDetails: {
+                        ...prev.shopDetails,
+                        operatingMode: data.operatingMode
+                    }
+                };
+            });
+            // Optional: Re-fetch products to get updated stockConfidence if needed
+            // For now, strict UI rules handle most visuals instantly.
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [shopId]);
+
+    // Simple Visit Logging & Check
+    useEffect(() => {
+        const handleVisitAndCheck = async () => {
+            const userStr = localStorage.getItem('shoplensUser');
+            const token = userStr ? JSON.parse(userStr).token : null;
+            if (!token || !shopId) return;
+
+            try {
+                // 1. Log Visit
+                await axios.post(`/api/customer/shop/${shopId}/visit`, {}, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                // 2. Check Status
+                const res = await axios.get(`/api/customer/shop/${shopId}/has-visited`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                setHasVisited(res.data.visited);
+                setHasReviewed(res.data.reviewed);
+            } catch (err) {
+                console.error("Visit check failed", err);
+            }
+        };
+
+        if (shop && !loading) {
+            handleVisitAndCheck();
+        }
+    }, [shopId, shop, loading]);
+
+    // Filter Logic
+    const filteredProducts = products.filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
+        return matchesSearch && matchesCategory;
+    });
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-stone-50">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-stone-200 border-t-stone-800 rounded-full animate-spin"></div>
+                    <div className="text-stone-500 font-bold animate-pulse">Loading amazing deals...</div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error || !shop) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-stone-50 p-6">
+                <div className="max-w-md w-full bg-white rounded-3xl p-8 shadow-xl text-center border border-red-50">
+                    <FaExclamationCircle className="text-5xl text-red-500 mx-auto mb-4" />
+                    <h1 className="text-2xl font-bold text-stone-900 mb-2">Shop Not Found</h1>
+                    <p className="text-stone-500 mb-8">{error || "We couldn't find the shop you're looking for. It might be temporarily closed or moved."}</p>
+                    <button
+                        onClick={() => navigate('/shops')}
+                        className="w-full bg-stone-900 text-white py-4 rounded-2xl font-bold hover:bg-stone-800 transition-all shadow-lg"
+                    >
+                        Browse Other Shops
+                    </button>
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="w-full mt-3 text-stone-500 font-medium hover:text-stone-800"
+                    >
+                        Go Back
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-transparent pb-20 pt-2 shop-profile-page motion-page-enter">
+            <div className="max-w-[1280px] mx-auto px-6 pt-0 pb-6 sm:px-8">
+
+                {/* --- 1. HERO SECTION (Shop Identity) --- */}
+
+                {/* STEP 5: High Rush Banner */}
+                {shop.shopDetails?.operatingMode === 'RUSH' && (
+                    <div className="mb-4 bg-orange-50 border border-orange-200 rounded-2xl p-4 flex items-start gap-3 animate-fade-in">
+                        <FaExclamationCircle className="text-orange-600 mt-1 shrink-0" />
+                        <div>
+                            <h3 className="font-bold text-orange-800 text-sm uppercase tracking-wide">High Rush at this Shop</h3>
+                            <p className="text-orange-700 text-xs mt-1">
+                                Availability is not guaranteed right now due to heavy crowd. Please confirm items at the shop.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                <div className="relative">
+                    {/* Back Button */}
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="absolute top-4 left-4 z-20 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-all motion-button"
+                    >
+                        <FaChevronLeft />
+                    </button>
+
+                    {/* Banner Image */}
+                    <div className="h-48 md:h-64 w-full overflow-hidden relative rounded-b-[32px] md:rounded-b-[48px] shadow-sm">
+                        <img
+                            src={getImageUrl(shop.shopImage) || "https://images.unsplash.com/photo-1604719312566-b7e677c66235?auto=format&fit=crop&w=1600&q=80"}
+                            alt="Cover"
+                            className="w-full h-full object-cover animate-fade-in"
+                            loading="eager"
+                            onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1604719312566-b7e677c66235?auto=format&fit=crop&w=1600&q=80" }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent animate-fade-in delay-100"></div>
+                    </div>
+
+                    {/* Shop Info Overlay */}
+                    <div className="absolute bottom-0 left-0 w-full p-6 md:p-10 flex items-end justify-between">
+                        <div className="flex items-center gap-5">
+                            <div className="w-20 h-20 md:w-24 md:h-24 bg-white/90 backdrop-blur-md rounded-3xl p-3 shadow-lg flex items-center justify-center overflow-hidden motion-card border border-white/50">
+                                <img
+                                    src={getImageUrl(shop.logo) || "https://cdn-icons-png.flaticon.com/512/2953/2953363.png"}
+                                    alt="Logo"
+                                    className="w-full h-full object-contain"
+                                    onError={(e) => { e.target.src = "https://cdn-icons-png.flaticon.com/512/2953/2953363.png" }}
+                                />
+                            </div>
+                            <div className="text-white mb-2 motion-page-enter" style={{ animationDelay: '100ms' }}>
+                                <h1 className="text-3xl md:text-4xl font-black leading-tight drop-shadow-md tracking-tight">{shop.name}</h1>
+                                <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 text-white/90 text-sm mt-2 font-medium">
+                                    <span className="flex items-center gap-1.5"><FaMapMarkerAlt className="text-orange-400" /> {shop.address || "Local Shop"}</span>
+                                    {shop.rating > 0 && (
+                                        <>
+                                            <span className="hidden md:inline text-white/40">•</span>
+                                            <span className="flex items-center gap-1.5"><FaStar className="text-yellow-400" /> {shop.rating.toFixed(1)}</span>
+                                        </>
+                                    )}
+                                </div>
+
+                                {/* Certainty Badges - NEW LOCATION */}
+                                <div className="flex flex-wrap gap-2 mt-3">
+                                    {hasVisited && <CertaintyBadge type="AVAILABILITY" />}
+                                    {shop.isOpen && trustScore >= 60 && <CertaintyBadge type="PAY_ON_VISIT" />}
+                                    {shop.isOpen && <CertaintyBadge type="SELLER_ACTIVE" />}
+                                    {/* Online Payment badge is always relevant if the platform supports it, showing it for all now as per user request */}
+                                    <CertaintyBadge type="ONLINE_PAY" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Status Badge */}
+                        <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest backdrop-blur-md ${shop.isOpen ? 'bg-green-500/20 text-green-300 border border-green-500/50' : 'bg-red-500/20 text-red-300 border border-red-500/50'}`}>
+                            {shop.isOpen ? 'Open Now' : 'Closed'}
+                        </span>
+
+                        {/* Step 4: Shop Level Stock Indicator */}
+                        {/* Step 4: Shop Level Stock Indicator */}
+                        {shop.shopDetails?.operatingMode === 'GUARANTEED' ? (
+                            <span className="ml-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest backdrop-blur-md bg-blue-500/20 text-blue-100 border border-blue-500/50">
+                                Availability Confirmed Today
+                            </span>
+                        ) : (
+                            <span className="ml-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest backdrop-blur-md bg-stone-500/20 text-stone-300 border border-stone-500/50">
+                                Availability Approximate
+                            </span>
+                        )}
+                    </div>
+                </div>
+
+
+                {/* --- 2. CONTROLS BAR (Search, Directions, Rate) --- */}
+                <div className="sticky top-16 z-40 px-4 py-4 bg-transparent backdrop-blur-sm sticky-search-smooth transition-all">
+                    <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+
+                        {/* 2.1 Small Search Bar */}
+                        <div className="relative flex-grow max-w-[200px] md:max-w-xs transition-all duration-300">
+                            <input
+                                type="text"
+                                placeholder="Search items..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full bg-white/90 backdrop-blur-md border border-white/50 text-gray-800 rounded-xl py-2.5 pl-9 pr-4 focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all outline-none shadow-sm text-sm font-medium"
+                            />
+                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+                        </div>
+
+                        {/* 2.2 Action Buttons */}
+                        <div className="flex items-center gap-2">
+                            {/* Get Directions Button */}
+                            {shop.shopLocation?.coordinates && (
+                                <button
+                                    onClick={() => {
+                                        const [lng, lat] = shop.shopLocation.coordinates;
+                                        window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+                                    }}
+                                    className="bg-[var(--accent-terracotta)] hover:bg-black text-white font-black uppercase tracking-widest py-2.5 px-6 rounded-xl flex items-center gap-2 transition-all shadow-md hover:shadow-lg text-[10px]"
+                                >
+                                    <FaMapMarkerAlt />
+                                    <span className="hidden sm:inline">Directions</span>
+                                    <span className="sm:hidden">Route</span>
+                                </button>
+                            )}
+
+                            {/* Rate Button */}
+                            {hasVisited && !hasReviewed && (
+                                <button
+                                    onClick={() => setShowRatingForm(!showRatingForm)}
+                                    className={`font-black uppercase tracking-widest py-2.5 px-6 rounded-xl flex items-center gap-2 transition-all shadow-md hover:shadow-lg text-[10px]
+                                        ${showRatingForm
+                                            ? 'bg-stone-800 text-white'
+                                            : 'bg-white text-stone-900 border border-stone-100 hover:bg-stone-50'}
+                                    `}
+                                >
+                                    <FaStar className={showRatingForm ? 'text-yellow-400' : 'text-stone-400'} />
+                                    {showRatingForm ? 'Close' : 'Rate'}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* --- 2.5 CONDITIONAL RATING FORM --- */}
+                {showRatingForm && hasVisited && !hasReviewed && (
+                    <div className="max-w-4xl mx-auto px-4 mb-8 -mt-2 animate-slide-down">
+                        <div className="bg-white rounded-[32px] p-8 shadow-xl border border-stone-100 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200"></div>
+                            <RatingForm
+                                shopId={shopId}
+                                onFinish={() => {
+                                    setHasReviewed(true);
+                                    setShowRatingForm(false);
+                                }}
+                                onCancel={() => setShowRatingForm(false)}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {hasVisited && hasReviewed && (
+                    <div className="max-w-4xl mx-auto px-4 mt-8">
+                        <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100 flex items-center justify-center gap-3">
+                            <span className="text-emerald-500 text-xl font-bold">✨</span>
+                            <p className="text-emerald-800 font-black uppercase tracking-widest text-[10px]">Thanks for rating this shop!</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* --- 3. CATEGORY FILTERS --- */}
+                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                    {categories.map(cat => (
+                        <button
+                            key={cat}
+                            onClick={() => setActiveCategory(cat)}
+                            className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all duration-300 ease-out ${activeCategory === cat
+                                ? 'bg-black text-white shadow-md scale-105'
+                                : 'bg-white/60 text-gray-600 hover:bg-white border border-white/40'
+                                }`}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+                {/* --- 4. PRODUCT GRID --- */}
+                <div className="mt-8">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-stone-900 text-lg font-black uppercase tracking-tight">Products ({filteredProducts.length})</h2>
+                        <div className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">Live Inventory</div>
+                    </div>
+
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+                        {filteredProducts.map((product, idx) => (
+                            <div key={product.id} className="motion-card" style={{ animationDelay: `${idx * 50}ms` }}>
+                                <ProductCard
+                                    product={product}
+                                    shop={{ id: shopId, name: shop.name }}
+                                    operatingMode={shop.shopDetails?.operatingMode}
+                                />
+                            </div>
+                        ))}
+                    </div>
+
+                    {filteredProducts.length === 0 && (
+                        <div className="py-20 text-center animate-fade-in">
+                            <div className="text-4xl mb-4 text-stone-200">🔍</div>
+                            <h3 className="text-stone-800 font-bold">No items found</h3>
+                            <p className="text-stone-500 text-sm">Try adjusting your search or category filter.</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+
+// --- SUB-COMPONENT: The Product Card (Handles Stock Logic) ---
+const ProductCard = ({ product, shop, operatingMode }) => {
+    const { updateQuantity, getQuantity } = useInterested();
+
+    // Use quantity-based stock status
+    const stockQuantity = product.quantity || 0;
+    const isOutOfStock = stockQuantity <= 0;
+    const isLimited = stockQuantity > 0 && stockQuantity <= 5;
+    const isInStock = stockQuantity > 5;
+
+    // Get current cart quantity
+    const quantity = getQuantity(shop.id, product.id);
+
+    const handleAdd = (e) => {
+        e.stopPropagation();
+        updateQuantity({
+            shopId: shop.id,
+            shopName: shop.name,
+            productId: product.id,
+            productName: product.name,
+            price: product.price,
+            image: product.image
+        }, 1);
+    };
+
+    const handleIncrement = (e) => {
+        e.stopPropagation();
+        updateQuantity({ shopId: shop.id, productId: product.id }, 1);
+    };
+
+    const handleDecrement = (e) => {
+        e.stopPropagation();
+        updateQuantity({ shopId: shop.id, productId: product.id }, -1);
+    };
+
+    return (
+        <div className={`group relative bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md transition-all flex flex-col overflow-hidden ${isOutOfStock ? 'opacity-60' : ''}`}>
+
+            {/* 1. Image Area */}
+            <div className="relative h-44 w-full bg-white p-4 flex items-center justify-center overflow-hidden">
+                <img
+                    src={getImageUrl(product.image) || product.fallbackImage}
+                    alt={product.name}
+                    className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => { e.target.src = product.fallbackImage || "https://via.placeholder.com/150"; }}
+                />
+
+                {/* STOCK STATUS BADGE - Top Right */}
+                <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
+                    {/* Step 6: Inventory Type Badges */}
+                    {product.inventoryType === 'LOOSE' && (
+                        <span className="bg-stone-100/90 text-stone-600 text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm border border-stone-200">
+                            Loose Item
+                        </span>
+                    )}
+                    {product.inventoryType === 'DAILY' && (
+                        <span className="bg-emerald-50/90 text-emerald-700 text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm border border-emerald-200">
+                            Fresh Today
+                        </span>
+                    )}
+
+                    {/* Status / Confidence Badge Chain */}
+                    {/* Status / Confidence Badge Chain (Refactored Logic) */}
+                    {isOutOfStock ? (
+                        <span className="flex items-center gap-1 bg-red-50 border border-red-200 text-red-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                            Out of Stock
+                        </span>
+                    ) : (
+                        (() => {
+                            // User Mandated Logic
+                            if (operatingMode === 'GUARANTEED') {
+                                return (
+                                    <span className="flex items-center gap-1 bg-green-50 border border-green-200 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                        Available Today
+                                    </span>
+                                );
+                            } else if (operatingMode === 'BEST_EFFORT') {
+                                return product.stockConfidence === 'MEDIUM' ? (
+                                    <span className="flex items-center gap-1 bg-yellow-50 border border-yellow-200 text-yellow-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-yellow-600"></span>
+                                        Limited Availability
+                                    </span>
+                                ) : (
+                                    <span className="flex items-center gap-1 bg-green-50 border border-green-200 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                        Available
+                                    </span>
+                                );
+                            } else {
+                                // RUSH
+                                return (
+                                    <span className="flex items-center gap-1 bg-orange-50 border border-orange-200 text-orange-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-orange-600"></span>
+                                        Availability Not Guaranteed
+                                    </span>
+                                );
+                            }
+                        })()
+                    )}
+                </div>
+            </div>
+
+            {/* Category Tooltip (Optional visual) */}
+            {!isOutOfStock && (
+                <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="bg-stone-800/80 text-white text-[9px] px-2 py-0.5 rounded backdrop-blur-sm">
+                        {product.category}
+                    </span>
+                </div>
+            )}
+
+            {/* 2. Content Area */}
+            <div className="p-4 flex flex-col flex-grow">
+                <div className="flex-grow">
+                    <h3 className="text-sm font-bold text-stone-800 leading-tight mb-1 line-clamp-2 min-h-[40px]">
+                        {product.name}
+                    </h3>
+                    <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">{product.category}</p>
+                </div>
+
+                {/* 3. Price & Action */}
+                <div className="mt-4 flex items-center justify-between">
+                    <div className="flex flex-col">
+                        <span className="text-base font-black text-stone-900 leading-none">{product.price}</span>
+                        {product.mrp && (
+                            <span className="text-[10px] text-stone-400 line-through mt-0.5">{product.mrp}</span>
+                        )}
+                    </div>
+
+                    {/* QUANTITY CONTROLLER */}
+                    {isOutOfStock ? (
+                        <button
+                            disabled
+                            className="w-9 h-9 rounded-xl flex items-center justify-center bg-stone-200 text-stone-400 cursor-not-allowed"
+                        >
+                            ✕
+                        </button>
+                    ) : quantity === 0 ? (
+                        <button
+                            onClick={handleAdd}
+                            className="w-9 h-9 rounded-xl flex items-center justify-center bg-stone-900 text-white hover:bg-orange-500 hover:shadow-orange-200 transition-all shadow-sm"
+                        >
+                            +
+                        </button>
+                    ) : (
+                        <div className="flex items-center bg-stone-900 text-white rounded-xl shadow-md h-9 overflow-hidden">
+                            <button
+                                onClick={handleDecrement}
+                                className="w-8 h-full flex items-center justify-center hover:bg-stone-700 active:bg-stone-600 transition-colors"
+                            >
+                                -
+                            </button>
+                            <span className="w-6 text-center text-xs font-bold">{quantity}</span>
+                            <button
+                                onClick={handleIncrement}
+                                className="w-8 h-full flex items-center justify-center hover:bg-stone-700 active:bg-stone-600 transition-colors"
+                            >
+                                +
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div >
+    );
+};
+
+export default ShopProfile;

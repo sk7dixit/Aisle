@@ -1,0 +1,48 @@
+export const INDIA_STATES = [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana",
+    "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+    "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+    "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+    "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+    "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+];
+
+export const STATE_CITY_MAP = {
+    "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool", "Other"],
+    "Arunachal Pradesh": ["Itanagar", "Naharlagun", "Pasighat", "Other"],
+    "Assam": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat", "Nagaon", "Other"],
+    "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Purnia", "Other"],
+    "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba", "Other"],
+    "Goa": ["Panaji", "Margao", "Vasco da Gama", "Mapusa", "Other"],
+    "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Other"],
+    "Haryana": ["Faridabad", "Gurugram", "Panipat", "Ambala", "Karnal", "Other"],
+    "Himachal Pradesh": ["Shimla", "Dharamshala", "Manali", "Mandi", "Solan", "Other"],
+    "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Other"],
+    "Karnataka": ["Bengaluru", "Mysuru", "Hubballi-Dharwad", "Mangaluru", "Belagavi", "Other"],
+    "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kollam", "Other"],
+    "Madhya Pradesh": ["Bhopal", "Indore", "Jabalpur", "Gwalior", "Ujjain", "Other"],
+    "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik", "Aurangabad", "Solapur", "Other"],
+    "Manipur": ["Imphal", "Thoubal", "Other"],
+    "Meghalaya": ["Shillong", "Tura", "Other"],
+    "Mizoram": ["Aizawl", "Lunglei", "Other"],
+    "Nagaland": ["Kohima", "Dimapur", "Other"],
+    "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Berhampur", "Other"],
+    "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Other"],
+    "Rajasthan": ["Jaipur", "Jodhpur", "Kota", "Udaipur", "Ajmer", "Bikaner", "Other"],
+    "Sikkim": ["Gangtok", "Namchi", "Other"],
+    "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Other"],
+    "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Other"],
+    "Tripura": ["Agartala", "Udaipur", "Other"],
+    "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Agra", "Varanasi", "Meerut", "Prayagraj", "Noida", "Other"],
+    "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Other"],
+    "West Bengal": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri", "Other"],
+    "Delhi": ["New Delhi", "North Delhi", "South Delhi", "East Delhi", "West Delhi", "Other"],
+    "Chandigarh": ["Chandigarh", "Other"],
+    "Jammu and Kashmir": ["Srinagar", "Jammu", "Anantnag", "Other"],
+    "Ladakh": ["Leh", "Kargil", "Other"],
+    "Puducherry": ["Puducherry", "Karaikal", "Other"],
+    // Fallback for others
+    "Andaman and Nicobar Islands": ["Port Blair", "Other"],
+    "Dadra and Nagar Haveli and Daman and Diu": ["Daman", "Diu", "Silvassa", "Other"],
+    "Lakshadweep": ["Kavaratti", "Other"]
+};
