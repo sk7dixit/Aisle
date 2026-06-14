@@ -36,7 +36,7 @@ const HowItWorks = () => {
                         <div className="relative w-48 h-48 bg-gradient-to-br from-teal-500 to-teal-700 rounded-full flex items-center justify-center shadow-2xl animate-pulse-slow">
                             <div className="text-center">
                                 <Icons.Store className="w-12 h-12 text-white mx-auto mb-2" />
-                                <p className="text-white font-bold text-lg">ShopLens</p>
+                                <p className="text-white font-bold text-lg">Aisle</p>
                                 <p className="text-teal-100 text-xs">Local & Live</p>
                             </div>
 

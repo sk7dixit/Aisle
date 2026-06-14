@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiMapPin, FiPhone, FiMail, FiCalendar, FiBox, FiLayers, FiAlertTriangle, FiActivity, FiXCircle, FiCheckCircle } from 'react-icons/fi';
 import GlassCard from '../ui/GlassCard';
 
-const ShopInspector = ({ shop, onClose, onSuspend, onActivate }) => {
+const ShopInspector = ({ shop, onClose, onSuspend, onActivate, readOnly }) => {
     const [suspendReason, setSuspendReason] = useState('');
     const [isSuspending, setIsSuspending] = useState(false);
     const navigate = useNavigate();
@@ -16,7 +16,7 @@ const ShopInspector = ({ shop, onClose, onSuspend, onActivate }) => {
         setSuspendReason('');
     };
 
-    const user = JSON.parse(localStorage.getItem('shoplensUser') || '{}');
+    const user = JSON.parse(localStorage.getItem('aisleUser') || '{}');
     const isModerator = user.role === 'moderator';
 
     return (

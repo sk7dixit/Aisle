@@ -7,10 +7,27 @@
  * 3. Otherwise = IN_STOCK
  */
 const calculateStockStatus = (quantity, baselineStock) => {
-    const q = Number(quantity || 0);
-    // Baseline fallback: if no baseline, try quantity (legacy safe)
-    // Note: Mongoose pre-save fixes this, but this is safe for pure utilities
-    const b = Number(baselineStock || 0);
+    let q, b;
+    if (quantity && typeof quantity === 'object') {
+        // Support both document/object structures, fallback countInStock to quantity
+        const count = quantity.quantity !== undefined ? quantity.quantity : (quantity.countInStock !== undefined ? quantity.countInStock : 0);
+        q = Number(count || 0);
+        b = Number(quantity.baselineStock !== undefined ? quantity.baselineStock : (quantity.initialStock !== undefined ? quantity.initialStock : q));
+
+        // Expiry check for EXPIRY_BASED products
+        if (quantity.productType === 'EXPIRY_BASED' && quantity.expiryDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const exp = new Date(quantity.expiryDate);
+            exp.setHours(0, 0, 0, 0);
+            if (today > exp) {
+                return 'OUT_OF_STOCK';
+            }
+        }
+    } else {
+        q = Number(quantity || 0);
+        b = Number(baselineStock || 0);
+    }
 
     if (q === 0) return 'OUT_OF_STOCK';
 

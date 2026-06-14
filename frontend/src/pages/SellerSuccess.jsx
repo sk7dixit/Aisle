@@ -8,7 +8,7 @@ const SellerSuccess = () => {
         {
             shop: "Gupta General Store",
             location: "Vadodara, Gujarat",
-            text: "Since listing on ShopLens, my regular customers check stock before coming. It saves them time and I get fewer 'do you have this?' calls.",
+            text: "Since listing on Aisle, my regular customers check stock before coming. It saves them time and I get fewer 'do you have this?' calls.",
             initial: "G",
             color: "from-blue-500 to-blue-600"
         },
@@ -33,7 +33,7 @@ const SellerSuccess = () => {
                         Seller Success Stories
                     </h1>
                     <p className="text-xl text-slate-500 max-w-2xl mx-auto font-medium leading-relaxed">
-                        See how local businesses in Vadodara are growing with ShopLens.
+                        See how local businesses in Vadodara are growing with Aisle.
                     </p>
                 </div>
 

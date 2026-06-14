@@ -46,7 +46,7 @@ const CustomerShopView = () => {
         if (interestedItems[productId]) return;
 
         try {
-            const userStr = localStorage.getItem('shoplensUser');
+            const userStr = localStorage.getItem('aisleUser');
             if (!userStr) {
                 // If not logged in, prompt or redirect. For now, simple alert or redirect to login.
                 const proceed = window.confirm("You need to login to express interest. Go to login?");

@@ -12,7 +12,7 @@ const resetPassword = async () => {
         await mongoose.connect(process.env.MONGO_URI);
         console.log('MongoDB Connected');
 
-        const email = 'shashwatdixit33@gmail.com';
+        const email = 'seller@aisle.com';
         const password = 'password123';
 
         const salt = await bcrypt.genSalt(10);

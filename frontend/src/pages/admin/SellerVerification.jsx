@@ -16,7 +16,7 @@ const SellerVerification = () => {
 
     const fetchQueue = async () => {
         try {
-            const storedUser = JSON.parse(localStorage.getItem('shoplensUser'));
+            const storedUser = JSON.parse(localStorage.getItem('aisleUser'));
             const token = storedUser?.token;
 
             const res = await fetch('/api/admin/verification-queue', {
@@ -57,7 +57,7 @@ const SellerVerification = () => {
         if (!actionModal) return;
 
         try {
-            const storedUser = JSON.parse(localStorage.getItem('shoplensUser'));
+            const storedUser = JSON.parse(localStorage.getItem('aisleUser'));
             const token = storedUser?.token;
             const isApprove = actionModal.type === 'approve';
 
@@ -96,7 +96,7 @@ const SellerVerification = () => {
             {/* 2️⃣ PAGE HEADER */}
             <div>
                 <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Seller Verifications</h1>
-                <p className="text-sm text-gray-500 mt-1">Review and approve sellers applying to operate on ShopLens</p>
+                <p className="text-sm text-gray-500 mt-1">Review and approve sellers applying to operate on Aisle</p>
             </div>
 
             {/* 3️⃣ PRIMARY ACTION ZONE */}
@@ -246,7 +246,7 @@ const SellerVerification = () => {
                             )}
                             {actionModal.type === 'approve' && (
                                 <p className="text-sm text-gray-600 mt-4">
-                                    Approving this seller will allow them to operate on ShopLens.
+                                    Approving this seller will allow them to operate on Aisle.
                                 </p>
                             )}
                         </div>

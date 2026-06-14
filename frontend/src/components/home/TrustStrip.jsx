@@ -15,7 +15,7 @@ const TrustStrip = () => {
                         </span>
                     </div>
                     <h2 className="text-3xl md:text-5xl font-extrabold text-dark tracking-tight mb-6">
-                        Why Neighbors Love ShopLens
+                        Why Neighbors Love Aisle
                     </h2>
                     <p className="text-lg text-dark-muted">
                         Online convenience, no markup, no hidden fees. Just direct local connections.
@@ -29,9 +29,9 @@ const TrustStrip = () => {
                         <div className="h-16 w-16 mb-6 rounded-2xl bg-pastel-mint text-primary flex items-center justify-center mx-auto">
                             <ShieldCheck size={32} />
                         </div>
-                        <h3 className="text-xl font-bold text-dark mb-3">Real Shops, Real People.</h3>
+                        <h3 className="text-xl font-bold text-dark mb-3">Real Businesses, Real People.</h3>
                         <p className="text-dark-muted text-sm leading-relaxed">
-                            Every shop is physically verified. We review and tune inventory before they go live on the map.
+                            Every business is physically verified. We review and tune inventory before they go live on the map.
                         </p>
                     </div>
 
@@ -40,9 +40,9 @@ const TrustStrip = () => {
                         <div className="h-16 w-16 mb-6 rounded-2xl bg-pastel-mint text-primary flex items-center justify-center mx-auto">
                             <DollarSign size={32} />
                         </div>
-                        <h3 className="text-xl font-bold text-dark mb-3">Pay What the Shop Charges.</h3>
+                        <h3 className="text-xl font-bold text-dark mb-3">Pay What the Seller Charges.</h3>
                         <p className="text-dark-muted text-sm leading-relaxed">
-                            No hidden service fees. You pay the exact store price. No delivery fees, no platform commissions.
+                            No hidden service fees. You pay the exact seller price. No delivery fees, no platform commissions.
                         </p>
                     </div>
 

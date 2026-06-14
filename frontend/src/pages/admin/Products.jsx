@@ -22,7 +22,7 @@ const Products = () => {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             // Fetch all for enforcement view
             const res = await fetch('/api/admin/products', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -74,7 +74,7 @@ const Products = () => {
             {/* 2️⃣ PAGE HEADER */}
             <div>
                 <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Products</h1>
-                <p className="text-sm text-gray-500 mt-1">Monitor and enforce product compliance on ShopLens</p>
+                <p className="text-sm text-gray-500 mt-1">Monitor and enforce product compliance on Aisle</p>
             </div>
 
             {/* 3️⃣ PRIMARY ACTION ZONE */}

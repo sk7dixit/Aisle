@@ -74,19 +74,52 @@ const completeVisit = async (req, res) => {
             reservedDelta = 1; // Assuming 1 unit
         }
 
-        // Atomic Inventory Deduction
-        // Decrease countInStock by 1 (Physical sale)
-        // Decrease reservedCount by reservedDelta (Release hold)
-        await Product.findByIdAndUpdate(request.productId, {
-            $inc: {
-                countInStock: -1,
-                reservedCount: -reservedDelta
+        // Acquire distributed lock before mutating stock
+        const { acquireLock } = require('../utils/lockManager');
+        let lock;
+        try {
+            lock = await acquireLock(`lock:product:${request.productId}`, 5000);
+        } catch (lockErr) {
+            if (reservation) {
+                reservation.status = 'ACTIVE';
+                await reservation.save();
             }
-        });
+            return res.status(409).json({ message: 'Product stock is currently locked. Please retry.' });
+        }
 
-        // 3. Mark Request Completed
-        request.status = 'COMPLETED';
-        await request.save();
+        try {
+            // Atomic Inventory Deduction
+            // Decrease quantity by 1 (Physical sale)
+            // Decrease reservedCount by reservedDelta (Release hold)
+            await Product.findByIdAndUpdate(request.productId, {
+                $inc: {
+                    quantity: -1,
+                    reservedCount: -reservedDelta
+                }
+            });
+
+            // 3. Mark Request Completed
+            request.status = 'COMPLETED';
+            await request.save();
+
+            // Broadcast REQUEST_COMPLETED event cluster-wide
+            try {
+                const { publishEvent } = require('../utils/eventBus');
+                await publishEvent('REQUEST_COMPLETED', {
+                    requestId: request._id.toString(),
+                    customerId: visit.customerId.toString(),
+                    sellerId: visit.shopId.toString(),
+                    productId: request.productId.toString(),
+                    version: request.version || 1
+                });
+            } catch (busErr) {
+                console.error('[VisitController-EventBus] REQUEST_COMPLETED publication failed:', busErr.message);
+            }
+        } finally {
+            if (lock) {
+                await lock.release().catch(err => console.error('[Lock] Release failed:', err.message));
+            }
+        }
 
         res.json({ message: 'Visit Completed. Inventory Updated.', visit });
 
@@ -178,26 +211,38 @@ const checkNoShows = async (req, res) => {
 // Helper: Release Inventory
 const releaseInventory = async (visit) => {
     const request = await Request.findById(visit.interestRequestId);
-    if (!request) return; // Should not happen
+    if (!request || !request.productId) return; // Should not happen
 
-    // Find Active Reservation
-    const Reservation = require('../models/Reservation');
-    const reservation = await Reservation.findOne({ requestId: request._id, status: 'ACTIVE' });
-
-    if (reservation) {
-        reservation.status = 'CANCELLED'; // Or EXPIRED/RELEASED? 'CANCELLED' fits best if triggered by action.
-        await reservation.save();
-
-        // Decrement Reserved Count Only (Inventory was never deducted physically)
-        if (request.productId) {
-            await Product.findByIdAndUpdate(request.productId, { $inc: { reservedCount: -1 } });
-        }
+    const { acquireLock } = require('../utils/lockManager');
+    let lock;
+    try {
+        lock = await acquireLock(`lock:product:${request.productId}`, 5000);
+    } catch (lockErr) {
+        console.error(`[VisitController-ReleaseInventory] Lock failed for product ${request.productId}:`, lockErr.message);
+        throw new Error('Product inventory lock failed. Retry later.');
     }
 
-    // Request State? 
-    // If visit cancelled, request effectively cancelled too?
-    request.status = 'CANCELLED';
-    await request.save();
+    try {
+        // Find Active Reservation
+        const Reservation = require('../models/Reservation');
+        const reservation = await Reservation.findOne({ requestId: request._id, status: 'ACTIVE' });
+
+        if (reservation) {
+            reservation.status = 'CANCELLED'; // Or EXPIRED/RELEASED? 'CANCELLED' fits best if triggered by action.
+            await reservation.save();
+
+            // Decrement Reserved Count Only (Inventory was never deducted physically)
+            await Product.findByIdAndUpdate(request.productId, { $inc: { reservedCount: -1 } });
+        }
+
+        // Request State
+        request.status = 'CANCELLED';
+        await request.save();
+    } finally {
+        if (lock) {
+            await lock.release().catch(err => console.error('[Lock] Release failed:', err.message));
+        }
+    }
 };
 
 module.exports = {

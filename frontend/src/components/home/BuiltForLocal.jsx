@@ -8,8 +8,8 @@ const BuiltForLocal = () => {
     const features = [
         {
             icon: MapPin,
-            title: "Real Nearby Shops",
-            desc: "Only physical shops around you. No warehouses."
+            title: "Real Nearby Businesses",
+            desc: "Only physical businesses and home creators around you. No warehouses."
         },
         {
             icon: Clock,
@@ -19,12 +19,12 @@ const BuiltForLocal = () => {
         {
             icon: Users,
             title: "Direct Connection",
-            desc: "Talk to shop owners. No middlemen."
+            desc: "Talk directly to businesses & creators. No middlemen."
         },
         {
             icon: DollarSign,
             title: "No Extra Charges",
-            desc: "Buy at shop prices. No hidden fees."
+            desc: "Buy at regular retail prices. No hidden fees."
         }
     ];
 
@@ -32,9 +32,9 @@ const BuiltForLocal = () => {
         <section className="bg-white py-24 px-4 sm:px-6 lg:px-8 border-t border-slate-50">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Built for Local Shopping</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Built for Nearby Discovery</h2>
                     <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-                        Not delivery. Just nearby shops, available right now.
+                        Not delivery. Just nearby businesses & creators, available right now.
                     </p>
                 </div>
 
@@ -60,7 +60,7 @@ const BuiltForLocal = () => {
                         onClick={() => navigate('/explore')}
                         className="text-teal-600 font-bold hover:text-teal-700 hover:underline transition-all text-sm"
                     >
-                        Explore Shops Near You →
+                        Explore Nearby Businesses →
                     </button>
                 </div>
             </div>

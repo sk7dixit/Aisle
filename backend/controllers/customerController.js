@@ -1,10 +1,14 @@
 const Product = require('../models/Product');
 const User = require('../models/User');
+const SearchAnalytics = require('../models/SearchAnalytics');
+const { trackSearch } = require('../services/searchAnalyticsService');
 // const Order = require('../models/Order'); // DEPRECATED: Replaced by CustomerVisit
 const { SHOP_CATEGORIES } = require('../utils/shopCategoryConfig');
 const { calculateSellerConfidence, calculateStockConfidence, calculateRankingScore } = require('../utils/confidenceUtils');
 const { deriveShopStatus } = require('../utils/shopStatusUtils');
 const { SUBSCRIPTION_PLANS, VISIBILITY_BOOST } = require('../config/subscriptionConfig');
+const { getRedisClient, isRedisActive } = require('../config/redis');
+const searchCache = require('../utils/searchCache');
 
 // Helper: Calculate distance (Haversine Formula) - MVP version
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -29,83 +33,169 @@ const deg2rad = (deg) => {
 // @desc    Search Exact Items (Customer)
 const searchProducts = async (req, res) => {
     try {
-        const { q, lat, lng, radius } = req.query;
+        const { q, lat, lng, radius, cursor, limit } = req.query;
 
         if (!q) {
             return res.status(400).json({ message: 'Search query required' });
         }
 
-        const userLat = parseFloat(lat);
-        const userLng = parseFloat(lng);
+        let userLat = parseFloat(lat);
+        let userLng = parseFloat(lng);
         const searchRadius = parseFloat(radius) || 5;
+        const userHasCoords = !isNaN(userLat) && !isNaN(userLng);
+        const limitVal = parseInt(limit, 10) || 20;
 
-        // 1. SEARCH PRODUCTS
-        const products = await Product.find({
-            isExact: true,
+        const cleanQuery = q.toLowerCase().trim();
+
+        // 1. QUERY CACHE SYSTEM FIRST
+        const cacheKey = `search:cache:customer:${cleanQuery}:${lat || 'null'}:${lng || 'null'}:${radius || '5'}:${cursor || 'start'}:${limitVal}`;
+        if (isRedisActive()) {
+            const cachedResults = await searchCache.get(cacheKey);
+            if (cachedResults) {
+                console.log(`[SearchEngine] Cache hit for customer search: "${q}"`);
+                return res.json(cachedResults);
+            }
+        }
+
+        // 2. TRACK USER SEARCH HISTORY IN REDIS FOR CLICKS/CONVERSIONS
+        if (req.user?._id && isRedisActive()) {
+            const redis = getRedisClient();
+            await redis.set(`user:last_search:${req.user._id}`, cleanQuery, 'EX', 3600); // 1 hr expiry
+        }
+
+        // 3. GEOSPATIAL SELLER LOOKUP FIRST (No Collection Scans)
+        let sellerIds = [];
+        let nearbySellers = [];
+        let sellersMap = new Map();
+
+        if (userHasCoords) {
+            nearbySellers = await User.find({
+                role: 'seller',
+                verificationStatus: 'approved',
+                "shopDetails.shopLocation": {
+                    $near: {
+                        $geometry: {
+                            type: 'Point',
+                            coordinates: [userLng, userLat]
+                        },
+                        $maxDistance: searchRadius * 1000
+                    }
+                }
+            }).select('_id shopDetails subscription visibilityBoost');
+            sellerIds = nearbySellers.map(s => s._id);
+            nearbySellers.forEach(s => sellersMap.set(s._id.toString(), s));
+        }
+
+        // 4. SEARCH PRODUCTS
+        const productQuery = {
             isAvailable: { $ne: false },
-            $or: [
-                { name: { $regex: q, $options: 'i' } },
-                { brand: { $regex: q, $options: 'i' } },
-                { category: { $regex: q, $options: 'i' } }
-            ]
-        }).populate('seller', 'shopDetails subscription visibilityBoost');
+            isDraft: { $ne: true },
+            adminStatus: 'Active'
+        };
 
-        // 2. SEARCH SHOPS
-        const shops = await User.find({
+        if (userHasCoords) {
+            productQuery.seller = { $in: sellerIds };
+        }
+
+        productQuery.$and = [
+            {
+                $or: [
+                    { isExact: true },
+                    { shopType: 'HOME_BUSINESS' }
+                ]
+            },
+            {
+                $or: [
+                    { name: { $regex: q, $options: 'i' } },
+                    { brand: { $regex: q, $options: 'i' } },
+                    { category: { $regex: q, $options: 'i' } }
+                ]
+            }
+        ];
+
+        // Populate seller details to obtain rating, subscription details, etc.
+        const products = await Product.find(productQuery).populate('seller', 'shopDetails subscription visibilityBoost sellerStats');
+
+        // 5. SEARCH SHOPS
+        const shopQuery = {
             role: "seller",
+            verificationStatus: 'approved',
             $or: [
                 { "shopDetails.shopName": { $regex: q, $options: 'i' } },
                 { "shopDetails.shopCategory": { $regex: q, $options: 'i' } }
             ]
-        }).select("shopDetails subscription visibilityBoost _id");
+        };
 
+        if (userHasCoords) {
+            shopQuery._id = { $in: sellerIds };
+        }
+
+        const shops = await User.find(shopQuery).select("shopDetails subscription visibilityBoost sellerStats _id");
+
+        // 6. MULTI-FACTOR SCORE CALCULATION
         const productResults = products.map(p => {
             let distance = 999999;
-            if (p.seller?.shopDetails?.shopLocation?.coordinates) {
+            const sellerDetails = p.seller || sellersMap.get(p.sellerId?.toString());
+            
+            if (sellerDetails?.shopDetails?.shopLocation?.coordinates && userHasCoords) {
                 distance = calculateDistance(
                     userLat, userLng,
-                    p.seller.shopDetails.shopLocation.coordinates[1],
-                    p.seller.shopDetails.shopLocation.coordinates[0]
+                    sellerDetails.shopDetails.shopLocation.coordinates[1],
+                    sellerDetails.shopDetails.shopLocation.coordinates[0]
                 );
             }
 
-            // Step 7: Centralized Ranking Score
-            let priorityScore = 0;
-            if (p.seller) {
-                priorityScore = calculateRankingScore(p.seller, null);
+            // A. Distance Score (40%)
+            const distanceScore = userHasCoords && distance !== 999999
+                ? Math.max(0, (1 - distance / (searchRadius * 1000)) * 40)
+                : 0;
 
-                // Keep Visibility Boost Logic (Short term boost on top of Pro)
-                if (p.seller.visibilityBoost?.isActive) {
-                    const type = p.seller.visibilityBoost.boostType?.toUpperCase();
-                    priorityScore += (VISIBILITY_BOOST[type]?.visibilityScoreBonus || 5); // Add small boost
+            // B. Availability Score (25%)
+            let availabilityScore = 0;
+            if (p.stockStatus === 'AVAILABLE' || p.stockStatus === 'IN_STOCK') availabilityScore = 25;
+            else if (p.stockStatus === 'LIMITED') availabilityScore = 15;
+
+            // C. Popularity Score (20%)
+            const popularityScore = Math.min(p.views || 0, 100) / 100 * 20;
+
+            // D. Rating Score (15%)
+            const ratingScore = ((sellerDetails?.shopDetails?.rating || 0) / 5) * 15;
+
+            const totalScore = distanceScore + availabilityScore + popularityScore + ratingScore;
+
+            // E. Apply Subscription/Visibility Boosts (Additive on top of score)
+            let priorityScore = 0;
+            if (sellerDetails) {
+                priorityScore = calculateRankingScore(sellerDetails, sellerDetails.sellerStats);
+                if (sellerDetails.visibilityBoost?.isActive) {
+                    const boostType = sellerDetails.visibilityBoost.boostType?.toUpperCase();
+                    priorityScore += (VISIBILITY_BOOST[boostType]?.visibilityScoreBonus || 5);
                 }
             }
 
+            const finalScore = totalScore + priorityScore;
+
             return {
-                type: 'product',
+                type: p.shopType === 'HOME_BUSINESS' ? 'creation' : 'product',
                 _id: p._id,
                 name: p.name,
                 imageUrl: p.imageUrl,
-                price: p.price,
+                price: p.sellingPrice || p.price || 0,
                 stockStatus: p.stockStatus,
-                shopName: p.seller?.shopDetails?.shopName || 'Unknown Shop',
-                shopId: p.seller?._id,
+                shopName: sellerDetails?.shopDetails?.shopName || 'Unknown Shop',
+                shopId: sellerDetails?._id,
                 distance: distance,
-                planId: p.seller?.subscription?.planId || 'free',
-                isOpen: deriveShopStatus(p.seller?.shopDetails) === 'ONLINE',
-                // New Scoring: Distance + Priority (Subscription) + Stock Confidence
-                _score: (p.stockStatus === 'AVAILABLE' ? 1000 : 0)
-                    + (100 - Math.min(100, distance / 100))
-                    + priorityScore
-                    + (p.seller && calculateStockConfidence(p, p.seller) === 'HIGH' ? 50 : 0),
-                stockConfidence: p.seller ? calculateStockConfidence(p, p.seller) : 'MEDIUM',
-                operatingMode: p.seller?.shopDetails?.operatingMode || 'GUARANTEED' // Step 5
+                planId: sellerDetails?.subscription?.planId || 'free',
+                isOpen: sellerDetails ? (sellerDetails.shopDetails?.isOpen || deriveShopStatus(sellerDetails.shopDetails) === 'ONLINE') : false,
+                _score: finalScore,
+                stockConfidence: sellerDetails ? calculateStockConfidence(p, sellerDetails) : 'MEDIUM',
+                operatingMode: sellerDetails?.shopDetails?.operatingMode || 'GUARANTEED'
             };
         });
 
         const shopResults = shops.map(s => {
             let distance = 999999;
-            if (s.shopDetails?.shopLocation?.coordinates) {
+            if (s.shopDetails?.shopLocation?.coordinates && userHasCoords) {
                 distance = calculateDistance(
                     userLat, userLng,
                     s.shopDetails.shopLocation.coordinates[1],
@@ -113,36 +203,121 @@ const searchProducts = async (req, res) => {
                 );
             }
 
-            let priorityScore = 0;
-            let boostScore = 0;
+            const distanceScore = userHasCoords && distance !== 999999
+                ? Math.max(0, (1 - distance / (searchRadius * 1000)) * 40)
+                : 0;
 
-            // Step 7: Centralized Ranking Score
-            priorityScore = calculateRankingScore(s, null);
+            const ratingScore = ((s.shopDetails?.rating || 0) / 5) * 15;
+            const baseScore = distanceScore + ratingScore;
 
+            let priorityScore = calculateRankingScore(s, s.sellerStats);
             if (s.visibilityBoost?.isActive) {
-                const type = s.visibilityBoost.boostType?.toUpperCase();
-                boostScore = VISIBILITY_BOOST[type]?.visibilityScoreBonus || 0.5;
+                const boostType = s.visibilityBoost.boostType?.toUpperCase();
+                priorityScore += (VISIBILITY_BOOST[boostType]?.visibilityScoreBonus || 0.5);
             }
 
+            const finalScore = baseScore + priorityScore;
+
             return {
-                type: 'shop',
+                type: s.shopDetails?.shopType === 'HOME_BUSINESS' ? 'creator' : 'shop',
                 _id: s._id,
                 name: s.shopDetails?.shopName,
                 category: s.shopDetails?.shopCategory,
                 shopImage: s.shopDetails?.photos?.[0] || null,
                 distance: distance,
                 planId: s.subscription?.planId || 'free',
-                isOpen: deriveShopStatus(s.shopDetails) === 'ONLINE',
-                operatingMode: s.shopDetails?.operatingMode || 'GUARANTEED', // Step 5
-                _score: (100 - Math.min(100, distance / 100)) + (priorityScore * 10) + (boostScore * 10)
+                isOpen: s.shopDetails?.isOpen || deriveShopStatus(s.shopDetails) === 'ONLINE',
+                operatingMode: s.shopDetails?.operatingMode || 'GUARANTEED',
+                _score: finalScore
             };
         });
 
         const results = [...productResults, ...shopResults]
-            .filter(item => isNaN(userLat) || item.distance <= searchRadius * 1000)
+            .filter(item => !userHasCoords || item.distance <= searchRadius * 1000)
             .sort((a, b) => b._score - a._score);
 
-        res.json(results);
+        // 7. CURSOR PAGINATION
+        let startIdx = 0;
+        if (cursor) {
+            try {
+                const decoded = JSON.parse(Buffer.from(cursor, 'base64').toString('ascii'));
+                startIdx = decoded.nextOffset || 0;
+            } catch (e) {
+                startIdx = 0;
+            }
+        }
+
+        const paginatedResults = results.slice(startIdx, startIdx + limitVal);
+        const nextOffset = startIdx + limitVal;
+        const hasMore = nextOffset < results.length;
+        const nextCursor = hasMore
+            ? Buffer.from(JSON.stringify({ nextOffset })).toString('base64')
+            : null;
+
+        // 8. LOG SEARCH ANALYTICS ASYNCHRONOUSLY
+        let userId = req.user?._id;
+        if (!userId && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+            try {
+                const jwt = require('jsonwebtoken');
+                const token = req.headers.authorization.split(' ')[1];
+                const decoded = jwt.verify(token, process.env.JWT_SECRET || process.env.JWT_SECRET_CURRENT);
+                userId = decoded.id;
+            } catch (err) {}
+        }
+
+        let userCity = req.query.city;
+        let userState = req.query.state;
+        let searchRecordId = null;
+
+        try {
+            if (userId) {
+                const user = await User.findById(userId);
+                if (user) {
+                    userCity = userCity || user.shopDetails?.city || user.city;
+                    userState = userState || user.shopDetails?.state || user.state;
+                    if (isNaN(userLat) && user.shopDetails?.shopLocation?.coordinates) {
+                        userLng = user.shopDetails.shopLocation.coordinates[0];
+                        userLat = user.shopDetails.shopLocation.coordinates[1];
+                    }
+                }
+            }
+
+            const trackedSearch = await trackSearch({
+                userId,
+                keyword: q,
+                city: userCity || 'Indore',
+                state: userState || 'Madhya Pradesh',
+                latitude: isNaN(userLat) ? null : userLat,
+                longitude: isNaN(userLng) ? null : userLng,
+                resultsCount: results.length,
+                category: products[0]?.category || (shops[0]?.shopDetails?.shopCategory) || null,
+                source: req.query.source || 'search_bar'
+            });
+
+            if (trackedSearch) {
+                searchRecordId = trackedSearch._id;
+            }
+        } catch (analyticsErr) {
+            console.error('[AnalyticsEngine] Failed to save customer search log:', analyticsErr.message);
+        }
+
+        // Map searchId to paginated results for click tracking
+        const finalResults = paginatedResults.map(item => ({
+            ...item,
+            searchId: searchRecordId
+        }));
+
+        // Format return format dynamically for backwards compatibility
+        const outputPayload = cursor || limit 
+            ? { results: finalResults, nextCursor, hasMore }
+            : finalResults;
+
+        // Cache response payload for 60 seconds
+        if (isRedisActive()) {
+            await searchCache.set(cacheKey, outputPayload, 60);
+        }
+
+        res.json(outputPayload);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -206,13 +381,17 @@ const getPopularProducts = async (req, res) => {
 // @desc    Get Single Product Detail
 const getProductDetail = async (req, res) => {
     try {
-        const product = await Product.findOne({ _id: req.params.id, isAvailable: { $ne: false } })
-            .populate('seller', 'shopDetails sellerStats');
+        const product = await Product.findOneAndUpdate(
+            { _id: req.params.id, isAvailable: { $ne: false }, isDraft: { $ne: true } },
+            { $inc: { views: 1 } },
+            { new: true }
+        ).populate('seller', 'phone shopDetails sellerStats');
         if (product) {
             res.json({
                 ...product._doc,
                 shopName: product.seller?.shopDetails?.shopName,
                 shopId: product.seller?._id,
+                shopPhone: product.seller?.phone || product.seller?.shopDetails?.phone || "9876543210",
                 confidence: product.seller ? calculateSellerConfidence(product.seller) : null,
                 stockConfidence: product.seller ? calculateStockConfidence(product, product.seller) : 'MEDIUM'
             });
@@ -247,11 +426,16 @@ const getShopDetail = async (req, res) => {
         const products = await Product.find({
             seller: req.params.id,
             stockStatus: { $ne: 'ARCHIVED' },
-            isAvailable: { $ne: false }
+            isAvailable: { $ne: false },
+            isDraft: { $ne: true }
         });
 
-        // 1. Get Master Categories based on shopType
-        const masterCategories = getCategoriesForShop(shopUser.shopDetails?.shopType || 'GROCERY_KIRANA');
+        // 1. Get Master Categories based on shopType and merge with custom shop categories
+        const customCategories = shopUser.shopDetails?.shopCategories || [];
+        const masterCategories = Array.from(new Set([
+            ...getCategoriesForShop(shopUser.shopDetails?.shopType || 'GROCERY_KIRANA'),
+            ...customCategories
+        ]));
 
         // 2. Map products into these categories
         const categoriesMap = {};
@@ -265,9 +449,10 @@ const getShopDetail = async (req, res) => {
 
         products.forEach(p => {
             const cat = p.category || 'General Provision / Kirana';
-            // If the product category is in our master list, add it there
-            if (categoriesMap[cat]) {
-                categoriesMap[cat].push(p);
+            // Find matched category name case-insensitively or exactly
+            const matchedCat = masterCategories.find(c => c.toLowerCase() === cat.toLowerCase());
+            if (matchedCat) {
+                categoriesMap[matchedCat].push(p);
             } else {
                 // For safety, put in the first category or a default one if it doesn't match
                 // but ideally we should match it correctly. 
@@ -292,6 +477,7 @@ const getShopDetail = async (req, res) => {
             shop: {
                 _id: shopUser._id,
                 name: shopUser.shopDetails?.shopName,
+                phone: shopUser.phone || shopUser.shopDetails?.phone || "9876543210",
                 category: shopUser.shopDetails?.shopType || shopUser.shopDetails?.shopCategory,
                 address: shopUser.shopDetails?.address,
                 location: shopUser.shopDetails?.shopLocation,
@@ -389,7 +575,12 @@ const getNearbyShops = async (req, res) => {
                 confidence: calculateSellerConfidence(user),
                 productCount: countsMap[user._id.toString()] || 0,
                 _finalPriority: priorityScore + boostScore,
-                planId: user.subscription?.planId || 'free'
+                planId: user.subscription?.planId || 'free',
+                coordinates: sd.shopLocation?.coordinates || null,
+                rating: sd.rating || 0,
+                numReviews: sd.numReviews || 0,
+                shopDetails: sd,
+                operatingMode: sd.operatingMode || 'GUARANTEED'
             };
         }).filter(shop => {
             if (!isNaN(userLat) && shop.distanceValue !== 999999) {
@@ -463,7 +654,8 @@ const getShopsNearby = async (req, res) => {
             shopImage: shop.shopDetails?.photos?.[0] || null,
             rating: shop.shopDetails?.rating || 0,
             confidence: calculateSellerConfidence(shop),
-            planId: shop.subscription?.planId || 'free'
+            planId: shop.subscription?.planId || 'free',
+            operatingMode: shop.shopDetails?.operatingMode || 'GUARANTEED'
         }));
 
         res.json(formattedShops);
@@ -478,7 +670,11 @@ const getShopsByCity = async (req, res) => {
         const { city } = req.query;
         const sellers = await User.find({
             role: "seller",
-            "shopDetails.city": city
+            $or: [
+                { "shopDetails.shopLocation.city": city },
+                { "shopDetails.location.city": city },
+                { "shopDetails.city": city }
+            ]
         }).select("shopDetails subscription visibilityBoost _id");
 
         const shops = sellers.map(user => {
@@ -502,7 +698,8 @@ const getShopsByCity = async (req, res) => {
                 location: sd.shopLocation,
                 rating: sd.rating || 0,
                 _finalPriority: priorityScore + boostScore,
-                planId: user.subscription?.planId || 'free'
+                planId: user.subscription?.planId || 'free',
+                operatingMode: sd.operatingMode || 'GUARANTEED'
             };
         });
 
@@ -578,6 +775,30 @@ const createOrder = async (req, res) => {
         } catch (e) {
             console.error("QR Payload Parse Error:", e);
         }
+
+        // Search CTR conversion hook
+        if (customerId && isRedisActive()) {
+            const redis = getRedisClient();
+            const lastSearch = await redis.get(`user:last_search:${customerId}`);
+            if (lastSearch) {
+                const sellerUser = await User.findById(sellerId);
+                const sType = sellerUser?.shopDetails?.shopType || 'grocery_kirana';
+                await SearchAnalytics.findOneAndUpdate(
+                    { query: lastSearch, shopType: sType.toLowerCase() },
+                    { $inc: { conversions: 1 } }
+                ).catch(err => console.error('[AnalyticsEngine] Conversion tracking error:', err));
+            }
+        }
+
+        // Log security audit event
+        const { logSecurityEvent } = require('../utils/securityLogger');
+        await logSecurityEvent(
+            customerId,
+            req.user.email,
+            'ORDER_CREATED',
+            req,
+            { visitId: visit._id, sellerId, totalAmount }
+        );
 
         res.status(201).json({
             message: 'Order created successfully',

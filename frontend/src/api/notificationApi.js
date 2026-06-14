@@ -4,7 +4,7 @@ const API_URL = '/api/seller/notifications';
 
 // Helper to get auth header (token can change, so we get it fresh)
 const getAuthHeader = () => {
-    const userStr = localStorage.getItem('shoplensUser');
+    const userStr = localStorage.getItem('aisleUser');
     if (userStr) {
         const user = JSON.parse(userStr);
         return { Authorization: `Bearer ${user.token}` };

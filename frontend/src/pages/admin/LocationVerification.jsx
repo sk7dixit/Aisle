@@ -8,7 +8,7 @@ const LocationVerification = () => {
 
     const fetchUnverifiedShops = async () => {
         try {
-            const storedUser = JSON.parse(localStorage.getItem('shoplensUser'));
+            const storedUser = JSON.parse(localStorage.getItem('aisleUser'));
             const token = storedUser?.token;
             const res = await axios.get('/api/admin/unverified-shops', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -23,7 +23,7 @@ const LocationVerification = () => {
 
     const verifyLocation = async (sellerId) => {
         try {
-            const storedUser = JSON.parse(localStorage.getItem('shoplensUser'));
+            const storedUser = JSON.parse(localStorage.getItem('aisleUser'));
             const token = storedUser?.token;
             await axios.post(`/api/admin/verify-shop-location/${sellerId}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }

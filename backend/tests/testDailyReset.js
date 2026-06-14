@@ -44,6 +44,9 @@ async function testDailyReset() {
             seller: kiranaSeller._id,
             name: "Milk (Daily Reset)",
             category: "Dairy",
+            subCategory: "Dairy",
+            categorySlug: "dairy",
+            shopType: "GROCERY_KIRANA",
             productType: "DAILY_ESSENTIAL",
             countInStock: 50
         });
@@ -52,6 +55,9 @@ async function testDailyReset() {
             seller: kiranaSeller._id,
             name: "Cookies (Standard)",
             category: "Snacks",
+            subCategory: "Snacks",
+            categorySlug: "snacks",
+            shopType: "GROCERY_KIRANA",
             productType: "STANDARD",
             countInStock: 50
         });
@@ -60,6 +66,9 @@ async function testDailyReset() {
             seller: pharmacySeller._id,
             name: "Aspirin (No Reset)",
             category: "Medicine",
+            subCategory: "Medicine",
+            categorySlug: "medicine",
+            shopType: "PHARMACY",
             productType: "EXPIRY_BASED",
             countInStock: 50,
             expiryDate: new Date('2030-01-01')

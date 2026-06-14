@@ -21,6 +21,20 @@ const reviewSchema = mongoose.Schema({
         type: String,
         trim: true,
         maxlength: 300
+    },
+    deviceId: {
+        type: String
+    },
+    clientIp: {
+        type: String
+    },
+    isSuspicious: {
+        type: Boolean,
+        default: false
+    },
+    suspiciousReason: {
+        type: String,
+        default: null
     }
 }, {
     timestamps: true

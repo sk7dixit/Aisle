@@ -30,7 +30,8 @@ const {
     createAssistedListingRequest,
     restockDaily,
     addStock,
-    getCustomerVisits // NEW Step 2
+    getCustomerVisits, // NEW Step 2
+    addCustomCategory
 } = require('../controllers/sellerController');
 const { uploadBulkFile, saveBulkProducts } = require('../controllers/bulkListingController');
 const { processVoiceInput } = require('../controllers/voiceController');
@@ -71,6 +72,7 @@ router.put('/payment-settings', savePaymentSettings);
 
 // NEW: Shop Operating Mode (Step 1)
 router.put('/operating-mode', require('../controllers/sellerController').updateOperatingMode);
+router.put('/automation-mode', require('../controllers/sellerController').updateAutomationMode);
 
 // NEW: Daily Opening Stock (Step 2)
 router.post('/inventory/start-day', require('../controllers/sellerController').setOpeningStock);
@@ -104,11 +106,11 @@ router.post('/bulk/save', saveBulkProducts);
 // Product Management
 // Note: `protect` and `authorize('seller')` are already applied globally.
 router.post('/products/link', linkProduct);
-router.route('/products').get(getSellerProducts).post(upload.single('image'), addProduct);
+router.route('/products').get(getSellerProducts).post(upload.any(), addProduct);
 router.route('/products/bulk').post(addProductsBulk);
 router.route('/products/bulk-delete').delete(deleteProductsBulk);
 router.route('/products/bulk-status').put(updateProductsStatusBulk);
-router.route('/products/:id').put(updateProduct).get(getProductDetails).delete(deleteProduct);
+router.route('/products/:id').put(upload.any(), updateProduct).get(getProductDetails).delete(deleteProduct);
 
 router.route('/profile').get(getSellerProfile).put(updateSellerProfile);
 router.post('/voice-process', processVoiceInput);
@@ -144,8 +146,44 @@ router.post('/feedback', createFeedback);
 router.get('/feedback', getMyFeedback);
 router.get('/reviews', getSellerReviews);
 
-const { createTicket } = require('../controllers/supportController');
+const {
+    createTicket,
+    searchSupport,
+    runDetectIntent,
+    logHelpfulnessFeedback,
+    getSupportAnalytics,
+    getSellerSupportContext,
+    runProductDiagnosis,
+    runPaymentDiagnosis,
+    runShopDiagnosis,
+    getSupportHistory,
+    getSellerOffers,
+    createSellerOffer,
+    updateSellerOffer,
+    deleteSellerOffer,
+    executeResolution,
+    undoResolution,
+    getExecutedResolutions
+} = require('../controllers/supportController');
 router.post('/support/ticket', createTicket);
+router.get('/support/search', searchSupport);
+router.post('/support/detect-intent', runDetectIntent);
+router.post('/support/feedback', logHelpfulnessFeedback);
+router.get('/support/analytics', getSupportAnalytics);
+router.get('/support/context', getSellerSupportContext);
+router.post('/support/product-diagnosis', runProductDiagnosis);
+router.post('/support/payment-diagnosis', runPaymentDiagnosis);
+router.post('/support/shop-diagnosis', runShopDiagnosis);
+router.get('/support/history', getSupportHistory);
+router.post('/support/execute', executeResolution);
+router.post('/support/undo', undoResolution);
+router.get('/support/resolutions', getExecutedResolutions);
+
+// persistent offers
+router.get('/offers', getSellerOffers);
+router.post('/offers', createSellerOffer);
+router.put('/offers/:id', updateSellerOffer);
+router.delete('/offers/:id', deleteSellerOffer);
 
 const { getNotifications, getUnreadCount, markAsRead, markAllAsRead } = require('../controllers/notificationController');
 router.get('/notifications', protect, getNotifications);
@@ -190,5 +228,6 @@ router.post('/image-session/save', saveSession);
 const { getCatalog, syncCatalogProducts } = require('../controllers/masterController');
 router.get('/catalog', getCatalog);
 router.post('/catalog/sync', syncCatalogProducts);
+router.post('/categories', addCustomCategory);
 
 module.exports = router;

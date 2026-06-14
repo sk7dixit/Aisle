@@ -29,6 +29,9 @@ const testManualControls = async () => {
             seller: seller._id,
             name: "Manual Test Item",
             category: "General",
+            subCategory: "General",
+            categorySlug: "general",
+            shopType: "GROCERY_KIRANA",
             countInStock: 10,
             lowStockThreshold: 5
         });
@@ -68,6 +71,9 @@ const testManualControls = async () => {
             seller: seller._id,
             name: "Expired Manual Test",
             category: "Medicine",
+            subCategory: "Medicine",
+            categorySlug: "medicine",
+            shopType: "PHARMACY",
             productType: "EXPIRY_BASED",
             expiryDate: new Date('2024-01-01'),
             countInStock: 0

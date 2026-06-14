@@ -20,7 +20,8 @@ const sellerProductSchema = mongoose.Schema({
     quantity: {
         type: Number,
         required: true,
-        default: 0
+        default: 0,
+        alias: 'countInStock'
     },
     shopType: {
         type: String,
@@ -49,8 +50,21 @@ const sellerProductSchema = mongoose.Schema({
     },
     stockStatus: {
         type: String,
-        enum: ['IN_STOCK', 'LIMITED', 'OUT_OF_STOCK'],
+        enum: ['IN_STOCK', 'LIMITED', 'OUT_OF_STOCK', 'AVAILABLE', 'UNAVAILABLE'],
         default: 'IN_STOCK'
+    },
+    availability: {
+        type: String,
+        enum: ['AVAILABLE', 'UNAVAILABLE'],
+        default: 'AVAILABLE'
+    },
+    lastConfirmedAt: {
+        type: Date,
+        default: Date.now
+    },
+    onlineSalesCount: {
+        type: Number,
+        default: 0
     },
     productType: {
         type: String,
@@ -64,6 +78,14 @@ const sellerProductSchema = mongoose.Schema({
     is_active: {
         type: Boolean,
         default: true
+    },
+    deleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true,
@@ -75,14 +97,32 @@ const sellerProductSchema = mongoose.Schema({
 const { calculateStockStatus } = require('../utils/stockUtils');
 
 // Auto calculate stock status before save
-sellerProductSchema.pre('save', function (next) {
-    if (this.isModified('quantity')) {
-        this.stockStatus = calculateStockStatus(this.quantity);
+sellerProductSchema.pre('save', async function () {
+    const isExcludedShop = this.shopType === 'HOME_BUSINESS' || this.shopType === 'SERVICES';
+    if (!isExcludedShop) {
+        if (this.quantity <= 0) {
+            this.availability = 'UNAVAILABLE';
+        }
+        this.stockStatus = this.availability === 'AVAILABLE' ? 'IN_STOCK' : 'OUT_OF_STOCK';
+    } else {
+        if (this.isModified('quantity')) {
+            this.stockStatus = calculateStockStatus(this.quantity);
+        }
     }
-    next();
 });
 
 // Composite index to prevent duplicate linking of same variant by same seller
 sellerProductSchema.index({ seller: 1, variant: 1 }, { unique: true });
+sellerProductSchema.index({ category: 1, subCategory: 1, availability: 1 }); // Compound index
+sellerProductSchema.index({ seller: 1, stockStatus: 1 }); // Compound index
+
+const excludeDeleted = function () {
+    this.where({ deleted: { $ne: true } });
+};
+
+sellerProductSchema.pre('find', excludeDeleted);
+sellerProductSchema.pre('findOne', excludeDeleted);
+sellerProductSchema.pre('findOneAndUpdate', excludeDeleted);
+sellerProductSchema.pre('countDocuments', excludeDeleted);
 
 module.exports = mongoose.model('SellerProduct', sellerProductSchema);

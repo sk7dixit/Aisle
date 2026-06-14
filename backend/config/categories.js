@@ -1,6 +1,6 @@
 /**
  * MASTER CATEGORY LIST
- * Single Source of Truth for ShopLens Categories.
+ * Single Source of Truth for Aisle Categories.
  * Used by both Backend (Validation/API) and Frontend (UI/Icons).
  * 
  * Structure:
@@ -22,12 +22,11 @@ const CATEGORIES = [
     { id: 'organic-gourmet', label: 'Organic / Gourmet', icon: '🥣', group: 'Daily Needs & Food' },
 
     // --- 2. Electrical, Hardware & Auto ---
-    { id: 'electrical-lighting', label: 'Electrical & Lighting', icon: '💡', group: 'Electrical & Hardware' },
-    { id: 'hardware-fittings', label: 'Hardware & Furniture Fittings', icon: '🔩', group: 'Electrical & Hardware' },
-    { id: 'plumbing-sanitary', label: 'Plumbing & Sanitaryware', icon: '🚿', group: 'Electrical & Hardware' },
-    { id: 'paints-waterproofing', label: 'Paints & Waterproofing', icon: '🎨', group: 'Electrical & Hardware' },
-    { id: 'automobile-spares', label: 'Automobile Spares & Care', icon: '🏍️', group: 'Electrical & Hardware' },
-    { id: 'tools-industrial', label: 'Tools & Industrial Supply', icon: '🔧', group: 'Electrical & Hardware' },
+    { id: 'electrical-shop', label: 'Electrical Shop', icon: '💡', group: 'Electrical & Hardware' },
+    { id: 'hardware-sanitary', label: 'Hardware & Sanitary', icon: '🔩', group: 'Electrical & Hardware' },
+    { id: 'paints-decor', label: 'Paints & Decor', icon: '🎨', group: 'Electrical & Hardware' },
+    { id: 'automobile-spares', label: 'Automobile Spares', icon: '🏍️', group: 'Electrical & Hardware' },
+    { id: 'tools-industrial', label: 'Industrial / Power Tools', icon: '🔧', group: 'Electrical & Hardware' },
 
     // --- 3. Tech & Accessories ---
     { id: 'mobiles-wearables', label: 'Mobiles, Audio & Wearables', icon: '📱', group: 'Tech & Accessories' },
@@ -52,19 +51,62 @@ const CATEGORIES = [
     { id: 'clothing-garments', label: 'Clothing & Garments', icon: '👕', group: 'Home & Lifestyle' },
 
     // --- 6. Pharmacy / Medical Store ---
-    { id: 'allopathic-medicines', label: 'Allopathic Medicines', icon: '💊', group: 'Pharmacy & Wellness' },
-    { id: 'ayurvedic-wellness', label: 'Ayurvedic & Wellness', icon: '🌿', group: 'Pharmacy & Wellness' },
-    { id: 'surgical-rehab', label: 'Surgical, Rehab & General', icon: '🏥', group: 'Pharmacy & Wellness' },
+    { id: 'allopathic-chemist', label: 'Allopathic Chemist', icon: '💊', group: 'Pharmacy & Wellness' },
+    { id: 'ayurvedic-herbal', label: 'Ayurvedic & Herbal', icon: '🌿', group: 'Pharmacy & Wellness' },
+    { id: 'surgical-equipment', label: 'Surgical & Equipment', icon: '🏥', group: 'Pharmacy & Wellness' },
 
-    // --- 8. Home Businesses ---
-    { id: 'homemade-food', label: 'Homemade Food, Bakery & Catering', icon: '🍱', group: 'Home Businesses' },
-    { id: 'handmade-crafts', label: 'Handmade Arts, Crafts & Jewelry', icon: '🧶', group: 'Home Businesses' },
-    { id: 'tuition-coaching', label: 'Tuition, Coaching & Skill Classes', icon: '🎓', group: 'Home Businesses' },
 
     // --- 9. Seasonal / Festive Store ---
     { id: 'festival-specific', label: 'Festival Specific', icon: '🪔', group: 'Seasonal & Festive' },
     { id: 'crackers-fireworks', label: 'Crackers & Fireworks', icon: '🎆', group: 'Seasonal & Festive' },
     { id: 'winter-rain-gear', label: 'Winter / Rain Gear', icon: '☔', group: 'Seasonal & Festive' }
+];
+
+CATEGORIES.grocery = [
+    'General Provision / Kirana',
+    'Fruits & Vegetables',
+    'Dairy & Ice Cream',
+    'Bakery & Cake Shop',
+    'Sweet Shop',
+    'Dry Fruits & Spices',
+    'Wholesale / Grain Mart',
+    'Organic / Gourmet'
+];
+
+CATEGORIES.electronics = [
+    'Mobiles, Audio & Wearables',
+    'Computers, Gaming & Office',
+    'TV & Home Appliances',
+    'Spares & Repair Components',
+    'Electrical Shop',
+    'Hardware & Sanitary',
+    'Paints & Decor',
+    'Automobile Spares',
+    'Industrial / Power Tools'
+];
+
+CATEGORIES.pharmacy = [
+    'Allopathic Chemist',
+    'Ayurvedic & Herbal',
+    'Surgical & Equipment'
+];
+
+CATEGORIES.stationery = [
+    'School & Writing Supplies',
+    'Office & Desk Accessories',
+    'Art & Craft Materials',
+    'Books & Paper Products'
+];
+
+CATEGORIES.lifestyle = [
+    'Kitchenware & Cookware',
+    'Plastics, Cleaning & Storage',
+    'Beauty, Cosmetics & Personal Care',
+    'Toys, Sports & Gifts',
+    'Furnishing & Home Decor',
+    'Bags & Luggage',
+    'Footwear',
+    'Clothing & Garments'
 ];
 
 module.exports = CATEGORIES;

@@ -99,7 +99,7 @@ const SellerFeedback = () => {
                     <section className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 h-fit">
                         <div className="mb-6">
                             <h2 className="text-xl font-bold text-slate-800">Send Feedback</h2>
-                            <p className="text-slate-500 text-sm font-medium mt-1">Help us improve ShopLens for you</p>
+                            <p className="text-slate-500 text-sm font-medium mt-1">Help us improve Aisle for you</p>
                         </div>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
@@ -214,7 +214,7 @@ const SellerFeedback = () => {
                                             <div className="ml-11 bg-slate-50 p-4 rounded-xl border-l-4 border-slate-800">
                                                 <p className="text-xs font-bold text-slate-900 mb-1 flex items-center gap-2">
                                                     <span className="w-1.5 h-1.5 bg-slate-900 rounded-full"></span>
-                                                    ShopLens Team
+                                                    Aisle Team
                                                 </p>
                                                 <p className="text-sm text-slate-600">
                                                     {item.adminReply.message}

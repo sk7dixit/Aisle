@@ -718,7 +718,7 @@ const SellerProfile = () => {
                                     <div className="flex items-start gap-3 p-4 bg-blue-50/50 rounded-2xl border border-blue-100">
                                         <FaShieldAlt className="text-blue-500 mt-0.5" size={14} />
                                         <p className="text-[10px] text-blue-700/80 font-bold leading-relaxed">
-                                            Your money flows directly to your bank account via your UPI ID. ShopLens does not hold your payments.
+                                            Your money flows directly to your bank account via your UPI ID. Aisle does not hold your payments.
                                         </p>
                                     </div>
                                 </div>

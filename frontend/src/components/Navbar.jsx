@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FaSignOutAlt, FaUserCircle, FaBars, FaTimes, FaUser, FaCompass, FaChevronRight } from 'react-icons/fa';
-import ShopLensLogo from './ShopLensLogo';
+import AisleLogo from './AisleLogo';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -26,7 +26,7 @@ const Navbar = () => {
                 {/* Left: Brand */}
                 <div className="flex-shrink-0">
                     <Link to="/" className="h-14 w-40 flex items-center justify-center">
-                        <ShopLensLogo className="h-12 w-full hover:opacity-90 transition-opacity" />
+                        <AisleLogo className="h-12 w-full hover:opacity-90 transition-opacity" />
                     </Link>
                 </div>
 

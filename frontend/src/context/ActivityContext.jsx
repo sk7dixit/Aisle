@@ -6,7 +6,7 @@ const ActivityContext = createContext();
 export const ActivityProvider = ({ children }) => {
     // Load initial state from localStorage
     const [activities, setActivities] = useState(() => {
-        const saved = localStorage.getItem("shoplens_activities");
+        const saved = localStorage.getItem("aisle_activities");
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
@@ -23,26 +23,26 @@ export const ActivityProvider = ({ children }) => {
     });
 
     const [trustScore, setTrustScore] = useState(() => {
-        const saved = localStorage.getItem("shoplens_trustScore");
+        const saved = localStorage.getItem("aisle_trustScore");
         return saved ? Number(saved) : 100;
     });
 
     const [missedCount, setMissedCount] = useState(() => {
-        const saved = localStorage.getItem("shoplens_missedCount");
+        const saved = localStorage.getItem("aisle_missedCount");
         return saved ? Number(saved) : 0;
     });
 
     // Save to localStorage on change
     useEffect(() => {
-        localStorage.setItem("shoplens_activities", JSON.stringify(activities));
+        localStorage.setItem("aisle_activities", JSON.stringify(activities));
     }, [activities]);
 
     useEffect(() => {
-        localStorage.setItem("shoplens_trustScore", trustScore.toString());
+        localStorage.setItem("aisle_trustScore", trustScore.toString());
     }, [trustScore]);
 
     useEffect(() => {
-        localStorage.setItem("shoplens_missedCount", missedCount.toString());
+        localStorage.setItem("aisle_missedCount", missedCount.toString());
     }, [missedCount]);
 
     // --- Helper: Generate Visit Identification ---

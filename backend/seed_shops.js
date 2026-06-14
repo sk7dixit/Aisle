@@ -18,7 +18,7 @@ const connectDB = async () => {
 
 const shopsData = [
     {
-        email: 'grocery@shoplens.com',
+        email: 'grocery@aisle.com',
         name: 'Vikas Provisions',
         shopName: 'Vikas Provisions & General Store',
         shopCategory: 'Grocery / Kirana',
@@ -32,7 +32,7 @@ const shopsData = [
         ]
     },
     {
-        email: 'electronics@shoplens.com',
+        email: 'electronics@aisle.com',
         name: 'Modern Electricals',
         shopName: 'Modern Electricals & Hardware',
         shopCategory: 'Electronics & Tools',
@@ -46,7 +46,7 @@ const shopsData = [
         ]
     },
     {
-        email: 'tech@shoplens.com',
+        email: 'tech@aisle.com',
         name: 'Pixel Tech',
         shopName: 'Pixel Tech Hub',
         shopCategory: 'Tech & Accessories',
@@ -60,7 +60,7 @@ const shopsData = [
         ]
     },
     {
-        email: 'stationery@shoplens.com',
+        email: 'stationery@aisle.com',
         name: 'Campus Books',
         shopName: 'Campus Books & Stationery',
         shopCategory: 'Student & Office Supplies',
@@ -74,7 +74,7 @@ const shopsData = [
         ]
     },
     {
-        email: 'lifestyle@shoplens.com',
+        email: 'lifestyle@aisle.com',
         name: 'Curated Living',
         shopName: 'Curated Living - Home Decor',
         shopCategory: 'Home & Lifestyle Goods',
@@ -88,7 +88,7 @@ const shopsData = [
         ]
     },
     {
-        email: 'medical@shoplens.com',
+        email: 'medical@aisle.com',
         name: 'LifeLine Medicose',
         shopName: 'LifeLine Medicose & Wellness',
         shopCategory: 'Pharmacy / Medical Store',
@@ -102,7 +102,7 @@ const shopsData = [
         ]
     },
     {
-        email: 'handmade@shoplens.com',
+        email: 'handmade@aisle.com',
         name: 'Asha’s Kitchen',
         shopName: 'Asha’s Kitchen - Handmade Delights',
         shopCategory: 'Home Businesses',
@@ -116,7 +116,7 @@ const shopsData = [
         ]
     },
     {
-        email: 'festive@shoplens.com',
+        email: 'festive@aisle.com',
         name: 'Utsav Celebrations',
         shopName: 'Utsav Celebrations & Gift Shop',
         shopCategory: 'Seasonal / Festive Store',

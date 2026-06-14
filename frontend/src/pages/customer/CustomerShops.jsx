@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { FaMapMarkerAlt, FaMap, FaList, FaLeaf, FaMapPin, FaBullseye } from 'react-icons/fa';
-import { detectUserLocation } from '../../services/locationService';
+import { useLocation } from '../../context/LocationContext';
 import { getShopsByCity, fetchNearbyShops } from '../../services/shopService';
 import { calculateDistance } from '../../utils/distance';
 import { filterByRadius } from '../../utils/filterByRadius';
@@ -30,6 +30,7 @@ const CustomerShops = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [searchParams] = useSearchParams();
+    const { userLocation, detectLocation, updateLocationByCity } = useLocation();
 
     // State
     const [shops, setShops] = useState([]);
@@ -37,7 +38,6 @@ const CustomerShops = () => {
     const [isNearestSort, setIsNearestSort] = useState(false);
     const [loading, setLoading] = useState(true);
     const [showLocationModal, setShowLocationModal] = useState(false);
-    const [currentCity, setCurrentCity] = useState(user?.customerLocation?.city || localStorage.getItem('userCity') || "Vadodara");
     const [radiusKm, setRadiusKm] = useState(DEFAULT_RADIUS_KM);
 
     // Initial Filter from URL
@@ -47,59 +47,44 @@ const CustomerShops = () => {
     }, [searchParams]);
 
     // Context - City Scope
-    const isLocationSet = !!currentCity;
+    const currentCity = userLocation?.city || "Vadodara";
+    const isLocationSet = !!userLocation;
+
+    // Auto-detect on mount if not set
+    useEffect(() => {
+        if (!userLocation) {
+            detectLocation().catch(err => console.error("Auto detect failed", err));
+        }
+    }, [userLocation, detectLocation]);
 
     useEffect(() => {
+        if (!userLocation) return;
+
         const fetchShopsData = async () => {
             setLoading(true);
             try {
-                // 1. Detect location (auto)
-                const location = await detectUserLocation();
-                const cityName = location.city;
-                setCurrentCity(cityName);
-                localStorage.setItem('userCity', cityName);
-
-                // 2. Fetch shops nearby strictly if we have lat/lng
-                if (location.lat && location.lng) {
-                    const data = await fetchNearbyShops(location.lat, location.lng, radiusKm);
+                if (userLocation.lat && userLocation.lng) {
+                    const data = await fetchNearbyShops(userLocation.lat, userLocation.lng, radiusKm);
                     setShops(data);
                 } else {
-                    // Fallback to city-based if no GPS
-                    const data = await getShopsByCity(cityName);
+                    const data = await getShopsByCity(userLocation.city);
                     setShops(data);
                 }
             } catch (error) {
                 console.error("Discovery fetch failed", error);
-                if (currentCity) {
-                    try {
-                        const data = await getShopsByCity(currentCity);
-                        setShops(data);
-                    } catch (innerError) {
-                        setShops([]);
-                    }
-                }
+                setShops([]);
             } finally {
                 setLoading(false);
             }
         };
         fetchShopsData();
-    }, [radiusKm, currentCity]);
+    }, [radiusKm, userLocation]);
 
     const handleManualLocation = async (cityName) => {
         setLoading(true);
-        setCurrentCity(cityName);
-        localStorage.setItem('userCity', cityName);
+        updateLocationByCity(cityName);
         setRadiusKm(DEFAULT_RADIUS_KM);
         clearCacheByPrefix(SHOPS_CACHE_PREFIX);
-
-        try {
-            const data = await getShopsByCity(cityName);
-            setShops(data);
-        } catch (error) {
-            setShops([]);
-        } finally {
-            setLoading(false);
-        }
     };
 
     const toggleCategory = (catId) => {
@@ -180,7 +165,7 @@ const CustomerShops = () => {
                     <FaMapPin className="text-4xl opacity-30" />
                 </div>
                 <h2 className="text-2xl font-black text-[var(--text-primary)] mb-3">CITY NOT SET</h2>
-                <p className="text-[var(--text-muted)] text-[10px] font-black uppercase tracking-widest mb-10 opacity-60">Set your location to see local shops nearby.</p>
+                <p className="text-[var(--text-muted)] text-[10px] font-black uppercase tracking-widest mb-10 opacity-60">Set your location to see nearby businesses.</p>
                 <button
                     onClick={() => setShowLocationModal(true)}
                     className="px-10 py-4 bg-[var(--accent-terracotta)] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all shadow-xl active:scale-95"
@@ -198,7 +183,7 @@ const CustomerShops = () => {
                 {/* 1. TOP HEADER: Spread Layout */}
                 <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
                     <h1 className="text-[12px] font-black text-slate-900 uppercase tracking-[0.2em]">
-                        {loading ? 'Finding shops...' : `SHOPS IN ${currentCity?.split(' ')[0]?.split(',')[0]?.toUpperCase() || 'YOUR AREA'}`}
+                        {loading ? 'Finding businesses...' : `BUSINESSES IN ${currentCity?.split(' ')[0]?.split(',')[0]?.toUpperCase() || 'YOUR AREA'}`}
                     </h1>
 
                     <div className="flex items-center">
@@ -243,7 +228,7 @@ const CustomerShops = () => {
                         {!loading && displayShops.length === 0 && (
                             <div className="text-center py-20 bg-white/40 rounded-[32px] border border-dashed border-slate-200">
                                 <FaBullseye className="text-4xl text-slate-200 mx-auto mb-4" />
-                                <h3 className="text-lg font-black text-slate-900 mb-1 uppercase tracking-tight">No shops found</h3>
+                                <h3 className="text-lg font-black text-slate-900 mb-1 uppercase tracking-tight">No businesses found</h3>
                                 <p className="text-sm text-slate-500 font-medium">Try adjusting your filters or search radius.</p>
                                 <button
                                     onClick={() => setSelectedCategories([])}
@@ -259,7 +244,7 @@ const CustomerShops = () => {
                     <div className="lg:w-[25%] shrink-0">
                         <div className="shop-filter-panel sticky top-[96px] bg-white border border-slate-100 rounded-[20px] p-6 shadow-sm">
                             <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6">
-                                Shop Types
+                                Business Types
                             </h3>
 
                             <div className="space-y-[22px]">
@@ -282,7 +267,7 @@ const CustomerShops = () => {
                                         onChange={() => toggleCategory('ALL')}
                                     />
                                     <span className={`text-[13px] font-bold transition-colors ${selectedCategories.length === 0 ? 'text-slate-900' : 'text-slate-500'}`}>
-                                        All Shops
+                                        All Businesses
                                     </span>
                                 </label>
 

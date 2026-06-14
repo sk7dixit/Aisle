@@ -25,7 +25,7 @@ const Contact = () => {
                         Get in Touch
                     </h1>
                     <p className="text-xl text-slate-500 font-medium leading-relaxed">
-                        We’re building ShopLens in public. <br className="hidden md:block" />
+                        We’re building Aisle in public. <br className="hidden md:block" />
                         Have a question, idea, or partnership in mind?
                     </p>
                 </div>

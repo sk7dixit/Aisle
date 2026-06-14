@@ -4,8 +4,10 @@ import { FaArrowLeft, FaTrash, FaCheckCircle, FaExclamationTriangle } from 'reac
 import { useAuth } from '../../../context/AuthContext';
 import axios from 'axios';
 
+const DEFAULT_PLACEHOLDER = "/placeholder-product.png";
+
 const CatalogReviewPage = () => {
-    const { token } = useAuth();
+    const { token, user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const [selectedItems, setSelectedItems] = useState(location.state?.selectedItems || []);
@@ -40,23 +42,24 @@ const CatalogReviewPage = () => {
     const handleSync = async () => {
         setIsSyncing(true);
         try {
-            // Prepare items for sync: Ensure Weight/Unit are combined or handled as per backend expectation
-            // The mapping says Weight (number) and Unit (kg/g/ml/pcs)
-            const payload = selectedItems.map(item => ({
-                variantId: item.variantId,
-                variantLabel: item.variantLabel,
-                brandName: item.brandName,
-                category: item.category,
-                price: Number(item.price || item.indicativePrice),
-                weight: item.weight || item.packSize.match(/\d+/)?.[0] || 1,
-                unit: item.unit || item.packSize.match(/[a-zA-Z]+/)?.[0] || 'pcs',
-                stockStatus: item.stockStatus || 'IN_STOCK',
-                imageUrl: item.imageUrl
-            }));
-
-            await axios.post('/api/seller/catalog/sync', { selectedItems: payload }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            for (const item of selectedItems) {
+                await axios.post('/api/catalog/add', {
+                    sellerId: user?._id,
+                    price: Number(item.price || item.indicativePrice || 50),
+                    stock: Number(item.stockStatus === 'OUT_OF_STOCK' ? 0 : 100),
+                    productData: {
+                        name: item.variantLabel,
+                        brand: item.brandName,
+                        category: item.category,
+                        imageUrl: item.imageUrl,
+                        barcode: item.barcode,
+                        source: item.source || 'openfoodfacts',
+                        externalId: item.externalId
+                    }
+                }, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+            }
 
             // Redirect to inventory with success message
             navigate('/seller/inventory', { state: { message: 'Catalog products added successfully!' } });
@@ -97,11 +100,25 @@ const CatalogReviewPage = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {selectedItems.map((item) => (
-                                <tr key={item.variantId} className="hover:bg-slate-50/50 transition-colors">
+                                <tr key={item.barcode || item.variantId} className="hover:bg-slate-50/50 transition-colors">
                                     <td className="px-6 py-6">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 bg-slate-50 rounded-xl overflow-hidden shrink-0 border border-slate-100">
-                                                <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+                                            <div className="w-12 h-12 bg-slate-50 rounded-xl overflow-hidden shrink-0 border border-slate-100 flex items-center justify-center">
+                                                {!item.imageUrl || item.imageUrl === DEFAULT_PLACEHOLDER || item.imageUrl.includes('photo-1542838132-92c53300491e') ? (
+                                                    <div className="w-full h-full bg-amber-500/10 text-amber-600 flex items-center justify-center text-[10px] font-black uppercase">
+                                                        {item.variantLabel.substring(0, 2)}
+                                                    </div>
+                                                ) : (
+                                                    <img 
+                                                        src={item.imageUrl} 
+                                                        alt="" 
+                                                        className="w-full h-full object-cover" 
+                                                        onError={(e) => {
+                                                            e.target.onerror = null;
+                                                            e.target.src = DEFAULT_PLACEHOLDER;
+                                                        }}
+                                                    />
+                                                )}
                                             </div>
                                             <div>
                                                 <h4 className="font-black text-slate-900 leading-tight mb-0.5">{item.variantLabel}</h4>

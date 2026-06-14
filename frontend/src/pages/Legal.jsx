@@ -54,18 +54,18 @@ export const Privacy = () => {
             title: "1. Information We Collect",
             content: ["We collect only the information needed to provide our services.", "This may include:"],
             list: [
-                "Your location (to show nearby shops)",
+                "Your location (to show nearby businesses)",
                 "Basic account details if you sign up",
-                "Messages sent between customers and shops"
+                "Messages sent between customers and businesses"
             ]
         },
         {
             title: "2. How We Use Your Information",
             content: ["We use your information to:"],
             list: [
-                "Show nearby shops and products",
-                "Connect customers with local shops",
-                "Improve the ShopLens experience"
+                "Show nearby businesses and products",
+                "Connect customers with nearby businesses & creators",
+                "Improve the Aisle experience"
             ]
         },
         {
@@ -76,7 +76,7 @@ export const Privacy = () => {
             title: "3. Location Data",
             content: ["Location is used only to:"],
             list: [
-                "Detect nearby shops",
+                "Detect nearby businesses",
                 "Improve search results"
             ]
         },
@@ -120,10 +120,10 @@ export const Privacy = () => {
 export const Terms = () => {
     const sections = [
         {
-            title: "1. Using ShopLens",
+            title: "1. Using Aisle",
             content: [
-                "ShopLens helps users discover local shops and live inventory.",
-                "By using ShopLens, you agree to these terms."
+                "Aisle helps users discover nearby businesses, creators and live inventory.",
+                "By using Aisle, you agree to these terms."
             ]
         },
         {
@@ -139,12 +139,12 @@ export const Terms = () => {
             list: [
                 "Provide accurate information",
                 "Use the platform lawfully",
-                "Respect other users and shops"
+                "Respect other users, businesses and creators"
             ]
         },
         {
-            title: "4. Shop Owners",
-            content: ["Shop owners are responsible for:"],
+            title: "4. Businesses & Creators",
+            content: ["Businesses and creators are responsible for:"],
             list: [
                 "Product accuracy",
                 "Pricing",
@@ -153,18 +153,18 @@ export const Terms = () => {
         },
         {
             title: "",
-            content: ["ShopLens does not guarantee sales."]
+            content: ["Aisle does not guarantee sales."]
         },
         {
             title: "5. Transactions",
             content: [
-                "Purchases happen directly at the shop.",
-                "ShopLens is not responsible for payments or disputes between users and shops."
+                "Purchases happen directly with the business.",
+                "Aisle is not responsible for payments or disputes between users and businesses/creators."
             ]
         },
         {
             title: "6. Platform Availability",
-            content: ["We strive to keep ShopLens available but do not guarantee uninterrupted service."]
+            content: ["We strive to keep Aisle available but do not guarantee uninterrupted service."]
         },
         {
             title: "7. Account Termination",

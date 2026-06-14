@@ -166,7 +166,7 @@ const BulkMappingPage = () => {
                         <h1 className="text-3xl font-black text-slate-800">Column Mapping</h1>
                     </div>
                     <p className="text-slate-500 font-medium ml-14">
-                        Match your Excel columns with ShopLens required fields. Our AI has pre-filled matches it found.
+                        Match your Excel columns with Aisle required fields. Our AI has pre-filled matches it found.
                     </p>
                 </div>
 

@@ -15,7 +15,7 @@ const SellerCTA = () => {
                     {/* Glassmorphism Card Content */}
                     <div className="relative z-10 bg-card/60 backdrop-blur-lg border border-gray-700 rounded-2xl p-8 md:p-12 shadow-2xl max-w-3xl mx-auto">
                         <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
-                            Are you a shop owner?
+                            Are you a business owner or creator?
                         </h2>
                         <p className="text-lg text-gray-300 mb-8">
                             Stop losing customers to online giants. Make your inventory visible to people searching nearby in minutes.
@@ -24,7 +24,7 @@ const SellerCTA = () => {
                             to="/register?role=seller"
                             className="inline-block px-8 py-4 bg-white text-gray-900 font-bold rounded-full hover:bg-gray-100 transition-colors shadow-lg transform hover:scale-105"
                         >
-                            List Your Shop for Free
+                            Grow With Aisle
                         </Link>
                     </div>
 

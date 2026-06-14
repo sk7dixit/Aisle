@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 const mailOptions = {
     from: process.env.EMAIL_USER,
     to: process.env.EMAIL_USER, // Send to self
-    subject: 'Test Email from ShopLens',
+    subject: 'Test Email from Aisle',
     text: 'If you receive this, email sending is working!',
 };
 

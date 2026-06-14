@@ -1,6 +1,6 @@
 import os
 
-file_path = r's:\2K27_Project\shoplens\frontend\src\pages\seller\SellerQuickCatalog.jsx'
+file_path = r's:\2K27_Project\aisle\frontend\src\pages\seller\SellerQuickCatalog.jsx'
 
 replacements = {
     # Automobile

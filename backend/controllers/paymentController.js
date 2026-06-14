@@ -72,7 +72,7 @@ const createOrder = async (req, res) => {
             currency: 'INR',
             orderId: transaction._id, // Internal Ref
             // Mock Gateway Data to simulate production flow
-            upiIntentUrl: `upi://pay?pa=shoplens@bank&pn=ShopLens&tr=${transactionId}&tn=${type === 'SUBSCRIPTION' ? 'Plan Upgrade' : 'Boost'}&am=${totalPaid}&cu=INR`,
+            upiIntentUrl: `upi://pay?pa=aisle@bank&pn=Aisle&tr=${transactionId}&tn=${type === 'SUBSCRIPTION' ? 'Plan Upgrade' : 'Boost'}&am=${totalPaid}&cu=INR`,
             qrCode: "VALID_QR_CODE_BASE64_PLACEHOLDER"
         });
 

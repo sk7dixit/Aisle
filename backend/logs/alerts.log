@@ -1,0 +1,1500 @@
+[ALERT] [2026-06-09T17:11:43.461Z] [RISK: CRITICAL] [EVENT: FAILED_LOGIN] Potential Credential Stuffing / Brute-Force Attack: Detected 100 failed logins globally across the platform in the last 5 minutes.
+Details: {"timeframe":"5m","failedCount":100,"lastIp":"delhi-ip","lastEmail":"phase5test@aisle.in"}
+
+[ALERT] [2026-06-09T17:11:49.475Z] [RISK: CRITICAL] [EVENT: DDOS_ATTACK] Critical Incident - DDOS_ATTACK: A critical security incident of type DDOS_ATTACK was registered.
+Details: {"userId":"6a28494a454a2696a646f099","email":"phase5admin@aisle.in","ipAddress":"127.0.0.1","details":{"reason":"Manual emergency shield activation by administrator","triggeredBy":"phase5admin@aisle.in","countryCode":"IN","country":"India","city":"Delhi"}}
+
+[ALERT] [2026-06-09T17:11:49.549Z] [RISK: HIGH] [EVENT: DDOS_ATTACK] Playbook Triggered: DDOS_SHIELD: DDoS Emergency Protection Mode manually activated for 15 minutes.
+Details: {"operator":"phase5admin@aisle.in"}
+
+[ALERT] [2026-06-09T17:12:47.388Z] [RISK: CRITICAL] [EVENT: FAILED_LOGIN] Potential Credential Stuffing / Brute-Force Attack: Detected 100 failed logins globally across the platform in the last 5 minutes.
+Details: {"timeframe":"5m","failedCount":100,"lastIp":"delhi-ip","lastEmail":"phase5test@aisle.in"}
+
+[ALERT] [2026-06-09T17:12:48.977Z] [RISK: CRITICAL] [EVENT: DDOS_ATTACK] Critical Incident - DDOS_ATTACK: A critical security incident of type DDOS_ATTACK was registered.
+Details: {"userId":"6a28498ade2e5a2bc3649998","email":"phase5admin@aisle.in","ipAddress":"127.0.0.1","details":{"reason":"Manual emergency shield activation by administrator","triggeredBy":"phase5admin@aisle.in","countryCode":"IN","country":"India","city":"Delhi"}}
+
+[ALERT] [2026-06-09T17:12:49.120Z] [RISK: HIGH] [EVENT: DDOS_ATTACK] Playbook Triggered: DDOS_SHIELD: DDoS Emergency Protection Mode manually activated for 15 minutes.
+Details: {"operator":"phase5admin@aisle.in"}
+
+[ALERT] [2026-06-09T17:12:49.352Z] [RISK: CRITICAL] [EVENT: ADMIN_COMPROMISE_TRIGGERED] Critical Incident - ADMIN_COMPROMISE_TRIGGERED: A critical security incident of type ADMIN_COMPROMISE_TRIGGERED was registered.
+Details: {"userId":"6a28498ade2e5a2bc3649998","email":"phase5admin@aisle.in","ipAddress":"127.0.0.1","details":{"compromisedAdminEmail":"phase5admin@aisle.in","compromisedAdminId":"6a28498ade2e5a2bc3649998","triggeredBy":"phase5admin@aisle.in","countryCode":"IN","country":"India","city":"Delhi"}}
+
+[ALERT] [2026-06-09T17:13:25.818Z] [RISK: CRITICAL] [EVENT: FAILED_LOGIN] Potential Credential Stuffing / Brute-Force Attack: Detected 100 failed logins globally across the platform in the last 5 minutes.
+Details: {"timeframe":"5m","failedCount":100,"lastIp":"delhi-ip","lastEmail":"phase5test@aisle.in"}
+
+[ALERT] [2026-06-09T17:13:26.775Z] [RISK: CRITICAL] [EVENT: DDOS_ATTACK] Critical Incident - DDOS_ATTACK: A critical security incident of type DDOS_ATTACK was registered.
+Details: {"userId":"6a2849b1ff6a924f0467a7cc","email":"phase5admin@aisle.in","ipAddress":"127.0.0.1","details":{"reason":"Manual emergency shield activation by administrator","triggeredBy":"phase5admin@aisle.in","countryCode":"IN","country":"India","city":"Delhi"}}
+
+[ALERT] [2026-06-09T17:13:26.920Z] [RISK: HIGH] [EVENT: DDOS_ATTACK] Playbook Triggered: DDOS_SHIELD: DDoS Emergency Protection Mode manually activated for 15 minutes.
+Details: {"operator":"phase5admin@aisle.in"}
+
+[ALERT] [2026-06-09T17:13:27.238Z] [RISK: CRITICAL] [EVENT: ADMIN_COMPROMISE_TRIGGERED] Critical Incident - ADMIN_COMPROMISE_TRIGGERED: A critical security incident of type ADMIN_COMPROMISE_TRIGGERED was registered.
+Details: {"userId":"6a2849b1ff6a924f0467a7cc","email":"phase5admin@aisle.in","ipAddress":"127.0.0.1","details":{"compromisedAdminEmail":"phase5admin@aisle.in","compromisedAdminId":"6a2849b1ff6a924f0467a7cc","triggeredBy":"phase5admin@aisle.in","countryCode":"IN","country":"India","city":"Delhi"}}
+
+[ALERT] [2026-06-09T17:17:46.369Z] [RISK: CRITICAL] [EVENT: FAILED_LOGIN] Potential Credential Stuffing / Brute-Force Attack: Detected 100 failed logins globally across the platform in the last 5 minutes.
+Details: {"timeframe":"5m","failedCount":100,"lastIp":"delhi-ip","lastEmail":"phase5test@aisle.in"}
+
+[ALERT] [2026-06-09T17:17:47.748Z] [RISK: CRITICAL] [EVENT: DDOS_ATTACK] Critical Incident - DDOS_ATTACK: A critical security incident of type DDOS_ATTACK was registered.
+Details: {"userId":"6a284ab5acbf6edaf7f1b8fc","email":"phase5admin@aisle.in","ipAddress":"127.0.0.1","details":{"reason":"Manual emergency shield activation by administrator","triggeredBy":"phase5admin@aisle.in","countryCode":"IN","country":"India","city":"Delhi"}}
+
+[ALERT] [2026-06-09T17:17:47.891Z] [RISK: HIGH] [EVENT: DDOS_ATTACK] Playbook Triggered: DDOS_SHIELD: DDoS Emergency Protection Mode manually activated for 15 minutes.
+Details: {"operator":"phase5admin@aisle.in"}
+
+[ALERT] [2026-06-09T17:17:48.111Z] [RISK: CRITICAL] [EVENT: ADMIN_COMPROMISE_TRIGGERED] Critical Incident - ADMIN_COMPROMISE_TRIGGERED: A critical security incident of type ADMIN_COMPROMISE_TRIGGERED was registered.
+Details: {"userId":"6a284ab5acbf6edaf7f1b8fc","email":"phase5admin@aisle.in","ipAddress":"127.0.0.1","details":{"compromisedAdminEmail":"phase5admin@aisle.in","compromisedAdminId":"6a284ab5acbf6edaf7f1b8fc","triggeredBy":"phase5admin@aisle.in","countryCode":"IN","country":"India","city":"Delhi"}}
+
+[ALERT] [2026-06-09T17:26:07.801Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":15,"memory":81,"disk":48,"redisMem":1,"mongoConns":19}
+
+[ALERT] [2026-06-09T17:28:37.924Z] [RISK: CRITICAL] [EVENT: MASS_EXPORT_BLOCKED] Data Loss Prevention (DLP) Block Triggered: Privileged account p7mod@aisle.in (moderator) triggered a DLP block trying to retrieve 116 records (max allowed: 100).
+Details: {"reason":"DLP policy breach: Mass dataset download/export attempt","recordCount":116,"maxAllowed":100,"requestedUrl":"/api/admin/users","actorRole":"moderator"}
+
+[ALERT] [2026-06-09T17:28:52.893Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":15,"memory":82,"disk":48,"redisMem":1,"mongoConns":17}
+
+[ALERT] [2026-06-09T17:31:47.246Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":15,"memory":85,"disk":48,"redisMem":1,"mongoConns":10}
+
+[ALERT] [2026-06-09T17:31:53.102Z] [RISK: CRITICAL] [EVENT: MASS_EXPORT_BLOCKED] Data Loss Prevention (DLP) Block Triggered: Privileged account p7mod@aisle.in (moderator) triggered a DLP block trying to retrieve 116 records (max allowed: 100).
+Details: {"reason":"DLP policy breach: Mass dataset download/export attempt","recordCount":116,"maxAllowed":100,"requestedUrl":"/api/admin/users","actorRole":"moderator"}
+
+[ALERT] [2026-06-09T17:32:47.128Z] [RISK: CRITICAL] [EVENT: MASS_EXPORT_BLOCKED] Data Loss Prevention (DLP) Block Triggered: Privileged account p7mod@aisle.in (moderator) triggered a DLP block trying to retrieve 116 records (max allowed: 100).
+Details: {"reason":"DLP policy breach: Mass dataset download/export attempt","recordCount":116,"maxAllowed":100,"requestedUrl":"/api/admin/users","actorRole":"moderator"}
+
+[ALERT] [2026-06-09T17:33:37.820Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":15,"memory":85,"disk":48,"redisMem":1,"mongoConns":3}
+
+[ALERT] [2026-06-09T17:38:39.359Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":15,"memory":83,"disk":48,"redisMem":1,"mongoConns":1}
+
+[ALERT] [2026-06-09T17:46:53.855Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":15,"memory":86,"disk":48,"redisMem":1,"mongoConns":102}
+
+[ALERT] [2026-06-10T16:08:45.192Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (79%).
+Details: {"cpu":8,"memory":79,"disk":48,"redisMem":2,"mongoConns":20}
+
+[ALERT] [2026-06-10T16:14:52.293Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":9,"memory":83,"disk":48,"redisMem":2,"mongoConns":34}
+
+[ALERT] [2026-06-10T16:20:50.529Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":9,"memory":80,"disk":48,"redisMem":3,"mongoConns":77}
+
+[ALERT] [2026-06-10T16:26:51.914Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":9,"memory":81,"disk":48,"redisMem":2,"mongoConns":77}
+
+[ALERT] [2026-06-10T16:32:50.937Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":9,"memory":83,"disk":48,"redisMem":2,"mongoConns":77}
+
+[ALERT] [2026-06-10T16:38:02.390Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (95%).
+Details: {"cpu":10,"memory":95,"disk":48,"redisMem":2,"mongoConns":77}
+
+[ALERT] [2026-06-10T16:46:08.710Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":10,"memory":81,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-10T16:52:09.210Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":10,"memory":90,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T02:50:10.470Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (97%).
+Details: {"cpu":36,"memory":97,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":19,"mongoSaturation":4}
+
+[ALERT] [2026-06-11T02:56:10.014Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (93%).
+Details: {"cpu":34,"memory":93,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":29,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:01:10.161Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":34,"memory":88,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":29,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:07:10.168Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":35,"memory":88,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":29,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:13:10.178Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (96%).
+Details: {"cpu":35,"memory":96,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":29,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:18:10.189Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":33,"memory":91,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:23:10.218Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":33,"memory":91,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":29,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:28:10.317Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":33,"memory":91,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":29,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:33:10.342Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":33,"memory":88,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":29,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:40:42.513Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (87%).
+Details: {"cpu":31,"memory":87,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:40:49.594Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30632 has restarted 4 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30632,"restarts":4,"date":"2026-06-11"}
+
+[ALERT] [2026-06-11T03:41:51.088Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":31,"memory":88,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:47:51.084Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (94%).
+Details: {"cpu":31,"memory":94,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:52:51.100Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":31,"memory":88,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T03:57:51.156Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":30,"memory":88,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T04:02:51.254Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (92%).
+Details: {"cpu":29,"memory":92,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T04:07:51.254Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (94%).
+Details: {"cpu":29,"memory":94,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T04:12:51.375Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (89%).
+Details: {"cpu":29,"memory":89,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T04:13:53.000Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 22516 has restarted 5 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":22516,"restarts":5,"date":"2026-06-11"}
+
+[ALERT] [2026-06-11T04:14:54.643Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":29,"memory":91,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T04:19:54.698Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (89%).
+Details: {"cpu":29,"memory":89,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T04:24:54.739Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (89%).
+Details: {"cpu":29,"memory":89,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T04:30:54.757Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":29,"memory":85,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T04:34:12.729Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 5868 has restarted 6 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":5868,"restarts":6,"date":"2026-06-11"}
+
+[ALERT] [2026-06-11T04:35:15.321Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":29,"memory":85,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T04:41:15.060Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":29,"memory":86,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-11T04:44:25.633Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12196 has restarted 7 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12196,"restarts":7,"date":"2026-06-11"}
+
+[ALERT] [2026-06-11T04:45:27.380Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":28,"memory":88,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":35,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T04:50:37.113Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (94%).
+Details: {"cpu":29,"memory":94,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":35,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T04:56:27.482Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":28,"memory":91,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":35,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:01:50.555Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 2384 has restarted 8 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":2384,"restarts":8,"date":"2026-06-11"}
+
+[ALERT] [2026-06-11T05:02:52.495Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (89%).
+Details: {"cpu":28,"memory":89,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:07:52.595Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (87%).
+Details: {"cpu":29,"memory":87,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:12:52.813Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":29,"memory":88,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:17:53.305Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (92%).
+Details: {"cpu":29,"memory":92,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:23:52.853Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":29,"memory":81,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:28:52.895Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":29,"memory":90,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:29:49.191Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 3872 has restarted 9 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":3872,"restarts":9,"date":"2026-06-11"}
+
+[ALERT] [2026-06-11T05:30:51.718Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":29,"memory":91,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:36:51.642Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (93%).
+Details: {"cpu":29,"memory":93,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":35,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:41:11.355Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31488 has restarted 10 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31488,"restarts":10,"date":"2026-06-11"}
+
+[ALERT] [2026-06-11T05:42:13.124Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (95%).
+Details: {"cpu":29,"memory":95,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":35,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:48:14.952Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (96%).
+Details: {"cpu":29,"memory":96,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-11T05:54:13.146Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (95%).
+Details: {"cpu":30,"memory":95,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T02:17:19.200Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (96%).
+Details: {"cpu":52,"memory":96,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":21,"mongoSaturation":4}
+
+[ALERT] [2026-06-13T02:22:07.174Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28660 has restarted 4 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28660,"restarts":4,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:22:55.095Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 7196 has restarted 5 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":7196,"restarts":5,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:23:02.828Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 13848 has restarted 6 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":13848,"restarts":6,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:23:10.522Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23688 has restarted 7 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23688,"restarts":7,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:23:18.445Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 3836 has restarted 8 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":3836,"restarts":8,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:23:36.302Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27328 has restarted 9 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27328,"restarts":9,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:23:52.916Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12368 has restarted 10 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12368,"restarts":10,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:24:16.139Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26944 has restarted 11 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26944,"restarts":11,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:24:38.171Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 17348 has restarted 12 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":17348,"restarts":12,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:25:41.703Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":46,"memory":85,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":21,"mongoSaturation":4}
+
+[ALERT] [2026-06-13T02:30:32.218Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 8808 has restarted 13 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":8808,"restarts":13,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:30:46.633Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28728 has restarted 14 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28728,"restarts":14,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:31:02.438Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 8464 has restarted 15 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":8464,"restarts":15,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:32:06.719Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":44,"memory":85,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":21,"mongoSaturation":4}
+
+[ALERT] [2026-06-13T02:37:09.739Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":44,"memory":82,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":21,"mongoSaturation":4}
+
+[ALERT] [2026-06-13T02:51:06.161Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (77%).
+Details: {"cpu":40,"memory":77,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":21,"mongoSaturation":4}
+
+[ALERT] [2026-06-13T02:53:17.713Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 6684 has restarted 16 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":6684,"restarts":16,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:53:22.373Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 20240 has restarted 17 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":20240,"restarts":17,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:53:27.263Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 2052 has restarted 18 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":2052,"restarts":18,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:53:45.168Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26784 has restarted 19 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26784,"restarts":19,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:53:53.703Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30504 has restarted 20 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30504,"restarts":20,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:54:01.001Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12344 has restarted 21 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12344,"restarts":21,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:54:11.278Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26464 has restarted 22 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26464,"restarts":22,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:54:22.240Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 6520 has restarted 23 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":6520,"restarts":23,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:54:29.498Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 17448 has restarted 24 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":17448,"restarts":24,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:54:39.991Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28196 has restarted 25 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28196,"restarts":25,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:54:49.460Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29580 has restarted 26 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29580,"restarts":26,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:56:33.097Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23960 has restarted 27 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23960,"restarts":27,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:57:36.944Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (76%).
+Details: {"cpu":38,"memory":76,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":21,"mongoSaturation":4}
+
+[ALERT] [2026-06-13T02:58:41.503Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 11924 has restarted 28 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":11924,"restarts":28,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T02:59:24.793Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 14960 has restarted 29 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":14960,"restarts":29,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:01:39.990Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 19920 has restarted 30 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":19920,"restarts":30,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:02:14.437Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 16688 has restarted 31 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":16688,"restarts":31,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:04:07.023Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 24688 has restarted 32 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":24688,"restarts":32,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:05:10.354Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (77%).
+Details: {"cpu":35,"memory":77,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":21,"mongoSaturation":4}
+
+[ALERT] [2026-06-13T03:10:42.992Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (87%).
+Details: {"cpu":36,"memory":87,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":25,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T03:14:14.090Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 16840 has restarted 33 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":16840,"restarts":33,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:15:20.899Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":36,"memory":86,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":21,"mongoSaturation":4}
+
+[ALERT] [2026-06-13T03:20:40.334Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":36,"memory":85,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":23,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T03:32:57.214Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 4416 has restarted 34 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":4416,"restarts":34,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:33:53.930Z] [RISK: HIGH] [EVENT: BACKGROUND_JOB_DLQ] Background Job Permanently Failed (DLQ): Job 'dispatchNotification' (ID: 599) in queue 'notificationQueue' failed permanently: Seller not found
+Details: {"jobId":"599","queueName":"notificationQueue","failedReason":"Seller not found"}
+
+[ALERT] [2026-06-13T03:34:01.012Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (78%).
+Details: {"cpu":36,"memory":78,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T03:35:27.697Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 3576 has restarted 35 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":3576,"restarts":35,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:35:27.707Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29096 has restarted 36 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29096,"restarts":36,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:35:34.253Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12824 has restarted 38 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12824,"restarts":38,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:35:37.476Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 16544 has restarted 39 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":16544,"restarts":39,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:35:38.290Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 15560 has restarted 40 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":15560,"restarts":40,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:35:51.866Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 14804 has restarted 41 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":14804,"restarts":41,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:35:51.955Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29904 has restarted 42 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29904,"restarts":42,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:06.149Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23168 has restarted 43 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23168,"restarts":43,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:06.438Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 17288 has restarted 44 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":17288,"restarts":44,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:15.693Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 16016 has restarted 45 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":16016,"restarts":45,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:16.084Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 17872 has restarted 46 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":17872,"restarts":46,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:23.003Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27716 has restarted 47 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27716,"restarts":47,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:23.124Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 22732 has restarted 48 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":22732,"restarts":48,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:27.203Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 15256 has restarted 49 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":15256,"restarts":49,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:28.150Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 17288 has restarted 50 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":17288,"restarts":50,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:38.650Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26928 has restarted 51 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26928,"restarts":51,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:43.675Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 11088 has restarted 52 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":11088,"restarts":52,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:53.118Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26088 has restarted 53 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26088,"restarts":53,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:36:55.958Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 18128 has restarted 54 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":18128,"restarts":54,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:37:35.255Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23556 has restarted 55 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23556,"restarts":55,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:37:35.261Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 16284 has restarted 56 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":16284,"restarts":56,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:38:51.256Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 20920 has restarted 57 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":20920,"restarts":57,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:40:00.822Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (79%).
+Details: {"cpu":37,"memory":79,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T03:41:38.264Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27908 has restarted 58 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27908,"restarts":58,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:41:38.357Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 16496 has restarted 59 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":16496,"restarts":59,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:41:42.428Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 2912 has restarted 60 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":2912,"restarts":60,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:41:42.559Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27580 has restarted 61 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27580,"restarts":61,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:41:47.093Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 8092 has restarted 62 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":8092,"restarts":62,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:41:47.778Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26084 has restarted 63 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26084,"restarts":63,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:00.166Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12528 has restarted 64 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12528,"restarts":64,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:00.200Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26320 has restarted 65 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26320,"restarts":65,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:15.280Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27260 has restarted 66 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27260,"restarts":66,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:15.498Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 18852 has restarted 67 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":18852,"restarts":67,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:28.139Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28012 has restarted 68 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28012,"restarts":68,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:28.154Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28840 has restarted 69 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28840,"restarts":69,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:35.457Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27148 has restarted 70 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27148,"restarts":70,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:35.480Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27624 has restarted 71 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27624,"restarts":71,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:40.977Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 18648 has restarted 72 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":18648,"restarts":72,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:41.030Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29836 has restarted 73 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29836,"restarts":73,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:51.490Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30372 has restarted 74 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30372,"restarts":74,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:42:51.564Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 22084 has restarted 75 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":22084,"restarts":75,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:43:27.717Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28636 has restarted 76 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28636,"restarts":76,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:43:27.785Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29404 has restarted 77 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29404,"restarts":77,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:44:01.334Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26016 has restarted 78 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26016,"restarts":78,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:44:01.368Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26076 has restarted 79 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26076,"restarts":79,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:45:07.620Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":37,"memory":81,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T03:45:42.655Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 14152 has restarted 80 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":14152,"restarts":80,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:45:42.674Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12144 has restarted 81 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12144,"restarts":81,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T03:46:48.494Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":37,"memory":82,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T04:12:10.465Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30456 has restarted 82 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30456,"restarts":82,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:14:56.624Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28280 has restarted 83 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28280,"restarts":83,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:21:02.525Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 1904 has restarted 84 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":1904,"restarts":84,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:23:07.474Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (77%).
+Details: {"cpu":35,"memory":77,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T04:23:21.591Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 3020 has restarted 85 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":3020,"restarts":85,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:26:26.573Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 17016 has restarted 86 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":17016,"restarts":86,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:26:26.643Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26704 has restarted 87 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26704,"restarts":87,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:30:14.217Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 25972 has restarted 88 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":25972,"restarts":88,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:31:19.081Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":34,"memory":82,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T04:33:41.677Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29916 has restarted 89 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29916,"restarts":89,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:36:56.696Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 19128 has restarted 90 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":19128,"restarts":90,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:38:06.840Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":33,"memory":90,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T04:41:53.293Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 3448 has restarted 91 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":3448,"restarts":91,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:42:58.196Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (78%).
+Details: {"cpu":33,"memory":78,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T04:47:58.549Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":33,"memory":80,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T04:52:28.970Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30816 has restarted 92 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30816,"restarts":92,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:52:28.991Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 21488 has restarted 93 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":21488,"restarts":93,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:52:38.719Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 18424 has restarted 94 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":18424,"restarts":94,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:52:39.163Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 4892 has restarted 95 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":4892,"restarts":95,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:52:46.258Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 11756 has restarted 96 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":11756,"restarts":96,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:52:46.327Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31544 has restarted 97 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31544,"restarts":97,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:52:55.554Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 8452 has restarted 98 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":8452,"restarts":98,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:52:55.939Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30908 has restarted 99 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30908,"restarts":99,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:54:02.175Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":32,"memory":83,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":39,"mongoSaturation":8}
+
+[ALERT] [2026-06-13T04:54:48.323Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30176 has restarted 100 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30176,"restarts":100,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:55:53.450Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":32,"memory":90,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":37,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T04:57:06.912Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23192 has restarted 101 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23192,"restarts":101,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:58:12.043Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":32,"memory":85,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":38,"mongoSaturation":8}
+
+[ALERT] [2026-06-13T04:59:58.157Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 20784 has restarted 102 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":20784,"restarts":102,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T04:59:58.178Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23276 has restarted 103 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23276,"restarts":103,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:03.004Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23252 has restarted 104 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23252,"restarts":104,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:03.065Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29104 has restarted 105 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29104,"restarts":105,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:08.225Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 22384 has restarted 106 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":22384,"restarts":106,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:08.364Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12912 has restarted 107 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12912,"restarts":107,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:13.071Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31192 has restarted 108 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31192,"restarts":108,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:13.983Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 11052 has restarted 109 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":11052,"restarts":109,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:18.987Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 6644 has restarted 110 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":6644,"restarts":110,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:19.379Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31940 has restarted 111 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31940,"restarts":111,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:35.382Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 2132 has restarted 112 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":2132,"restarts":112,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:35.812Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 3412 has restarted 113 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":3412,"restarts":113,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:46.810Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 13500 has restarted 114 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":13500,"restarts":114,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:47.025Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32736 has restarted 115 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32736,"restarts":115,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:55.127Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27612 has restarted 116 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27612,"restarts":116,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:00:55.703Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 18696 has restarted 117 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":18696,"restarts":117,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:01:02.953Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 22376 has restarted 118 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":22376,"restarts":118,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:01:02.964Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 6604 has restarted 119 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":6604,"restarts":119,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:01:07.720Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32216 has restarted 120 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32216,"restarts":120,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:01:08.459Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 21436 has restarted 121 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":21436,"restarts":121,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:01:16.034Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31392 has restarted 122 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31392,"restarts":122,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:01:16.597Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31156 has restarted 123 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31156,"restarts":123,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:01:22.851Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 7216 has restarted 124 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":7216,"restarts":124,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:01:23.337Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29496 has restarted 125 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29496,"restarts":125,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:02:30.249Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (84%).
+Details: {"cpu":32,"memory":84,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T05:02:42.761Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 1928 has restarted 126 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":1928,"restarts":126,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:02:42.883Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 25996 has restarted 127 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":25996,"restarts":127,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:03:04.468Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12508 has restarted 128 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12508,"restarts":128,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:03:04.602Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32720 has restarted 129 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32720,"restarts":129,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:03:11.904Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31552 has restarted 130 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31552,"restarts":130,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:03:11.996Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27308 has restarted 131 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27308,"restarts":131,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:03:28.904Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32736 has restarted 132 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32736,"restarts":132,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:03:29.060Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12144 has restarted 133 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12144,"restarts":133,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:03:57.889Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 2912 has restarted 134 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":2912,"restarts":134,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:03:58.143Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 20088 has restarted 135 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":20088,"restarts":135,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:04:33.804Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 5224 has restarted 137 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":5224,"restarts":137,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:04:33.929Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 14320 has restarted 136 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":14320,"restarts":136,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:04:58.186Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32160 has restarted 138 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32160,"restarts":138,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:04:58.270Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 5168 has restarted 139 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":5168,"restarts":139,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:05:24.193Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26284 has restarted 140 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26284,"restarts":140,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:05:24.538Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12728 has restarted 141 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12728,"restarts":141,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:05:53.467Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31296 has restarted 142 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31296,"restarts":142,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:05:53.935Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31412 has restarted 143 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31412,"restarts":143,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:06:43.175Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 7468 has restarted 144 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":7468,"restarts":144,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:06:43.459Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31848 has restarted 145 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31848,"restarts":145,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:07:10.114Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 1028 has restarted 146 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":1028,"restarts":146,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:07:10.286Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 6432 has restarted 147 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":6432,"restarts":147,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:08:17.278Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":32,"memory":88,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T05:09:00.289Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 13064 has restarted 148 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":13064,"restarts":148,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:10:06.705Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":32,"memory":86,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T05:14:14.339Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26160 has restarted 150 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26160,"restarts":150,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:14:14.365Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27256 has restarted 149 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27256,"restarts":149,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:14:18.616Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26420 has restarted 151 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26420,"restarts":151,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:14:18.693Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 25688 has restarted 152 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":25688,"restarts":152,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:14:37.547Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 15500 has restarted 153 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":15500,"restarts":153,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:14:38.076Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30360 has restarted 154 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30360,"restarts":154,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:15:05.446Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 17356 has restarted 155 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":17356,"restarts":155,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:15:10.203Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 8804 has restarted 156 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":8804,"restarts":156,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:15:14.758Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29952 has restarted 157 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29952,"restarts":157,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:15:14.796Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12484 has restarted 158 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12484,"restarts":158,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:15:19.202Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28556 has restarted 159 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28556,"restarts":159,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:15:19.303Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 12492 has restarted 160 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":12492,"restarts":160,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:15:59.273Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 13188 has restarted 161 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":13188,"restarts":161,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:15:59.632Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 5512 has restarted 162 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":5512,"restarts":162,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:16:15.545Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31320 has restarted 163 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31320,"restarts":163,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:16:15.854Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 3708 has restarted 164 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":3708,"restarts":164,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:16:22.726Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 21188 has restarted 165 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":21188,"restarts":165,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:16:22.809Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 25216 has restarted 166 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":25216,"restarts":166,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:16:27.392Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27524 has restarted 167 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27524,"restarts":167,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:16:27.532Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 13840 has restarted 168 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":13840,"restarts":168,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:17:16.699Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28524 has restarted 169 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28524,"restarts":169,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:17:16.893Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31784 has restarted 170 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31784,"restarts":170,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:17:42.506Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 17360 has restarted 171 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":17360,"restarts":171,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:17:42.732Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31672 has restarted 172 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31672,"restarts":172,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:18:31.461Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32456 has restarted 173 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32456,"restarts":173,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:18:31.478Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 21100 has restarted 174 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":21100,"restarts":174,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:18:56.835Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 17868 has restarted 175 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":17868,"restarts":175,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:18:57.088Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32140 has restarted 176 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32140,"restarts":176,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:19:43.400Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32300 has restarted 177 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32300,"restarts":177,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:19:43.471Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28032 has restarted 178 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28032,"restarts":178,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:20:50.305Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":32,"memory":88,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":46,"mongoSaturation":9}
+
+[ALERT] [2026-06-13T05:21:08.021Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28944 has restarted 179 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28944,"restarts":179,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:21:08.121Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23416 has restarted 180 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23416,"restarts":180,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:22:14.832Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (92%).
+Details: {"cpu":32,"memory":92,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":48,"mongoSaturation":10}
+
+[ALERT] [2026-06-13T05:22:53.854Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 21316 has restarted 181 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":21316,"restarts":181,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:22:55.682Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32560 has restarted 182 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32560,"restarts":182,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:24:09.624Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":32,"memory":80,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":38,"mongoSaturation":8}
+
+[ALERT] [2026-06-13T05:24:58.116Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30704 has restarted 183 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30704,"restarts":183,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:24:58.207Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32204 has restarted 184 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32204,"restarts":184,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:26:08.127Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":32,"memory":91,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":48,"mongoSaturation":10}
+
+[ALERT] [2026-06-13T05:28:34.679Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 4904 has restarted 185 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":4904,"restarts":185,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:29:39.970Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (79%).
+Details: {"cpu":32,"memory":79,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T05:31:55.053Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30912 has restarted 186 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30912,"restarts":186,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:31:55.185Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32408 has restarted 187 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32408,"restarts":187,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:32:19.664Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 13504 has restarted 188 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":13504,"restarts":188,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:32:19.971Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23748 has restarted 189 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23748,"restarts":189,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:32:36.769Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 18428 has restarted 190 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":18428,"restarts":190,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:32:37.012Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27672 has restarted 191 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27672,"restarts":191,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:32:55.754Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31000 has restarted 192 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31000,"restarts":192,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:32:55.925Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 24492 has restarted 193 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":24492,"restarts":193,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:33:29.539Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 24668 has restarted 194 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":24668,"restarts":194,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:33:29.904Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31684 has restarted 195 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31684,"restarts":195,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:34:37.708Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (77%).
+Details: {"cpu":32,"memory":77,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":37,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T05:35:00.319Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 19816 has restarted 196 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":19816,"restarts":196,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:35:00.414Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27628 has restarted 197 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27628,"restarts":197,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:36:06.856Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31540 has restarted 198 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31540,"restarts":198,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:36:07.103Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 13660 has restarted 199 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":13660,"restarts":199,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:37:15.396Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (78%).
+Details: {"cpu":32,"memory":78,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":118,"mongoSaturation":24}
+
+[ALERT] [2026-06-13T05:37:38.743Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 7752 has restarted 200 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":7752,"restarts":200,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:37:39.241Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30664 has restarted 201 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30664,"restarts":201,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:37:46.546Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27308 has restarted 202 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27308,"restarts":202,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:37:46.550Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 5064 has restarted 203 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":5064,"restarts":203,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T05:38:54.742Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":32,"memory":86,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T05:44:54.699Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (79%).
+Details: {"cpu":31,"memory":79,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T05:49:55.017Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (77%).
+Details: {"cpu":31,"memory":77,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T10:01:29.054Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 21320 has restarted 204 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":21320,"restarts":204,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:02:40.070Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (97%).
+Details: {"cpu":16,"memory":97,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":28,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:07:40.118Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":16,"memory":88,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:12:40.216Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":16,"memory":91,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:16:11.459Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 9192 has restarted 205 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":9192,"restarts":205,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:17:40.220Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (84%).
+Details: {"cpu":17,"memory":84,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:22:10.093Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27044 has restarted 206 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27044,"restarts":206,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:22:20.771Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23924 has restarted 207 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23924,"restarts":207,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:22:42.349Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":17,"memory":83,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:27:52.423Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":17,"memory":90,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:31:56.924Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 16060 has restarted 208 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":16060,"restarts":208,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:32:44.401Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27068 has restarted 209 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27068,"restarts":209,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:33:10.930Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":17,"memory":86,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:35:52.193Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 2812 has restarted 210 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":2812,"restarts":210,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:37:21.123Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 19924 has restarted 211 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":19924,"restarts":211,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:37:28.549Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 8812 has restarted 212 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":8812,"restarts":212,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:39:10.860Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":18,"memory":85,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:43:28.977Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 35252 has restarted 213 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":35252,"restarts":213,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:43:35.454Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 30696 has restarted 214 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":30696,"restarts":214,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:44:10.955Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":18,"memory":82,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:46:25.727Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 13304 has restarted 215 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":13304,"restarts":215,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:46:31.684Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26316 has restarted 216 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26316,"restarts":216,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:49:11.873Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (76%).
+Details: {"cpu":18,"memory":76,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:51:00.803Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26948 has restarted 217 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26948,"restarts":217,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:51:05.365Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 2328 has restarted 218 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":2328,"restarts":218,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:55:10.967Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":18,"memory":90,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T10:55:13.502Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 33592 has restarted 219 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":33592,"restarts":219,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T10:58:10.605Z] [RISK: HIGH] [EVENT: HEAP_LEAK_WARNING] System Memory Leak Warning: [MemoryLeakWarning] Node 21320 heap grew by 14.5% in the last hour (Current: 71MB, 1h Ago: 62MB).
+Details: {"nodeId":"21320","growth":14.516129032258066,"heapUsed":71,"pastHeapUsed":62}
+
+[ALERT] [2026-06-13T11:00:11.047Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":18,"memory":80,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T11:05:11.527Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":19,"memory":82,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T11:08:10.683Z] [RISK: HIGH] [EVENT: HEAP_LEAK_WARNING] System Memory Leak Warning: [MemoryLeakWarning] Node 21320 heap grew by 16.9% in the last hour (Current: 69MB, 1h Ago: 59MB).
+Details: {"nodeId":"21320","growth":16.94915254237288,"heapUsed":69,"pastHeapUsed":59}
+
+[ALERT] [2026-06-13T11:09:17.548Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 33464 has restarted 220 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":33464,"restarts":220,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:09:20.203Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 3920 has restarted 221 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":3920,"restarts":221,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:11:11.182Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":19,"memory":85,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T11:11:41.176Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 24020 has restarted 222 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":24020,"restarts":222,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:12:00.293Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 5760 has restarted 223 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":5760,"restarts":223,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:13:45.223Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32708 has restarted 224 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32708,"restarts":224,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:16:11.411Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":19,"memory":80,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T11:19:06.932Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 8452 has restarted 225 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":8452,"restarts":225,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:19:16.851Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28880 has restarted 226 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28880,"restarts":226,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:19:26.807Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 35760 has restarted 227 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":35760,"restarts":227,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:19:38.414Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 35328 has restarted 228 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":35328,"restarts":228,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:19:49.336Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 32852 has restarted 229 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":32852,"restarts":229,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:19:57.976Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 11608 has restarted 230 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":11608,"restarts":230,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:21:10.818Z] [RISK: HIGH] [EVENT: HEAP_LEAK_WARNING] System Memory Leak Warning: [MemoryLeakWarning] Node 21320 heap grew by 32.2% in the last hour (Current: 78MB, 1h Ago: 59MB).
+Details: {"nodeId":"21320","growth":32.20338983050847,"heapUsed":78,"pastHeapUsed":59}
+
+[ALERT] [2026-06-13T11:21:12.536Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":19,"memory":90,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T11:21:36.072Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 35696 has restarted 231 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":35696,"restarts":231,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:27:10.858Z] [RISK: HIGH] [EVENT: HEAP_LEAK_WARNING] System Memory Leak Warning: [MemoryLeakWarning] Node 21320 heap grew by 20.0% in the last hour (Current: 72MB, 1h Ago: 60MB).
+Details: {"nodeId":"21320","growth":20,"heapUsed":72,"pastHeapUsed":60}
+
+[ALERT] [2026-06-13T11:27:13.560Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":19,"memory":85,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":30,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T11:29:59.838Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 10028 has restarted 232 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":10028,"restarts":232,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:30:07.501Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 36592 has restarted 233 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":36592,"restarts":233,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:31:06.431Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":19,"memory":90,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":26,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T11:37:06.782Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":19,"memory":85,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":26,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T11:38:13.348Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 19812 has restarted 234 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":19812,"restarts":234,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:39:16.904Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 36804 has restarted 235 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":36804,"restarts":235,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:40:23.673Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (89%).
+Details: {"cpu":19,"memory":89,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":26,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T11:42:57.583Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 34268 has restarted 237 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":34268,"restarts":237,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:42:57.620Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 18684 has restarted 236 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":18684,"restarts":236,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:43:19.351Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 25060 has restarted 238 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":25060,"restarts":238,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:44:24.878Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":19,"memory":86,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":27,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T11:49:35.957Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (76%).
+Details: {"cpu":19,"memory":76,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T11:53:52.046Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 6744 has restarted 239 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":6744,"restarts":239,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:53:56.135Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 33664 has restarted 240 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":33664,"restarts":240,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T11:54:36.543Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (87%).
+Details: {"cpu":19,"memory":87,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T11:58:16.181Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31192 has restarted 241 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31192,"restarts":241,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T12:00:36.072Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (94%).
+Details: {"cpu":19,"memory":94,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T12:05:37.683Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":19,"memory":91,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T12:06:01.885Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 34284 has restarted 242 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":34284,"restarts":242,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T12:06:27.987Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29892 has restarted 243 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29892,"restarts":243,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T12:08:58.271Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 34976 has restarted 244 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":34976,"restarts":244,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T12:11:23.547Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (87%).
+Details: {"cpu":20,"memory":87,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":31,"mongoSaturation":0}
+
+[ALERT] [2026-06-13T12:17:54.894Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":20,"memory":88,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T12:18:16.154Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 35976 has restarted 245 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":35976,"restarts":245,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T12:43:06.598Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (89%).
+Details: {"cpu":19,"memory":89,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":0,"mongoSaturation":0}
+
+[ALERT] [2026-06-13T12:49:01.981Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":19,"memory":81,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":18,"mongoSaturation":4}
+
+[ALERT] [2026-06-13T12:52:08.682Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 27496 has restarted 246 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":27496,"restarts":246,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T12:52:15.114Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 16784 has restarted 247 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":16784,"restarts":247,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T12:54:59.478Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 6404 has restarted 248 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":6404,"restarts":248,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T12:55:02.700Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (77%).
+Details: {"cpu":19,"memory":77,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T12:57:02.642Z] [RISK: HIGH] [EVENT: HEAP_LEAK_WARNING] System Memory Leak Warning: [MemoryLeakWarning] Node 25060 heap grew by 11.3% in the last hour (Current: 227MB, 1h Ago: 204MB).
+Details: {"nodeId":"25060","growth":11.27450980392157,"heapUsed":227,"pastHeapUsed":204}
+
+[ALERT] [2026-06-13T12:59:32.925Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 17028 has restarted 249 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":17028,"restarts":249,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:00:03.001Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":19,"memory":81,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":21,"mongoSaturation":4}
+
+[ALERT] [2026-06-13T13:03:02.560Z] [RISK: HIGH] [EVENT: HEAP_LEAK_WARNING] System Memory Leak Warning: [MemoryLeakWarning] Node 25060 heap grew by 23.2% in the last hour (Current: 228MB, 1h Ago: 185MB).
+Details: {"nodeId":"25060","growth":23.243243243243246,"heapUsed":228,"pastHeapUsed":185}
+
+[ALERT] [2026-06-13T13:03:07.372Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 11480 has restarted 250 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":11480,"restarts":250,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:03:19.753Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 38892 has restarted 251 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":38892,"restarts":251,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:03:50.634Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 35960 has restarted 252 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":35960,"restarts":252,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:03:58.061Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 38736 has restarted 253 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":38736,"restarts":253,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:05:04.356Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (77%).
+Details: {"cpu":19,"memory":77,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":23,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T13:12:41.470Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 36504 has restarted 254 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":36504,"restarts":254,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:12:46.511Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 35068 has restarted 255 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":35068,"restarts":255,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:13:54.720Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":19,"memory":81,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T13:18:54.795Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":19,"memory":81,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":33,"mongoSaturation":7}
+
+[ALERT] [2026-06-13T13:24:23.925Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 15944 has restarted 256 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":15944,"restarts":256,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:24:29.203Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 33528 has restarted 257 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":33528,"restarts":257,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:25:35.054Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":19,"memory":86,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":27,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T13:27:39.303Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 3316 has restarted 258 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":3316,"restarts":258,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:27:43.280Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 26952 has restarted 259 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":26952,"restarts":259,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:28:52.256Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":19,"memory":90,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":26,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T13:32:37.898Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 37896 has restarted 260 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":37896,"restarts":260,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:33:44.776Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":19,"memory":82,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":27,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T13:38:37.667Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 28580 has restarted 261 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":28580,"restarts":261,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:39:46.626Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":20,"memory":81,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":28,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T13:45:27.705Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 5832 has restarted 262 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":5832,"restarts":262,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:45:32.133Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 34940 has restarted 263 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":34940,"restarts":263,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:46:39.397Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":20,"memory":80,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":28,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T13:50:22.980Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31288 has restarted 264 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31288,"restarts":264,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:50:28.107Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 39704 has restarted 265 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":39704,"restarts":265,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:51:35.804Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":20,"memory":80,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":28,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T13:54:02.887Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 33084 has restarted 266 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":33084,"restarts":266,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:55:10.471Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":20,"memory":81,"disk":48,"redisMem":8,"redisEvictions":0,"mongoConns":28,"mongoSaturation":6}
+
+[ALERT] [2026-06-13T13:55:33.025Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 9236 has restarted 267 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":9236,"restarts":267,"date":"2026-06-13"}
+
+[ALERT] [2026-06-13T13:56:42.014Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":20,"memory":91,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":26,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T14:02:41.876Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (78%).
+Details: {"cpu":20,"memory":78,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":26,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T14:07:43.644Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (77%).
+Details: {"cpu":20,"memory":77,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":26,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T14:13:41.992Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":20,"memory":80,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":26,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T14:18:42.065Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":20,"memory":81,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":26,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T14:23:42.261Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":20,"memory":86,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":26,"mongoSaturation":5}
+
+[ALERT] [2026-06-13T14:49:51.276Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (87%).
+Details: {"cpu":19,"memory":87,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":0,"mongoSaturation":0}
+
+[ALERT] [2026-06-13T14:55:50.735Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (87%).
+Details: {"cpu":19,"memory":87,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":9,"mongoSaturation":2}
+
+[ALERT] [2026-06-13T15:01:48.488Z] [RISK: HIGH] [EVENT: HEAP_LEAK_WARNING] System Memory Leak Warning: [MemoryLeakWarning] Node 9236 heap grew by 11.5% in the last hour (Current: 68MB, 1h Ago: 61MB).
+Details: {"nodeId":"9236","growth":11.475409836065573,"heapUsed":68,"pastHeapUsed":61}
+
+[ALERT] [2026-06-13T15:01:50.202Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (84%).
+Details: {"cpu":19,"memory":84,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":9,"mongoSaturation":2}
+
+[ALERT] [2026-06-13T15:07:48.967Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":19,"memory":80,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":9,"mongoSaturation":2}
+
+[ALERT] [2026-06-13T15:12:49.010Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":19,"memory":82,"disk":48,"redisMem":6,"redisEvictions":0,"mongoConns":9,"mongoSaturation":2}
+
+[ALERT] [2026-06-13T15:17:49.272Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":19,"memory":81,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":9,"mongoSaturation":2}
+
+[ALERT] [2026-06-13T15:22:49.323Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (77%).
+Details: {"cpu":19,"memory":77,"disk":48,"redisMem":7,"redisEvictions":0,"mongoConns":9,"mongoSaturation":2}
+
+[ALERT] [2026-06-14T01:06:56.910Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (95%).
+Details: {"cpu":50,"memory":95,"disk":48,"redisMem":4,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T01:12:43.142Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (87%).
+Details: {"cpu":41,"memory":87,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T01:18:43.202Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":32,"memory":80,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T01:23:44.643Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":29,"memory":82,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T01:28:44.644Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (84%).
+Details: {"cpu":27,"memory":84,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T01:33:51.860Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (84%).
+Details: {"cpu":24,"memory":84,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T01:39:44.424Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":23,"memory":83,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T01:44:44.668Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (84%).
+Details: {"cpu":21,"memory":84,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":44,"mongoSaturation":8}
+
+[ALERT] [2026-06-14T01:50:44.599Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (84%).
+Details: {"cpu":20,"memory":84,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":34,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T01:54:42.334Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":20,"memory":83,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T01:56:15.741Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":20,"memory":83,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":35,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:01:16.104Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":20,"memory":90,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":35,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:02:08.024Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 23476 has restarted 4 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":23476,"restarts":4,"date":"2026-06-14"}
+
+[ALERT] [2026-06-14T02:03:15.249Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (90%).
+Details: {"cpu":19,"memory":90,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:04:56.632Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 3436 has restarted 5 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":3436,"restarts":5,"date":"2026-06-14"}
+
+[ALERT] [2026-06-14T02:06:03.095Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":19,"memory":91,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":35,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:06:43.996Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 31112 has restarted 6 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":31112,"restarts":6,"date":"2026-06-14"}
+
+[ALERT] [2026-06-14T02:07:49.775Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":19,"memory":91,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:13:49.920Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (92%).
+Details: {"cpu":20,"memory":92,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:19:50.002Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":19,"memory":88,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:24:50.146Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (89%).
+Details: {"cpu":19,"memory":89,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":37,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:25:34.891Z] [RISK: HIGH] [EVENT: RESTART_LOOP_ALERT] PM2 Restart Loop Warning: [StartupAlert] Node PID 29248 has restarted 7 times in the last 24 hours. Potential crash loop detected!
+Details: {"pid":29248,"restarts":7,"date":"2026-06-14"}
+
+[ALERT] [2026-06-14T02:26:42.231Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (89%).
+Details: {"cpu":19,"memory":89,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:32:42.007Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":19,"memory":82,"disk":48,"redisMem":5,"redisEvictions":0,"mongoConns":36,"mongoSaturation":8}
+
+[ALERT] [2026-06-14T02:37:42.180Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":19,"memory":81,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:42:42.337Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":19,"memory":86,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:48:42.094Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":19,"memory":83,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":37,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T02:58:47.218Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (87%).
+Details: {"cpu":18,"memory":87,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T03:03:47.402Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":18,"memory":86,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T03:08:47.742Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (84%).
+Details: {"cpu":17,"memory":84,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T03:14:47.474Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":17,"memory":80,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T03:19:47.601Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":16,"memory":81,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T03:25:47.595Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (81%).
+Details: {"cpu":16,"memory":81,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T03:30:47.803Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":16,"memory":80,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T03:36:47.818Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":15,"memory":86,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T03:41:48.040Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":15,"memory":83,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T03:47:47.966Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":15,"memory":80,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T03:52:48.034Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (80%).
+Details: {"cpu":15,"memory":80,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":32,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T08:43:16.133Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":7,"memory":88,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":0,"mongoSaturation":0}
+
+[ALERT] [2026-06-14T10:34:28.501Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":6,"memory":82,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":0,"mongoSaturation":0}
+
+[ALERT] [2026-06-14T10:40:25.564Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":6,"memory":86,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":22,"mongoSaturation":4}
+
+[ALERT] [2026-06-14T10:46:25.493Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (84%).
+Details: {"cpu":6,"memory":84,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":22,"mongoSaturation":4}
+
+[ALERT] [2026-06-14T10:52:24.921Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":6,"memory":83,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":22,"mongoSaturation":4}
+
+[ALERT] [2026-06-14T10:57:24.931Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":6,"memory":85,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":20,"mongoSaturation":4}
+
+[ALERT] [2026-06-14T11:02:25.124Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":6,"memory":85,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":20,"mongoSaturation":4}
+
+[ALERT] [2026-06-14T11:07:25.227Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":6,"memory":88,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":22,"mongoSaturation":4}
+
+[ALERT] [2026-06-14T11:13:25.241Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":7,"memory":86,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":20,"mongoSaturation":4}
+
+[ALERT] [2026-06-14T11:19:24.878Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (89%).
+Details: {"cpu":7,"memory":89,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":28,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T11:24:27.015Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":7,"memory":86,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":20,"mongoSaturation":4}
+
+[ALERT] [2026-06-14T11:29:30.715Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (85%).
+Details: {"cpu":7,"memory":85,"disk":48,"redisMem":2,"redisEvictions":0,"mongoConns":24,"mongoSaturation":5}
+
+[ALERT] [2026-06-14T11:32:29.903Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":7,"memory":91,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T11:38:29.898Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (82%).
+Details: {"cpu":7,"memory":82,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":38,"mongoSaturation":8}
+
+[ALERT] [2026-06-14T11:41:54.630Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":7,"memory":86,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T11:46:54.835Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (91%).
+Details: {"cpu":8,"memory":91,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T11:52:54.737Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":8,"memory":88,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":36,"mongoSaturation":7}
+
+[ALERT] [2026-06-14T11:58:55.193Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":8,"memory":88,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":21,"mongoSaturation":4}
+
+[ALERT] [2026-06-14T12:03:55.308Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (84%).
+Details: {"cpu":8,"memory":84,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":15,"mongoSaturation":3}
+
+[ALERT] [2026-06-14T12:09:54.980Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":9,"memory":86,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":15,"mongoSaturation":3}
+
+[ALERT] [2026-06-14T12:14:54.999Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":9,"memory":83,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":22,"mongoSaturation":4}
+
+[ALERT] [2026-06-14T12:20:54.960Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (86%).
+Details: {"cpu":9,"memory":86,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":25,"mongoSaturation":5}
+
+[ALERT] [2026-06-14T12:25:55.179Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (83%).
+Details: {"cpu":10,"memory":83,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":27,"mongoSaturation":5}
+
+[ALERT] [2026-06-14T12:31:55.047Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (88%).
+Details: {"cpu":10,"memory":88,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T12:37:54.979Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (92%).
+Details: {"cpu":10,"memory":92,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+
+[ALERT] [2026-06-14T12:42:55.469Z] [RISK: HIGH] [EVENT: INFRA_ALERT] Infrastructure Threshold Breached: Memory usage is high (87%).
+Details: {"cpu":10,"memory":87,"disk":48,"redisMem":3,"redisEvictions":0,"mongoConns":31,"mongoSaturation":6}
+

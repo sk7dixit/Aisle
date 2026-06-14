@@ -3,14 +3,17 @@ import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
     FaThLarge, FaInbox, FaToggleOn, FaToggleOff,
-    FaWallet, FaStar, FaUserCog, FaSignOutAlt, FaBell, FaUserCircle
+    FaWallet, FaStar, FaUserCog, FaSignOutAlt, FaBell, FaUserCircle,
+    FaCalendar, FaComments, FaChartLine
 } from 'react-icons/fa';
 import './service-theme.css';
 import { NotificationProvider } from '../../context/NotificationContext';
+import { useChat } from '../../context/ChatContext';
 
 const ServiceLayout = () => {
     const { user, logout, loading, token } = useAuth();
     const location = useLocation();
+    const { unreadCount: chatUnreadCount } = useChat();
     const [isOnline, setIsOnline] = useState(user?.shopDetails?.isOpen ?? true);
 
     if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-400 bg-[#0F172A]">Loading Service Dashboard...</div>;
@@ -22,6 +25,8 @@ const ServiceLayout = () => {
 
     const modules = [
         { path: '/seller/home', label: 'Dashboard', icon: <FaThLarge /> },
+        { path: '/seller/insights', label: 'Insights Center', icon: <FaChartLine /> },
+        { path: '/seller/bookings', label: 'Bookings', icon: <FaCalendar /> },
         { path: '/seller/requests', label: 'Requests', icon: <FaInbox /> },
         { path: '/seller/earnings', label: 'Earnings', icon: <FaWallet /> },
         { path: '/seller/reviews', label: 'Reviews', icon: <FaStar /> },
@@ -120,10 +125,19 @@ const ServiceLayout = () => {
                                 {isOnline ? 'Go Offline' : 'Go Online'}
                             </button>
 
-                            <button className="text-slate-400 hover:text-white transition-colors relative">
+                             <button className="text-slate-400 hover:text-white transition-colors relative" title="Notifications">
                                 <FaBell size={18} />
                                 <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-indigo-500 rounded-full shadow-[0_0_8px_#6366f1]"></span>
                             </button>
+
+                            <Link to="/seller/messages" className="text-slate-400 hover:text-white transition-colors relative" title="Messages">
+                                <FaComments size={18} />
+                                {chatUnreadCount > 0 && (
+                                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center rounded-full border border-[#0F172A]">
+                                        {chatUnreadCount}
+                                    </span>
+                                )}
+                            </Link>
 
                             <div className="flex items-center gap-3 pl-6 border-l border-white/5">
                                 <div className="text-right hidden sm:block">

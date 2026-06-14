@@ -5,7 +5,7 @@ import {
 } from 'react-icons/fa';
 
 /**
- * SHOPLENS NOTIFICATION PANEL (Global Drawer)
+ * AISLE NOTIFICATION PANEL (Global Drawer)
  * Features:
  * 1. Controlled by NotificationContext
  * 2. Unread badge logic from Global State

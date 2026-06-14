@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
     FaBell, FaHistory, FaCreditCard, FaShieldAlt, FaCog,
-    FaToggleOn, FaToggleOff, FaCheck, FaSave
+    FaToggleOn, FaToggleOff, FaCheck, FaSave, FaLaptop, FaMobileAlt, FaTrash
 } from 'react-icons/fa';
+import axios from 'axios';
 
 const CustomerSettings = () => {
     const { logout } = useAuth();
@@ -83,7 +84,7 @@ const CustomerSettings = () => {
                     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 mb-2">Notifications</h2>
-                            <p className="text-sm text-slate-500 mb-6">Manage how ShopLens communicates with you. Changes save automatically.</p>
+                            <p className="text-sm text-slate-500 mb-6">Manage how Aisle communicates with you. Changes save automatically.</p>
 
                             <div className="space-y-1">
                                 <ToggleRow
@@ -244,7 +245,7 @@ const CustomerSettings = () => {
                     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 mb-2">App Preferences</h2>
-                            <p className="text-sm text-slate-500 mb-6">Customize the look and feel of ShopLens.</p>
+                            <p className="text-sm text-slate-500 mb-6">Customize the look and feel of Aisle.</p>
 
                             <div className="space-y-6">
                                 <div>
@@ -275,6 +276,9 @@ const CustomerSettings = () => {
                     </div>
                 );
 
+            case 'sessions':
+                return <SessionsPanel />;
+
             default: return null;
         }
     };
@@ -283,7 +287,7 @@ const CustomerSettings = () => {
         <div className="min-h-screen bg-[var(--page-bg)] pt-32 pb-24 font-sans text-[var(--text-primary)] px-4 md:px-8">
             <div className="max-w-6xl mx-auto">
                 <h1 className="text-4xl font-black text-[var(--text-primary)] mb-2 tracking-tight uppercase">Settings</h1>
-                <p className="text-[var(--text-secondary)] font-black uppercase tracking-widest text-xs mb-10 opacity-70">Manage how ShopLens works for you.</p>
+                <p className="text-[var(--text-secondary)] font-black uppercase tracking-widest text-xs mb-10 opacity-70">Manage how Aisle works for you.</p>
 
                 <div className="flex flex-col md:flex-row gap-10 items-start">
 
@@ -316,6 +320,13 @@ const CustomerSettings = () => {
                                 active={activeTab}
                                 onClick={setActiveTab}
                                 label="Privacy"
+                                icon={<FaShieldAlt />}
+                            />
+                            <MenuButton
+                                id="sessions"
+                                active={activeTab}
+                                onClick={setActiveTab}
+                                label="Active Sessions"
                                 icon={<FaShieldAlt />}
                             />
                             <MenuButton
@@ -399,5 +410,96 @@ const SaveButton = ({ onClick, loading }) => (
         {loading ? 'Saving...' : <><FaSave /> Save Preferences</>}
     </button>
 );
+
+const SessionsPanel = () => {
+    const [sessions, setSessions] = useState([]);
+    const [loadingSessions, setLoadingSessions] = useState(true);
+
+    const fetchSessions = async () => {
+        try {
+            const currentDeviceId = localStorage.getItem('aisleDeviceId');
+            const res = await axios.get(`/api/auth/sessions?deviceId=${currentDeviceId}`);
+            setSessions(res.data);
+        } catch (err) {
+            console.error("Failed to load sessions", err);
+        } finally {
+            setLoadingSessions(false);
+        }
+    };
+
+    const handleRevoke = async (sessionId) => {
+        if (!window.confirm("Are you sure you want to log out this device?")) return;
+        try {
+            await axios.post('/api/auth/sessions/revoke', { sessionId });
+            setSessions(prev => prev.filter(s => s.id !== sessionId));
+        } catch (err) {
+            alert(err.response?.data?.message || "Failed to revoke session");
+        }
+    };
+
+    useEffect(() => {
+        fetchSessions();
+    }, []);
+
+    if (loadingSessions) {
+        return <div className="text-slate-500 text-sm font-bold uppercase tracking-widest animate-pulse">Loading active sessions...</div>;
+    }
+
+    return (
+        <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div>
+                <h2 className="text-xl font-bold text-slate-900 mb-2">Active Sessions</h2>
+                <p className="text-sm text-slate-500 mb-6">Manage all devices currently logged in to your account. You can revoke access for any session.</p>
+
+                <div className="space-y-4">
+                    {sessions.map(s => {
+                        const isMobile = /phone|android|mobile/i.test(s.deviceName);
+                        return (
+                            <div key={s.id} className={`flex items-center justify-between p-6 rounded-2xl border transition-all ${s.isCurrent ? 'border-[var(--accent-orange)] bg-[var(--accent-orange)]/5' : 'border-black/5 bg-black/5 hover:border-black/10'}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm text-xl text-slate-600">
+                                        {isMobile ? <FaMobileAlt /> : <FaLaptop />}
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-bold text-slate-900 text-sm">{s.deviceName}</p>
+                                            {s.isCurrent && (
+                                                <span className="text-[9px] font-black uppercase tracking-wider text-[var(--accent-orange)] bg-[var(--accent-orange)]/10 px-2 py-0.5 rounded-full border border-[var(--accent-orange)]/20">
+                                                    Current Device
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-slate-500 mt-1">
+                                            {s.browser} • {s.ipAddress}
+                                        </p>
+                                        <p className="text-[10px] text-slate-400 mt-1 font-semibold">
+                                            Last active: {new Date(s.lastSeen).toLocaleString()}
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                {!s.isCurrent && (
+                                    <button
+                                        onClick={() => handleRevoke(s.id)}
+                                        className="p-3 text-red-500 hover:text-white hover:bg-red-500 rounded-xl transition-all border border-red-100 hover:border-red-500 shadow-sm"
+                                        title="Revoke session"
+                                    >
+                                        <FaTrash />
+                                    </button>
+                                )}
+                            </div>
+                        );
+                    })}
+
+                    {sessions.length === 0 && (
+                        <div className="text-center py-10 text-slate-500 font-bold uppercase tracking-widest text-xs">
+                            No active sessions found.
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default CustomerSettings;

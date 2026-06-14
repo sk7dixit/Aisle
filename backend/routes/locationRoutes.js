@@ -22,7 +22,7 @@ router.get("/reverse", async (req, res) => {
                     format: "json"
                 },
                 headers: {
-                    "User-Agent": "ShopLens/1.0 (shoplens017@gmail.com)"
+                    "User-Agent": "Aisle/1.0 (shoplens017@gmail.com)"
                 }
             }
         );
@@ -40,6 +40,7 @@ router.get("/reverse", async (req, res) => {
             city,
             state: address.state || null,
             country: address.country || null,
+            displayName: response.data.display_name || null,
             lat: Number(lat),
             lng: Number(lng)
         });
@@ -71,7 +72,7 @@ router.get("/search", async (req, res) => {
                     limit: 5
                 },
                 headers: {
-                    "User-Agent": "ShopLens/1.0 (shoplens017@gmail.com)"
+                    "User-Agent": "Aisle/1.0 (shoplens017@gmail.com)"
                 }
             }
         );

@@ -2,7 +2,7 @@ import { Star, Store, Users, MapPin, Box } from 'lucide-react';
 
 const StatsStrip = () => {
     const stats = [
-        { label: "Active Shops", value: "2,500+", icon: <Store className="w-5 h-5 text-teal-200" /> },
+        { label: "Businesses Joined", value: "2,500+", icon: <Store className="w-5 h-5 text-teal-200" /> },
         { label: "Happy Customers", value: "50,000+", icon: <Users className="w-5 h-5 text-teal-200" /> },
         { label: "Products Listed", value: "100K+", icon: <Box className="w-5 h-5 text-teal-200" /> },
         { label: "Cities Covered", value: "25+", icon: <MapPin className="w-5 h-5 text-teal-200" /> }

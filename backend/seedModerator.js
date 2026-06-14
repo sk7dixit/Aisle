@@ -9,7 +9,7 @@ connectDB();
 
 const seedModerator = async () => {
     try {
-        const moderatorEmail = 'lakshyadwivedi2005@gmail.com';
+        const moderatorEmail = 'trinovex@gmail.com';
 
         // Check if user exists
         const userExists = await User.findOne({ email: moderatorEmail });

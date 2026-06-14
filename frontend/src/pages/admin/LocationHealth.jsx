@@ -14,7 +14,7 @@ const LocationHealth = () => {
     const fetchIssues = async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('shoplensToken');
+            const token = localStorage.getItem('aisleToken');
             const res = await fetch('/api/admin/shops-with-location-issues', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -46,7 +46,7 @@ const LocationHealth = () => {
 
         setFixing(sellerId);
         try {
-            const token = localStorage.getItem('shoplensToken');
+            const token = localStorage.getItem('aisleToken');
             const res = await fetch(`/api/admin/fix-shop-location/${sellerId}`, {
                 method: 'POST',
                 headers: {

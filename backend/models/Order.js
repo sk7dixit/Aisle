@@ -44,6 +44,12 @@ const orderSchema = mongoose.Schema(
             enum: ['PENDING', 'PAID', 'FAILED'],
             default: 'PENDING'
         },
+        couponCode: {
+            type: String
+        },
+        deviceId: {
+            type: String
+        },
         // QR Data Handling
         qrCode: {
             type: String, // Can store the generated string/token for easy query

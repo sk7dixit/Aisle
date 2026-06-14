@@ -16,13 +16,13 @@ const USPSection = () => {
                     {/* Left Content */}
                     <div className="mb-12 lg:mb-0">
                         <h2 className="text-3xl font-extrabold text-white mb-6">
-                            Why ShopLens?
+                            Why Aisle?
                         </h2>
                         <p className="text-muted text-lg mb-8 leading-relaxed">
                             Most e-commerce platforms force small sellers to pay heavy commissions or compete with massive warehouses.
                             <br /><br />
-                            ShopLens is different. We don't sell products; we connect ready-to-buy customers with the inventory
-                            sitting in the shop right next to them.
+                            Aisle is different. We don't sell products; we connect ready-to-buy customers with the inventory
+                            sitting in the business right next to them.
                         </p>
                         <div className="space-y-4">
                             {features.map((feature, idx) => (
@@ -47,7 +47,7 @@ const USPSection = () => {
                                     <span className="text-red-400 text-xs font-bold">2-3 Days Delivery</span>
                                 </div>
                                 <div className="bg-accent/10 p-4 rounded-lg flex items-center justify-between border border-accent/20">
-                                    <span className="text-accent text-sm font-bold">ShopLens</span>
+                                    <span className="text-accent text-sm font-bold">Aisle</span>
                                     <span className="text-success text-xs font-bold">Available Now (0.5 km)</span>
                                 </div>
                             </div>

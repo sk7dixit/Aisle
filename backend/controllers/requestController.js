@@ -12,6 +12,17 @@ const createRequest = async (req, res) => {
         const { productId, sellerId, sellerShopName, productName, visitDate, visitTime, paymentMethod } = req.body;
         const customerId = req.user._id;
 
+        // Run Spam & Fraud Detection Check
+        const { detectSpamAndFraud } = require('../services/trustService');
+        const checkResult = await detectSpamAndFraud(customerId, productId, sellerId, req);
+        if (checkResult.blocked) {
+            return res.status(403).json({ 
+                success: false, 
+                message: checkResult.reason, 
+                challengeRequired: checkResult.challengeRequired 
+            });
+        }
+
         // 1. Basic Validation
         if (!productId || !sellerId) {
             return res.status(400).json({ message: 'Product ID and Seller ID are required' });
@@ -99,20 +110,49 @@ const createRequest = async (req, res) => {
 
         // 6. Create Reservation if Auto-Accepted
         if (status === 'AUTO_ACCEPTED') {
-            const Reservation = require('../models/Reservation');
-            const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 Hours Reservation TTL
+            const { acquireLock } = require('../utils/lockManager');
+            let lock;
+            try {
+                lock = await acquireLock(`lock:product:${productId}`, 5000);
+            } catch (lockErr) {
+                // Lock failed, downgrade status to PENDING
+                request.status = 'PENDING';
+                await request.save();
+                status = 'PENDING';
+                console.warn(`[RequestController-Create] Lock failed. Request downgraded to PENDING for product ${productId}`);
+            }
 
-            reservation = await Reservation.create({
-                requestId: request._id,
-                productId,
-                sellerId,
-                quantity: 1, // Default 1 for now
-                expiresAt,
-                status: 'ACTIVE'
-            });
+            if (status === 'AUTO_ACCEPTED') {
+                try {
+                    // Double check availability under lock
+                    const lockedProduct = await Product.findById(productId);
+                    const currentAvailable = lockedProduct.countInStock - (lockedProduct.reservedCount || 0);
+                    if (currentAvailable <= 0) {
+                        request.status = 'PENDING';
+                        await request.save();
+                        status = 'PENDING';
+                    } else {
+                        const Reservation = require('../models/Reservation');
+                        const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 Hours Reservation TTL
 
-            // UPDATE PRODUCT RESERVED COUNT (Atomically)
-            await Product.findByIdAndUpdate(productId, { $inc: { reservedCount: 1 } });
+                        reservation = await Reservation.create({
+                            requestId: request._id,
+                            productId,
+                            sellerId,
+                            quantity: 1, // Default 1 for now
+                            expiresAt,
+                            status: 'ACTIVE'
+                        });
+
+                        // UPDATE PRODUCT RESERVED COUNT (Atomically)
+                        await Product.findByIdAndUpdate(productId, { $inc: { reservedCount: 1 } });
+                    }
+                } finally {
+                    if (lock) {
+                        await lock.release().catch(err => console.error('[Lock] Release failed:', err.message));
+                    }
+                }
+            }
         }
 
         // 7. Notify Seller
@@ -130,7 +170,23 @@ const createRequest = async (req, res) => {
                 $inc: { 'sellerStats.totalRequests': 1 },
                 'sellerStats.lastActiveAt': new Date()
             });
+            const { calculateSellerTrust } = require('../services/trustService');
+            await calculateSellerTrust(sellerId);
         } catch (err) { console.warn("Stats error", err); }
+
+        // Broadcast REQUEST_CREATED event cluster-wide
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('REQUEST_CREATED', {
+                requestId: request._id.toString(),
+                customerId: customerId.toString(),
+                sellerId: sellerId.toString(),
+                productId: productId.toString(),
+                version: request.version || 1
+            });
+        } catch (busErr) {
+            console.error('[RequestController-EventBus] REQUEST_CREATED publication failed:', busErr.message);
+        }
 
         res.status(201).json({ request, reservation });
 
@@ -242,77 +298,97 @@ const acceptRequest = async (req, res) => {
             return res.status(400).json({ message: 'Request expired. Action blocked.' });
         }
 
-        // 1. Check Inventory Again
-        const Product = require('../models/Product');
-        const product = await Product.findById(request.productId);
-        const availableStock = product.countInStock - (product.reservedCount || 0);
-
-        if (availableStock < 1) { // Assuming 1 unit
-            return res.status(400).json({ message: 'Insufficient stock to accept.' });
+        // Acquire distributed lock before checking inventory and creating reservation
+        const { acquireLock } = require('../utils/lockManager');
+        let lock;
+        try {
+            lock = await acquireLock(`lock:product:${request.productId}`, 5000);
+        } catch (lockErr) {
+            return res.status(409).json({ message: 'Product stock is currently locked. Please retry.' });
         }
 
-        // 2. Create Reservation
-        const Reservation = require('../models/Reservation');
-        const expiresAt = new Date(Date.now() + 4 * 60 * 60 * 1000); // 4 Hours Standard
+        try {
+            // 1. Check Inventory Again
+            const Product = require('../models/Product');
+            const product = await Product.findById(request.productId);
+            const availableStock = product.countInStock - (product.reservedCount || 0);
 
-        const reservation = await Reservation.create({
-            requestId: request._id,
-            productId: request.productId,
-            sellerId: request.sellerId,
-            quantity: 1,
-            expiresAt,
-            status: 'ACTIVE'
-        });
+            if (availableStock < 1) { // Assuming 1 unit
+                return res.status(400).json({ message: 'Insufficient stock to accept.' });
+            }
 
-        // 3. Create Visit (Status: SCHEDULED) - Auto-created on acceptance?
-        // Spec says: Request ACCEPTED -> Visit SCHEDULED
-        const Visit = require('../models/Visit');
-        // Generate Token
-        const crypto = require('crypto');
-        const visitToken = crypto.randomBytes(32).toString('hex');
+            // 2. Create Reservation
+            const Reservation = require('../models/Reservation');
+            const expiresAt = new Date(Date.now() + 4 * 60 * 60 * 1000); // 4 Hours Standard
 
-        // Determine Schedule Time: Use request time or default to now + 1hr? 
-        // If request had no time, maybe require seller to set it?
-        // Using request.visitDate/Time or fallback.
-        let scheduledTime = new Date();
-        if (request.visitDate && request.visitTime) {
-            scheduledTime = new Date(`${request.visitDate}T${request.visitTime}`);
-        } else {
-            scheduledTime = new Date(Date.now() + 2 * 60 * 60 * 1000); // +2 Hours default
+            const reservation = await Reservation.create({
+                requestId: request._id,
+                productId: request.productId,
+                sellerId: request.sellerId,
+                quantity: 1,
+                expiresAt,
+                status: 'ACTIVE'
+            });
+
+            // 3. Create Visit (Status: SCHEDULED)
+            const Visit = require('../models/Visit');
+            const crypto = require('crypto');
+            const visitToken = crypto.randomBytes(32).toString('hex');
+
+            let scheduledTime = new Date();
+            if (request.visitDate && request.visitTime) {
+                scheduledTime = new Date(`${request.visitDate}T${request.visitTime}`);
+            } else {
+                scheduledTime = new Date(Date.now() + 2 * 60 * 60 * 1000); // +2 Hours default
+            }
+
+            await Visit.create({
+                interestRequestId: request._id,
+                shopId: request.sellerId,
+                customerId: request.customerId,
+                visitType: request.type || 'PAY_ON_VISIT',
+                scheduledTime,
+                status: 'SCHEDULED',
+                productName: request.productName,
+                customerName: request.customerName,
+                visitToken,
+                visitTokenExpiresAt: new Date(scheduledTime.getTime() + 24 * 60 * 60 * 1000)
+            });
+
+            // 4. Update Request
+            request.status = 'AUTO_ACCEPTED';
+            await request.save();
+
+            try {
+                const { calculateSellerTrust } = require('../services/trustService');
+                await calculateSellerTrust(request.sellerId);
+            } catch (trustErr) {
+                console.error('[RequestController] Trust recalculate failed:', trustErr.message);
+            }
+
+            // 5. Update Inventory (Reserve)
+            await Product.findByIdAndUpdate(request.productId, { $inc: { reservedCount: 1 } });
+
+            // Broadcast REQUEST_ACCEPTED event cluster-wide
+            try {
+                const { publishEvent } = require('../utils/eventBus');
+                await publishEvent('REQUEST_ACCEPTED', {
+                    requestId: request._id.toString(),
+                    customerId: request.customerId.toString(),
+                    sellerId: request.sellerId.toString(),
+                    productId: request.productId.toString(),
+                    version: request.version || 1
+                });
+            } catch (busErr) {
+                console.error('[RequestController-EventBus] REQUEST_ACCEPTED publication failed:', busErr.message);
+            }
+
+            res.json({ message: 'Request Accepted', request });
+        } finally {
+            if (lock) {
+                await lock.release().catch(err => console.error('[Lock] Release failed:', err.message));
+            }
         }
-
-        await Visit.create({
-            interestRequestId: request._id,
-            shopId: request.sellerId,
-            customerId: request.customerId,
-            visitType: request.type || 'PAY_ON_VISIT',
-            scheduledTime,
-            status: 'SCHEDULED',
-            productName: request.productName,
-            customerName: request.customerName,
-            visitToken,
-            visitTokenExpiresAt: new Date(scheduledTime.getTime() + 24 * 60 * 60 * 1000)
-        });
-
-        // 4. Update Request
-        request.status = 'AUTO_ACCEPTED'; // Mapping "ACCEPTED" to "AUTO_ACCEPTED" or add new enum?
-        // Spec: "Request.status = ACCEPTED". My Enum has 'AUTO_ACCEPTED' but not 'ACCEPTED'.
-        // I should stick to my enum or add 'ACCEPTED'.
-        // Implementation Plan said: "PENDING, AUTO_ACCEPTED, REJECTED..."
-        // Let's us 'AUTO_ACCEPTED' as "ACCEPTED" equivalent or add 'ACCEPTED'.
-        // 'AUTO_ACCEPTED' implies system. 'ACCEPTED' implies manual.
-        // Let's add 'ACCEPTED' to enum dynamically via update or reuse AUTO_ACCEPTED for now to avoid schema break.
-        // Actually, user spec says "Request.status = ACCEPTED".
-        // I will use 'AUTO_ACCEPTED' (conceptually 'Confirmed') to keep enum simple, or just 'COMPLETED' later.
-        // Wait, 'SELLER_CONFIRMED' was legacy.
-        // Let's just use 'AUTO_ACCEPTED' for now as "Confirmed by Seller/System".
-        request.status = 'AUTO_ACCEPTED';
-        await request.save();
-
-        // 5. Update Inventory (Reserve)
-        await Product.findByIdAndUpdate(request.productId, { $inc: { reservedCount: 1 } });
-
-        res.json({ message: 'Request Accepted', request });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: error.message });
@@ -345,6 +421,13 @@ const rejectRequest = async (req, res) => {
         // request.rejectReason = reason; // If field exists
         await request.save();
 
+        try {
+            const { calculateSellerTrust } = require('../services/trustService');
+            await calculateSellerTrust(request.sellerId);
+        } catch (trustErr) {
+            console.error('[RequestController] Trust recalculate failed:', trustErr.message);
+        }
+
         res.json({ message: 'Request Rejected', request });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -372,28 +455,42 @@ const checkExpiredReservations = async (req, res) => {
         }
 
         let processed = 0;
+        const { acquireLock } = require('../utils/lockManager');
         for (const reservation of expiredReservations) {
-            // 1. Update Reservation
-            reservation.status = 'EXPIRED';
-            await reservation.save();
-
-            // 2. Update Request
-            const request = await Request.findById(reservation.requestId);
-            if (request) {
-                // Only expire if still pending/auto_accepted. 
-                // If it was magically confirmed without reservation update (bug?), skip.
-                if (['PENDING', 'AUTO_ACCEPTED'].includes(request.status)) {
-                    request.status = 'EXPIRED';
-                    await request.save();
-                }
+            let lock;
+            try {
+                lock = await acquireLock(`lock:product:${reservation.productId}`, 5000);
+            } catch (lockErr) {
+                console.warn(`[RequestController-Expiry] Lock failed for product ${reservation.productId}. Skipping for next run.`);
+                continue;
             }
 
-            // 3. Release Inventory (Strict)
-            // Decrement reservedCount.
-            await Product.findByIdAndUpdate(reservation.productId, { $inc: { reservedCount: -1 } });
+            try {
+                // Fetch fresh copy to verify it is still ACTIVE
+                const freshRes = await Reservation.findById(reservation._id);
+                if (!freshRes || freshRes.status !== 'ACTIVE') continue;
 
-            console.log(`SystemEvent: Reservation ${reservation._id} EXPIRED. Inventory Released.`);
-            processed++;
+                // 1. Update Reservation
+                freshRes.status = 'EXPIRED';
+                await freshRes.save();
+
+                // 2. Update Request
+                const request = await Request.findById(freshRes.requestId);
+                if (request) {
+                    if (['PENDING', 'AUTO_ACCEPTED'].includes(request.status)) {
+                        request.status = 'EXPIRED';
+                        await request.save();
+                    }
+                }
+
+                // 3. Release Inventory (Strict)
+                await Product.findByIdAndUpdate(freshRes.productId, { $inc: { reservedCount: -1 } });
+                processed++;
+            } finally {
+                if (lock) {
+                    await lock.release().catch(err => console.error('[Lock] Release failed:', err.message));
+                }
+            }
         }
 
         res.json({ message: 'Expired reservations processed', count: processed });

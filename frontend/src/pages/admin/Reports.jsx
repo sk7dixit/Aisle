@@ -18,7 +18,7 @@ const Reports = () => {
     const [reasonInput, setReasonInput] = useState('');
     const [severityInput, setSeverityInput] = useState('Medium');
 
-    const user = JSON.parse(localStorage.getItem('shoplensUser') || '{}');
+    const user = JSON.parse(localStorage.getItem('aisleUser') || '{}');
     const role = user.role?.toLowerCase() || 'visitor';
 
     const fetchReports = async () => {

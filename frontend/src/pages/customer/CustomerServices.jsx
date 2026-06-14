@@ -4,6 +4,9 @@ import { FaTools, FaBolt, FaTint, FaCut, FaBroom, FaChalkboardTeacher, FaMapMark
 import { motion, AnimatePresence } from 'framer-motion';
 import EmptyState from '../../components/common/EmptyState';
 import ServiceCard from '../../components/customer/ServiceCard';
+import { useAuth } from '../../context/AuthContext';
+import { useChat } from '../../context/ChatContext';
+import { toast } from 'react-hot-toast';
 
 const URGENT_SERVICES = [
     { id: 'electrician', label: 'Electrician', icon: <FaBolt />, color: 'ochre', count: 12, price: '₹199' },
@@ -23,10 +26,10 @@ const CustomerServices = () => {
 
     // Mock Data for Providers
     const providers = [
-        { id: 1, name: 'QuickFix Electricals', type: 'electrician', distance: '1.2 km', rating: 4.8, jobs: 120 },
-        { id: 2, name: 'Sharma Plumbers', type: 'plumber', distance: '0.8 km', rating: 4.5, jobs: 85 },
-        { id: 3, name: 'City Power Services', type: 'electrician', distance: '2.5 km', rating: 4.2, jobs: 200 },
-        { id: 4, name: 'Home Style Carpenters', type: 'carpenter', distance: '3.0 km', rating: 4.9, jobs: 45 },
+        { id: 1, name: 'QuickFix Electricals', type: 'electrician', distance: '1.2 km', rating: 4.8, jobs: 120, sellerId: '6a224d57d88f7777dd950da7' },
+        { id: 2, name: 'Sharma Plumbers', type: 'plumber', distance: '0.8 km', rating: 4.5, jobs: 85, sellerId: '6a224d57d88f7777dd950da7' },
+        { id: 3, name: 'City Power Services', type: 'electrician', distance: '2.5 km', rating: 4.2, jobs: 200, sellerId: '6a224d57d88f7777dd950da7' },
+        { id: 4, name: 'Home Style Carpenters', type: 'carpenter', distance: '3.0 km', rating: 4.9, jobs: 45, sellerId: '6a224d57d88f7777dd950da7' },
     ];
 
     const activeProviders = selectedCategory ? providers.filter(p => p.type === selectedCategory.id) : [];
@@ -163,6 +166,23 @@ const CustomerServices = () => {
 
 const ProviderCard = ({ provider, categoryLabel }) => {
     const [showModal, setShowModal] = useState(false);
+    const { user } = useAuth();
+    const { startConversation } = useChat();
+    const navigate = useNavigate();
+
+    const handleChatFirst = async () => {
+        if (!user) {
+            toast.error("Please login to chat with service providers.");
+            navigate('/login');
+            return;
+        }
+        const conv = await startConversation(provider.sellerId, 'service', provider.sellerId);
+        if (conv) {
+            navigate(`/messages?conversationId=${conv._id}`);
+        } else {
+            toast.error("Failed to start chat with provider.");
+        }
+    };
 
     return (
         <>
@@ -178,14 +198,22 @@ const ProviderCard = ({ provider, categoryLabel }) => {
                     </div>
                 </div>
 
-                <div className="pt-5 border-t border-black/5 flex items-center justify-between">
+                <div className="pt-5 border-t border-black/5 flex items-center justify-between gap-3">
                     <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest opacity-40">{provider.jobs} completed</span>
-                    <button
-                        onClick={() => setShowModal(true)}
-                        className="bg-[var(--accent-terracotta)] text-white hover:bg-black px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-95"
-                    >
-                        Book Service
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={handleChatFirst}
+                            className="bg-white hover:bg-stone-50 text-stone-900 border border-stone-200 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-sm active:scale-95 cursor-pointer"
+                        >
+                            Chat First
+                        </button>
+                        <button
+                            onClick={() => setShowModal(true)}
+                            className="bg-[var(--accent-terracotta)] text-white hover:bg-black px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-95 cursor-pointer"
+                        >
+                            Book Service
+                        </button>
+                    </div>
                 </div>
             </div>
 

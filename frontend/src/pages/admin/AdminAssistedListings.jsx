@@ -24,7 +24,7 @@ const AdminAssistedListings = () => {
 
     const fetchRequests = async () => {
         try {
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             const res = await fetch('/api/admin/assisted-listings', {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -42,7 +42,7 @@ const AdminAssistedListings = () => {
     const updateStatus = async (requestId, newStatus) => {
         setIsUpdating(true);
         try {
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             const res = await fetch(`/api/admin/assisted-listings/${requestId}/status`, {
                 method: 'PUT',
                 headers: {

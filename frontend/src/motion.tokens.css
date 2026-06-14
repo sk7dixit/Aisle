@@ -1,5 +1,5 @@
 /* ================================
-   ShopLens Motion Tokens
+   Aisle Motion Tokens
    ================================ */
 
 /* ---- EASINGS ---- */
@@ -46,12 +46,14 @@
 
 /* ---- PAGE ENTER ---- */
 .motion-page-enter {
-    opacity: 0;
-    transform: translateY(8px);
-    animation: pageEnter var(--dur-md) var(--ease-standard) forwards;
+    animation: pageEnter var(--dur-md) var(--ease-standard) both;
 }
 
 @keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
     to {
         opacity: 1;
         transform: translateY(0);
@@ -60,12 +62,14 @@
 
 /* ---- MODAL / BOTTOM SHEET ---- */
 .motion-sheet-enter {
-    opacity: 0;
-    transform: translateY(12px);
-    animation: sheetEnter var(--dur-lg) var(--ease-standard) forwards;
+    animation: sheetEnter var(--dur-lg) var(--ease-standard) both;
 }
 
 @keyframes sheetEnter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
     to {
         opacity: 1;
         transform: translateY(0);
@@ -74,12 +78,14 @@
 
 /* ---- STAGGER (Categories grid) ---- */
 .motion-stagger {
-    opacity: 0;
-    transform: scale(0.96);
-    animation: staggerIn var(--dur-sm) var(--ease-standard) forwards;
+    animation: staggerIn var(--dur-sm) var(--ease-standard) both;
 }
 
 @keyframes staggerIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
     to {
         opacity: 1;
         transform: scale(1);

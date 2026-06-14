@@ -25,7 +25,7 @@ const Settings = () => {
     const fetchSettings = async () => {
         try {
             setLoading(true);
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             // Mocking structure if backend endpoint returns partial data, ensuring UI doesn't crash
             const res = await fetch('/api/admin/settings', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -79,7 +79,7 @@ const Settings = () => {
 
         try {
             setSaving(true);
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             const res = await fetch('/api/admin/settings', {
                 method: 'PUT',
                 headers: {
@@ -206,9 +206,9 @@ const Settings = () => {
                 {/* 4. PLATFORM CONTROL */}
                 {activeTab === 'platformControl' && (
                     <div className="animate-fade-in">
-                        <SectionHeader title="Platform Control" sub="Core operational switches for ShopLens." onSave={() => initiateSave('platformControl')} />
+                        <SectionHeader title="Platform Control" sub="Core operational switches for Aisle." onSave={() => initiateSave('platformControl')} />
 
-                        <SettingsBlock label="Platform Status" sub="Impact: Customers cannot access ShopLens during maintenance. Sellers cannot operate.">
+                        <SettingsBlock label="Platform Status" sub="Impact: Customers cannot access Aisle during maintenance. Sellers cannot operate.">
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => updateLocalState('platformControl', 'platformStatus', 'Live')}

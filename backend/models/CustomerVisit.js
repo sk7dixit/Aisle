@@ -62,7 +62,7 @@ const customerVisitSchema = mongoose.Schema(
 );
 
 // Pre-save hook to generate QR Token if not present
-customerVisitSchema.pre('save', function (next) {
+customerVisitSchema.pre('save', async function () {
     if (!this.qrToken) {
         // Token = hash(visitId + customerId + timestamp)
         // Since _id might not be ready if new, we use random source + timestamps
@@ -79,8 +79,6 @@ customerVisitSchema.pre('save', function (next) {
         // BUT user rule: "Hard rules (must be enforced): PAID_ONLINE -> paymentStatus = COMPLETED"
         // If checks passed.
     }
-
-    next();
 });
 
 // Virtual for QR Payload (Frontend Compatibility)

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const User = require('./models/User');
 
-dotenv.config({ path: 'backend/.env' });
+dotenv.config();
 
 const connectDB = async () => {
     try {
@@ -28,7 +28,7 @@ const seedSeller = async () => {
             address: '123 Market Street, Block B',
             phone: '9876543210',
             shopCategory: 'Groceries',
-            shopType: 'Grocery', // New Field
+            shopType: 'GROCERY_KIRANA', // New Field
             openingHours: '8:00 AM - 10:30 PM',
             location: { lat: 28.6139, lng: 77.2090 },
             declarationAccepted: true,
@@ -39,6 +39,8 @@ const seedSeller = async () => {
         if (seller) {
             console.log('Updating existing seller...');
             seller.shopDetails = shopData;
+            seller.phone = '9876543210';
+            seller.verificationStatus = 'approved';
             await seller.save();
         } else {
             console.log('Creating new seller...');
@@ -46,25 +48,23 @@ const seedSeller = async () => {
                 name: 'Test Seller',
                 email: 'seller@test.com',
                 password: 'password123',
+                phone: '9876543210',
                 role: 'seller',
-                shopDetails: shopData
+                shopDetails: shopData,
+                verificationStatus: 'approved'
             });
         }
 
         // 2. Create Products for this Shop
-        // We need to require Product model at the top if it's not there, but let's assume valid scope or fix imports
         const Product = require('./models/Product');
 
         console.log('Clearing old products...');
         await Product.deleteMany({ seller: seller._id });
 
         const products = [
-            { name: 'Tata Salt 1kg', category: 'Daily Essentials', price: 20, stockStatus: 'AVAILABLE' },
-            { name: 'Aashirvaad Atta 5kg', category: 'Grains & Pulses', price: 240, stockStatus: 'AVAILABLE' },
-            { name: 'Fortune Oil 1L', category: 'Oil & Spices', price: 150, stockStatus: 'AVAILABLE' },
-            { name: 'Lays Classic Salted', category: 'Snacks & Beverages', price: 20, stockStatus: 'AVAILABLE' },
-            { name: 'Maggi Noodles', category: 'Snacks & Beverages', price: 14, stockStatus: 'AVAILABLE' },
-            { name: 'Vim Dishwash Bar', category: 'Cleaning & Household', price: 10, stockStatus: 'AVAILABLE' }
+            { name: 'Tata Salt 1kg', category: 'General Provision / Kirana', categorySlug: 'general-provision', subCategory: 'Salt', mrp: 25, sellingPrice: 20, shopType: 'GROCERY_KIRANA', stockStatus: 'IN_STOCK', quantity: 50 },
+            { name: 'Aashirvaad Atta 5kg', category: 'General Provision / Kirana', categorySlug: 'general-provision', subCategory: 'Atta', mrp: 300, sellingPrice: 240, shopType: 'GROCERY_KIRANA', stockStatus: 'IN_STOCK', quantity: 20 },
+            { name: 'Fortune Oil 1L', category: 'General Provision / Kirana', categorySlug: 'general-provision', subCategory: 'Oil', mrp: 180, sellingPrice: 150, shopType: 'GROCERY_KIRANA', stockStatus: 'IN_STOCK', quantity: 30 }
         ];
 
         console.log('Inserting new products...');
@@ -72,7 +72,6 @@ const seedSeller = async () => {
             ...p,
             seller: seller._id,
             description: 'Standard item',
-            isExact: true,
             packSize: 'Standard'
         })));
 

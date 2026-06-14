@@ -1,6 +1,6 @@
-# ShopLens
+# Aisle
 
-ShopLens is a local marketplace ecosystem that connects local shops and pharmacies directly with customers. It features real-time inventory discovery, physical navigation using OpenStreetMap, digital storefronts for vendors, and a seamless developer/ecosystem dashboard.
+Aisle is a local marketplace ecosystem that connects local shops and pharmacies directly with customers. It features real-time inventory discovery, physical navigation using OpenStreetMap, digital storefronts for vendors, and a seamless developer/ecosystem dashboard.
 
 ## Features
 
@@ -20,8 +20,8 @@ ShopLens is a local marketplace ecosystem that connects local shops and pharmaci
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/sk7dixit/shoplens.git
-cd shoplens
+git clone https://github.com/sk7dixit/aisle.git
+cd aisle
 ```
 
 ### 2. Configure Environment Variables

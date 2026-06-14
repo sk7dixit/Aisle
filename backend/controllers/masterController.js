@@ -510,5 +510,68 @@ const syncCatalogProducts = async (req, res) => {
     }
 };
 
-module.exports = { searchMaster, linkProduct, seedData, submitRequest, approveRequest, getCatalog, syncCatalogProducts };
+// @desc    Reject Request (Admin)
+// @route   POST /api/master/request/:id/reject
+// @access  Private (Admin)
+const rejectRequest = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { admin_notes } = req.body;
+
+        const request = await ProductRequest.findById(id);
+        if (!request) return res.status(404).json({ message: 'Request not found' });
+
+        if (request.status !== 'PENDING') return res.status(400).json({ message: 'Request already processed' });
+
+        request.status = 'REJECTED';
+        request.admin_notes = admin_notes || 'Rejected by Admin';
+        await request.save();
+
+        res.json({ message: 'Product request rejected successfully', request });
+    } catch (error) {
+        console.error("Rejection Error:", error);
+        res.status(500).json({ message: 'Rejection failed' });
+    }
+};
+
+// @desc    Get Seller's Requests
+// @route   GET /api/master/requests/my
+// @access  Private (Seller)
+const getMyRequests = async (req, res) => {
+    try {
+        const requests = await ProductRequest.find({ requester_id: req.user._id }).sort({ createdAt: -1 });
+        res.json(requests);
+    } catch (error) {
+        console.error("Get My Requests Error:", error);
+        res.status(500).json({ message: 'Failed to fetch requests' });
+    }
+};
+
+// @desc    Get All Product Requests (Admin)
+// @route   GET /api/master/requests
+// @access  Private (Admin)
+const getAllRequests = async (req, res) => {
+    try {
+        const requests = await ProductRequest.find()
+            .populate('requester_id', 'name email shopDetails')
+            .sort({ createdAt: -1 });
+        res.json(requests);
+    } catch (error) {
+        console.error("Get All Requests Error:", error);
+        res.status(500).json({ message: 'Failed to fetch requests' });
+    }
+};
+
+module.exports = { 
+    searchMaster, 
+    linkProduct, 
+    seedData, 
+    submitRequest, 
+    approveRequest, 
+    getCatalog, 
+    syncCatalogProducts,
+    rejectRequest,
+    getMyRequests,
+    getAllRequests
+};
 

@@ -30,6 +30,9 @@ const testAIInsights = async () => {
             seller: seller._id,
             name: "Amul Gold Milk 500ml",
             category: "Dairy",
+            subCategory: "Dairy",
+            categorySlug: "dairy",
+            shopType: "GROCERY_KIRANA",
             productType: "DAILY_ESSENTIAL",
             countInStock: 50
         });
@@ -39,6 +42,10 @@ const testAIInsights = async () => {
             seller: seller._id,
             name: "Harvest Gold Bread",
             category: "Bakery",
+            subCategory: "Bakery",
+            categorySlug: "bakery",
+            shopType: "GROCERY_KIRANA",
+            productType: "STANDARD",
             countInStock: 2 // Very low
         });
 
@@ -47,6 +54,9 @@ const testAIInsights = async () => {
             seller: seller._id,
             name: "Paracetamol 500mg",
             category: "Medicine",
+            subCategory: "Medicine",
+            categorySlug: "medicine",
+            shopType: "PHARMACY",
             productType: "EXPIRY_BASED",
             expiryDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), // 10 days away
             countInStock: 100

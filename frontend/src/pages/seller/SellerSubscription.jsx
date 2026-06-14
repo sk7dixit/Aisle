@@ -678,17 +678,17 @@ const SellerSubscription = () => {
                             <div className="p-6 overflow-y-auto space-y-6 text-sm text-slate-600 leading-relaxed">
                                 <section>
                                     <h3 className="font-bold text-slate-900 mb-2">1. General Understanding</h3>
-                                    <p>ShopLens allows sellers to join and operate with a Free Premium plan by default. Subscriptions are optional upgrades meant to improve visibility, capacity, and insights. No seller is forced to buy a subscription to use ShopLens.</p>
+                                    <p>Aisle allows sellers to join and operate with a Free Premium plan by default. Subscriptions are optional upgrades meant to improve visibility, capacity, and insights. No seller is forced to buy a subscription to use Aisle.</p>
                                 </section>
 
                                 <section>
                                     <h3 className="font-bold text-slate-900 mb-2">2. Free Premium Plan (Default)</h3>
-                                    <p>When a seller signs up on ShopLens, they receive Free Premium access, which includes:</p>
+                                    <p>When a seller signs up on Aisle, they receive Free Premium access, which includes:</p>
                                     <ul className="list-disc pl-5 mt-1 space-y-1">
                                         <li>Ability to add up to 100–120 products</li>
                                         <li>Basic order management</li>
                                         <li>Standard shop visibility</li>
-                                        <li>Access to ShopLens Support (AI + system support)</li>
+                                        <li>Access to Aisle Support (AI + system support)</li>
                                     </ul>
                                     <p className="mt-2 text-amber-600 text-xs font-bold">⚠️ Free Premium does not include city-wise top selling product insights or priority visibility.</p>
                                 </section>
@@ -723,7 +723,7 @@ const SellerSubscription = () => {
 
                                 <section>
                                     <h3 className="font-bold text-slate-900 mb-2">6. Visibility & Ranking Logic</h3>
-                                    <p>ShopLens uses an internal system to decide shop and product visibility based on:</p>
+                                    <p>Aisle uses an internal system to decide shop and product visibility based on:</p>
                                     <ul className="list-disc pl-5 mt-1 space-y-1">
                                         <li>Distance between customer and shop</li>
                                         <li>Product relevance</li>
@@ -735,7 +735,7 @@ const SellerSubscription = () => {
 
                                 <section>
                                     <h3 className="font-bold text-slate-900 mb-2">7. Support Policy</h3>
-                                    <p>All sellers receive ShopLens Support (AI + system). Human support priority may be managed internally. ShopLens does not sell support as a paid service to ensure fairness.</p>
+                                    <p>All sellers receive Aisle Support (AI + system). Human support priority may be managed internally. Aisle does not sell support as a paid service to ensure fairness.</p>
                                 </section>
 
                                 <section>
@@ -745,7 +745,7 @@ const SellerSubscription = () => {
 
                                 <section>
                                     <h3 className="font-bold text-slate-900 mb-2">9. Changes & Fair Usage</h3>
-                                    <p>ShopLens may update features or pricing with advance notice. We reserve the right to limit benefits if misuse or fraud is detected.</p>
+                                    <p>Aisle may update features or pricing with advance notice. We reserve the right to limit benefits if misuse or fraud is detected.</p>
                                 </section>
 
                                 <div className="pt-4 border-t border-slate-100">

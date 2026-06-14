@@ -42,6 +42,9 @@ const SupportRequestSchema = new mongoose.Schema({
     meta: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
+    },
+    shopType: {
+        type: String
     }
 }, { timestamps: true });
 

@@ -16,7 +16,7 @@ const ProductCard = ({ title, price, store, distance, delay, icon: Icon }) => {
 
         setRequestStatus('LOADING');
         try {
-            const userStr = localStorage.getItem('shoplensUser');
+            const userStr = localStorage.getItem('aisleUser');
             if (!userStr) {
                 alert("Please login to express interest.");
                 setRequestStatus('IDLE');

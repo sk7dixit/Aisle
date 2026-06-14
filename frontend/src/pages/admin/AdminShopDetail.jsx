@@ -15,7 +15,7 @@ const AdminShopDetail = () => {
 
     const fetchDetails = async () => {
         try {
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             // Ensure endpoint matches backend route
             const res = await fetch(`/api/admin/shops/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -47,7 +47,7 @@ const AdminShopDetail = () => {
 
         setActionLoading(true);
         try {
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             const newStatus = modalAction === 'suspend' ? 'suspended' :
                 modalAction === 'reject' ? 'rejected_by_system' : 'approved';
 

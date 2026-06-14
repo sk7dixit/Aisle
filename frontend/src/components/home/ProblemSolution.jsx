@@ -45,7 +45,7 @@ const ProblemSolution = () => {
                                     <h3 className="text-2xl font-bold text-text-primary mb-2">The Local Advantage</h3>
                                     <p className="text-text-secondary leading-relaxed">
                                         <span className="text-gradient-cyan font-bold">Instant gratification.</span> <br />
-                                        Reserve it on ShopLens. Pick it up on your lunch break.
+                                        Reserve it on Aisle. Pick it up on your lunch break.
                                     </p>
                                 </div>
                             </div>

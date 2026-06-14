@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;700&display=swap');
 @import './motion.tokens.css';
 
 @tailwind base;
@@ -6,12 +6,12 @@
 @tailwind utilities;
 
 /* ================================
-   ShopLens – Jade Pebble (Strict)
+   Aisle – Jade Pebble (Strict)
    Global Theme (Two-Tone)
 ================================ */
 
 /* ================================
-   ShopLens – Clean Local (Design System)
+   Aisle – Clean Local (Design System)
    Locked: 2026-01-24
 ================================ */
 
@@ -206,16 +206,14 @@ body {
   letter-spacing: -0.02em;
   margin-bottom: 16px;
   color: var(--text-primary);
-  opacity: 0;
-  animation: heroFadeUp 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: heroFadeUp 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .hero-subtitle {
   font-size: 14px;
   letter-spacing: 0.12em;
-  opacity: 0;
   color: var(--text-secondary);
-  animation: heroFadeUp 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: heroFadeUp 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: 120ms;
 }
 
@@ -233,8 +231,7 @@ body {
   height: 6px;
   background: rgba(224, 122, 95, 0.25);
   border-radius: 4px;
-  opacity: 0;
-  animation: underlineGrow 380ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: underlineGrow 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: 260ms;
 }
 
@@ -278,8 +275,7 @@ body {
 }
 
 .card-anim {
-  opacity: 0;
-  animation: cardFadeUp 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: cardFadeUp 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease;
 }
 
@@ -303,7 +299,6 @@ body {
 
 /* Smart Greeting Animations */
 .animate-fade-in-up {
-  opacity: 0;
   animation: fade-in-up 0.8s ease-out forwards;
 }
 
@@ -681,9 +676,7 @@ body {
 
 /* Layer B: Card Micro-Animations */
 .animate-card {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: cardIn 300ms ease-out forwards;
+  animation: cardIn 300ms ease-out both;
 }
 
 .delay-1 {
@@ -699,6 +692,10 @@ body {
 }
 
 @keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);
@@ -795,7 +792,6 @@ body {
 }
 
 .animate-fade-in {
-  opacity: 0;
   /* Start hidden */
   animation: fade-in-up 0.8s ease-out forwards;
 }
@@ -844,12 +840,14 @@ body {
 
 /* Shop Transition Animations */
 .shop-profile-page {
-  opacity: 0;
-  transform: translateY(8px);
-  animation: shopEnter 220ms ease-out forwards;
+  animation: shopEnter 220ms ease-out both;
 }
 
 @keyframes shopEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);
@@ -857,11 +855,14 @@ body {
 }
 
 .sticky-search-smooth {
-  animation: stickyFade 150ms ease-out 80ms forwards;
-  opacity: 0;
+  animation: stickyFade 150ms ease-out 80ms both;
+  opacity: 1; /* Fallback */
 }
 
 @keyframes stickyFade {
+  from {
+    opacity: 0;
+  }
   to {
     opacity: 1;
   }
@@ -1714,4 +1715,375 @@ body::before {
 .z-content {
   position: relative;
   z-index: 10;
+}
+
+/* Quantum Pulse Loader Styles */
+.generating-loader-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 30px rgba(45, 36, 36, 0.05);
+}
+
+.generating-loader-text {
+  display: flex;
+  gap: 0.25rem;
+  perspective: 400px;
+  margin-bottom: 1.5rem;
+}
+
+.generating-loader-letter {
+  display: inline-block;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 800;
+  font-size: 2.25rem;
+  background: linear-gradient(135deg, #1C140F 0%, #3D405B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: generating-loader-letter-anim 3s infinite ease-in-out;
+  transform-origin: center bottom;
+}
+
+/* Staggered Delay for the letters in "Generating" */
+.generating-loader-letter:nth-child(1) { animation-delay: 0.0s; }
+.generating-loader-letter:nth-child(2) { animation-delay: 0.1s; }
+.generating-loader-letter:nth-child(3) { animation-delay: 0.2s; }
+.generating-loader-letter:nth-child(4) { animation-delay: 0.3s; }
+.generating-loader-letter:nth-child(5) { animation-delay: 0.4s; }
+.generating-loader-letter:nth-child(6) { animation-delay: 0.5s; }
+.generating-loader-letter:nth-child(7) { animation-delay: 0.6s; }
+.generating-loader-letter:nth-child(8) { animation-delay: 0.7s; }
+.generating-loader-letter:nth-child(9) { animation-delay: 0.8s; }
+.generating-loader-letter:nth-child(10) { animation-delay: 0.9s; }
+
+.generating-loader-bar {
+  position: relative;
+  width: 200px;
+  height: 4px;
+  background: rgba(61, 64, 91, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.generating-loader-bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, #2A9D8F, transparent);
+  animation: generating-loader-bar-anim 2s infinite linear;
+}
+
+@keyframes generating-loader-letter-anim {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) rotateX(-90deg);
+    text-shadow: 0 0 0px rgba(255, 255, 255, 0);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    opacity: 0;
+    transform: translateY(-20px) rotateX(90deg);
+    text-shadow: 0 0 0px rgba(255, 255, 255, 0);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes generating-loader-bar-anim {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+
+/* =======================================================
+   Home Business Creator Studio Theme Variables & Overrides
+   Specifically targets and overrides dashboard styles for 
+   "Home Businesses" category.
+   ======================================================= */
+
+.home-business-theme {
+  --card: #ffffff;
+  --ring: #ffc0cb;
+  --input: #d4d4d4;
+  --muted: #ddd9c4;
+  --accent: #ffff00;
+  --border: #d4d4d4;
+  --radius: 0.5rem;
+  --chart-1: #ffc0cb;
+  --chart-2: #87ceeb;
+  --chart-3: #ffff00;
+  --chart-4: #ff99cc;
+  --chart-5: #33cc33;
+  --popover: #ffffff;
+  --primary: #ffc0cb;
+  --sidebar: #f7f9fa;
+  --font-mono: 'Roboto Mono', monospace;
+  --font-sans: 'Poppins', sans-serif;
+  --secondary: #87ceeb;
+  --background: #f7f9fa;
+  --foreground: #333333;
+  --destructive: #ef4444;
+  --sidebar-ring: #ffc0cb;
+  --sidebar-accent: #ffff00;
+  --sidebar-border: #d4d4d4;
+  --card-foreground: #333333;
+  --sidebar-primary: #ffc0cb;
+  --muted-foreground: #6e6e6e;
+  --accent-foreground: #000000;
+  --popover-foreground: #333333;
+  --primary-foreground: #000000;
+  --sidebar-foreground: #333333;
+  --secondary-foreground: #000000;
+  --destructive-foreground: #ffffff;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-primary-foreground: #000000;
+
+  font-family: var(--font-sans) !important;
+}
+
+.home-business-theme.dark, .dark .home-business-theme {
+  --card: #2f3436;
+  --ring: #ff99cc;
+  --input: #444444;
+  --muted: #444444;
+  --accent: #87ceeb;
+  --border: #444444;
+  --radius: 0.5rem;
+  --chart-1: #ff99cc;
+  --chart-2: #33cc33;
+  --chart-3: #87ceeb;
+  --chart-4: #ffff00;
+  --chart-5: #ffcc00;
+  --popover: #2f3436;
+  --primary: #ff99cc;
+  --sidebar: #1a1d23;
+  --secondary: #33cc33;
+  --background: #1a1d23;
+  --foreground: #e5e5e5;
+  --destructive: #ef4444;
+  --sidebar-ring: #ff99cc;
+  --sidebar-accent: #87ceeb;
+  --sidebar-border: #444444;
+  --card-foreground: #e5e5e5;
+  --sidebar-primary: #ff99cc;
+  --muted-foreground: #a3a3a3;
+  --accent-foreground: #000000;
+  --popover-foreground: #e5e5e5;
+  --primary-foreground: #000000;
+  --sidebar-foreground: #e5e5e5;
+  --secondary-foreground: #000000;
+  --destructive-foreground: #ffffff;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-primary-foreground: #000000;
+}
+
+/* Background overrides */
+.home-business-theme,
+.home-business-theme.dark,
+.dark .home-business-theme {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+.home-business-theme .bg-white {
+  background-color: var(--card) !important;
+}
+
+.home-business-theme .bg-slate-50,
+.home-business-theme .bg-gray-50,
+.home-business-theme .bg-slate-100,
+.home-business-theme .bg-gray-100,
+.home-business-theme .bg-slate-50\/50,
+.home-business-theme .bg-\[\#FAF7F2\],
+.home-business-theme .bg-\[\#FDFCF8\],
+.home-business-theme div[class*="bg-[#FDFCF8]"] {
+  background-color: var(--background) !important;
+}
+
+/* Border overrides */
+.home-business-theme .border,
+.home-business-theme .border-slate-100,
+.home-business-theme .border-slate-200,
+.home-business-theme .border-gray-200,
+.home-business-theme .border-slate-300,
+.home-business-theme .border-gray-300,
+.home-business-theme .border-stone-100,
+.home-business-theme .border-stone-200,
+.home-business-theme .border-stone-300,
+.home-business-theme .border-rose-100\/40 {
+  border-color: var(--border) !important;
+}
+
+/* Text overrides */
+.home-business-theme h1,
+.home-business-theme h2,
+.home-business-theme h3,
+.home-business-theme h4,
+.home-business-theme .text-slate-950,
+.home-business-theme .text-slate-900,
+.home-business-theme .text-slate-800,
+.home-business-theme .text-slate-700,
+.home-business-theme .text-gray-900,
+.home-business-theme .text-gray-800,
+.home-business-theme .text-gray-700,
+.home-business-theme .text-stone-800 {
+  color: var(--foreground) !important;
+  font-family: var(--font-sans) !important;
+}
+
+.home-business-theme .text-slate-600,
+.home-business-theme .text-slate-500,
+.home-business-theme .text-slate-400,
+.home-business-theme .text-gray-600,
+.home-business-theme .text-gray-500,
+.home-business-theme .text-gray-400,
+.home-business-theme .text-slate-300 {
+  color: var(--muted-foreground) !important;
+}
+
+/* Sidebar Specific overrides */
+.home-business-theme header {
+  background-color: var(--card) !important;
+  border-color: var(--border) !important;
+}
+
+.home-business-theme nav {
+  background-color: var(--sidebar) !important;
+  border-color: var(--sidebar-border) !important;
+}
+
+.home-business-theme .text-slate-700 {
+  color: var(--foreground) !important;
+}
+
+/* Form controls / inputs in dark mode */
+.home-business-theme.dark input,
+.home-business-theme.dark select,
+.home-business-theme.dark textarea,
+.dark .home-business-theme input,
+.dark .home-business-theme select,
+.dark .home-business-theme textarea {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+
+.home-business-theme.dark input::placeholder,
+.dark .home-business-theme input::placeholder {
+  color: var(--muted-foreground) !important;
+  opacity: 0.7;
+}
+
+/* Active tabs in dark mode */
+.home-business-theme.dark .text-stone-800,
+.home-business-theme.dark .border-stone-800,
+.dark .home-business-theme .text-stone-800,
+.dark .home-business-theme .border-stone-800 {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Premium Alert/Notification Card Overrides for Dark Mode */
+.home-business-theme.dark .bg-emerald-50,
+.home-business-theme.dark .bg-green-50,
+.dark .home-business-theme .bg-emerald-50,
+.dark .home-business-theme .bg-green-50 {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+}
+.home-business-theme.dark .bg-emerald-50 *,
+.home-business-theme.dark .bg-green-50 *,
+.dark .home-business-theme .bg-emerald-50 *,
+.dark .home-business-theme .bg-green-50 * {
+  color: #34d399 !important;
+}
+
+.home-business-theme.dark .bg-amber-50,
+.home-business-theme.dark .bg-yellow-50,
+.dark .home-business-theme .bg-amber-50,
+.dark .home-business-theme .bg-yellow-50 {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  border-color: rgba(245, 158, 11, 0.2) !important;
+  color: #fbbf24 !important;
+}
+.home-business-theme.dark .bg-amber-50 *,
+.home-business-theme.dark .bg-yellow-50 *,
+.dark .home-business-theme .bg-amber-50 *,
+.dark .home-business-theme .bg-yellow-50 * {
+  color: #fbbf24 !important;
+}
+
+.home-business-theme.dark .bg-blue-50,
+.dark .home-business-theme .bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  border-color: rgba(59, 130, 246, 0.2) !important;
+  color: #60a5fa !important;
+}
+.home-business-theme.dark .bg-blue-50 *,
+.dark .home-business-theme .bg-blue-50 * {
+  color: #60a5fa !important;
+}
+
+.home-business-theme.dark .bg-indigo-50,
+.dark .home-business-theme .bg-indigo-50 {
+  background-color: rgba(99, 102, 241, 0.08) !important;
+  border-color: rgba(99, 102, 241, 0.2) !important;
+  color: #818cf8 !important;
+}
+.home-business-theme.dark .bg-indigo-50 *,
+.dark .home-business-theme .bg-indigo-50 * {
+  color: #818cf8 !important;
+}
+
+.home-business-theme.dark .bg-purple-50,
+.dark .home-business-theme .bg-purple-50 {
+  background-color: rgba(168, 85, 247, 0.08) !important;
+  border-color: rgba(168, 85, 247, 0.2) !important;
+  color: #c084fc !important;
+}
+.home-business-theme.dark .bg-purple-50 *,
+.dark .home-business-theme .bg-purple-50 * {
+  color: #c084fc !important;
+}
+
+.home-business-theme.dark .bg-rose-50,
+.dark .home-business-theme .bg-rose-50 {
+  background-color: rgba(244, 63, 94, 0.08) !important;
+  border-color: rgba(244, 63, 94, 0.2) !important;
+  color: #fb7185 !important;
+}
+.home-business-theme.dark .bg-rose-50 *,
+.dark .home-business-theme .bg-rose-50 * {
+  color: #fb7185 !important;
+}
+
+/* Webcam Mirror Utility */
+.mirror {
+  transform: scaleX(-1);
 }

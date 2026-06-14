@@ -1,5 +1,5 @@
 import React from 'react';
-import ShopLensLogo from '../components/ShopLensLogo';
+import AisleLogo from '../components/AisleLogo';
 import { FiMapPin, FiTruck, FiSearch, FiCheckCircle, FiArrowRight, FiActivity, FiLayers, FiPrinter } from 'react-icons/fi';
 
 const ProjectPoster = () => {
@@ -100,12 +100,12 @@ const ProjectPoster = () => {
                         <div className="mb-2 -mt-4">
                             {/* Refined Logo Section */}
                             <div className="flex items-center justify-center scale-[0.9] origin-center mb-4">
-                                <ShopLensLogo className="h-16 w-auto" />
+                                <AisleLogo className="h-16 w-auto" />
                             </div>
 
                             {/* NEW: ONE-LINE VALUE STRIP */}
                             <div className="bg-gray-100 border-y border-gray-200 py-3 px-4 flex items-center justify-between text-[#B91C1C] font-black text-[10px] tracking-widest uppercase shadow-sm">
-                                <span className="flex items-center gap-1.5"><FiMapPin size={12} /> Discover nearby shops</span>
+                                <span className="flex items-center gap-1.5"><FiMapPin size={12} /> Discover nearby businesses</span>
                                 <span className="text-gray-300">•</span>
                                 <span className="flex items-center gap-1.5"><FiCheckCircle size={12} /> Check live availability</span>
                                 <span className="text-gray-300">•</span>
@@ -121,10 +121,10 @@ const ProjectPoster = () => {
                             </h3>
                             <ul className="space-y-3 text-sm text-gray-700 font-bold ml-2">
                                 <li className="flex items-start gap-2">
-                                    <span className="text-red-600 mt-0.5">❌</span> Local shoppers don't know product availability nearby.
+                                    <span className="text-red-600 mt-0.5">❌</span> Local buyers don't know product availability nearby.
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <span className="text-red-600 mt-0.5">❌</span> Multiple shop visits waste significant time and physical effort.
+                                    <span className="text-red-600 mt-0.5">❌</span> Multiple business visits waste significant time and physical effort.
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <span className="text-red-600 mt-0.5">❌</span> Small physical vendors lack digital visibility against e-commerce giants.
@@ -142,7 +142,7 @@ const ProjectPoster = () => {
                                 <div className="space-y-4 text-xs leading-relaxed text-gray-700">
                                     <p>
                                         <strong className="text-gray-900 block border-l-4 border-red-700 pl-3 mb-2 uppercase tracking-tighter">Mission:</strong>
-                                        ShopLens is a state-of-the-art hyperlocal commerce engine that digitizes local shop inventories for instant discovery.
+                                        Aisle is a state-of-the-art hyperlocal commerce engine that digitizes nearby business & creator inventories for instant discovery.
                                     </p>
                                     <p>
                                         <strong className="text-gray-900 block border-l-4 border-gray-400 pl-3 mb-2 uppercase tracking-tighter">Scope:</strong>
@@ -156,7 +156,7 @@ const ProjectPoster = () => {
                                     </h4>
                                     <ul className="text-[10px] font-bold text-gray-800 space-y-1.5">
                                         <li className="flex items-center gap-1.5"><FiCheckCircle className="text-red-600" size={10} /> Live product availability</li>
-                                        <li className="flex items-center gap-1.5"><FiCheckCircle className="text-red-600" size={10} /> Local shop discovery</li>
+                                        <li className="flex items-center gap-1.5"><FiCheckCircle className="text-red-600" size={10} /> Nearby business & creator discovery</li>
                                         <li className="flex items-center gap-1.5"><FiCheckCircle className="text-red-600" size={10} /> Category-wise browsing</li>
                                         <li className="flex items-center gap-1.5"><FiCheckCircle className="text-red-600" size={10} /> Lightweight seller dashboard</li>
                                     </ul>
@@ -330,7 +330,7 @@ const ProjectPoster = () => {
 
             {/* Print Note */}
             <p className="no-print mt-8 text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] opacity-40">
-                PROTOTYPE EXHIBITION DOCUMENT // SHOPLENS IDENTITY
+                PROTOTYPE EXHIBITION DOCUMENT // AISLE IDENTITY
             </p>
         </div>
     );

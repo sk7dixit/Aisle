@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fi';
 import GlassCard from '../../components/ui/GlassCard';
 import { useNavigate } from 'react-router-dom';
+import CopilotWidget from '../../components/CopilotWidget';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+                const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
                 const res = await fetch('/api/admin/dashboard-stats', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -383,6 +384,7 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             </div>
+            <CopilotWidget role="admin" />
         </div>
     );
 };

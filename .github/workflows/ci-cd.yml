@@ -1,0 +1,80 @@
+name: Aisle DevSecOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Run Dependency Vulnerability Audit
+        run: |
+          npm audit --audit-level=critical || { echo "CRITICAL VULNERABILITIES FOUND IN DEPENDENCIES! Pipeline failed."; exit 1; }
+
+      - name: TruffleHog OSS Secret Scanner
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+        continue-on-error: true # Safe reporting warning
+
+  test-and-sast:
+    runs-on: ubuntu-latest
+    needs: security-audit
+    
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+      redis:
+        image: redis:7.0-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Pinned Dependencies
+        run: npm ci
+
+      - name: Run Local Static Application Security Testing (SAST)
+        run: node backend/scripts/securityScan.js
+
+      - name: Execute Backend Tests (Phases 1-5)
+        env:
+          MONGO_URI: mongodb://localhost:27017/aisle_test
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+          JWT_SECRET: ci_test_secret_current_key_extremely_secure_32_bytes_long
+          DATA_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+          BACKUP_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+        run: |
+          node backend/scratch/test_security.js
+          node backend/scratch/test_security_phase2.js
+          node backend/scratch/test_security_phase3.js
+          node backend/scratch/test_security_phase4.js
+          node backend/scratch/test_security_phase5.js

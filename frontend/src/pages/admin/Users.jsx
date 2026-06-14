@@ -25,7 +25,7 @@ const Users = () => {
     const fetchUsers = async () => {
         try {
             setLoading(true);
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             const res = await fetch('/api/admin/users', {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -67,7 +67,7 @@ const Users = () => {
 
         setActionLoading(true);
         try {
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             const endpoint = modalAction.type === 'block' ? 'block' : 'unblock';
             const body = modalAction.type === 'block'
                 ? JSON.stringify({ reason: blockReason, note: internalNote })
@@ -291,11 +291,11 @@ const Users = () => {
                                             className="w-full border border-gray-300 rounded p-3 text-sm focus:border-gray-900 outline-none h-16 resize-none"
                                         />
                                     </div>
-                                    <p className="text-xs text-gray-500">Blocking will prevent this user from accessing ShopLens.</p>
+                                    <p className="text-xs text-gray-500">Blocking will prevent this user from accessing Aisle.</p>
                                 </>
                             ) : (
                                 <p className="text-sm text-gray-600 mb-6">
-                                    Unblocking will restore access to ShopLens.
+                                    Unblocking will restore access to Aisle.
                                 </p>
                             )}
 

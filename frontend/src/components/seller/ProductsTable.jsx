@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FaEdit, FaTrash, FaPlus, FaMinus, FaBox } from 'react-icons/fa';
 import StockStatusBadge from './StockStatusBadge';
 import StockLevelBar from './StockLevelBar';
@@ -14,11 +15,23 @@ const ProductsTable = ({
     loading,
     selectedProductIds = new Set(),
     onSelectionChange = () => { },
-    onSelectAll = () => { }
+    onSelectAll = () => { },
+    isAvailabilityMode = false,
+    onToggleAvailability = () => { }
 }) => {
     const [addStockValues, setAddStockValues] = useState({}); // { id: "10" }
     const [addStockMode, setAddStockMode] = useState({});     // { id: true }
     const [updateBaselineMap, setUpdateBaselineMap] = useState({}); // { id: true }
+
+    const formatLastConfirmed = (timestamp) => {
+        if (!timestamp) return 'Never';
+        const date = new Date(timestamp);
+        const today = new Date();
+        if (date.toDateString() === today.toDateString()) {
+            return `Today at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        }
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    };
 
     if (loading) {
         return (
@@ -33,12 +46,21 @@ const ProductsTable = ({
 
     if (!products || products.length === 0) {
         return (
-            <div className="bg-white rounded-2xl shadow-sm border border-[#F3E8D3] p-12 flex flex-col items-center justify-center text-center h-80">
-                <div className="w-20 h-20 bg-[#FFFBEB] rounded-full flex items-center justify-center mb-4">
-                    <FaBox className="text-[#D6D3D1]" size={32} />
-                </div>
-                <h3 className="text-lg font-bold text-[#433422]">No products found</h3>
-                <p className="text-[#92817A]">Add products to get started with your inventory</p>
+            <div className="bg-white rounded-2xl border border-[#F3E8D3] p-8 flex flex-col items-center justify-center text-center max-w-[500px] mx-auto my-6 shadow-sm w-full">
+                <span className="text-3xl mb-3">📦</span>
+                <h3 className="text-base font-black text-[#433422] mb-1">
+                    No Products Yet
+                </h3>
+                <p className="text-[13px] text-[#92817A] mb-4 leading-normal max-w-[280px]">
+                    Add your first product to start accepting customer requests.
+                </p>
+                <Link
+                    to="/seller/add-product/manual"
+                    className="bg-[#433422] hover:bg-[#2D2317] text-white px-5 h-[38px] rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] transition-all cursor-pointer"
+                >
+                    <FaPlus size={10} />
+                    Add Product
+                </Link>
             </div>
         );
     }
@@ -84,12 +106,28 @@ const ProductsTable = ({
                             <th className="px-3 py-2 text-left text-[12px] font-bold text-[#433422] uppercase tracking-wider">
                                 Unit
                             </th>
-                            <th className="px-3 py-2 text-left text-[12px] font-bold text-[#433422] uppercase tracking-wider">
-                                Stock
-                            </th>
-                            <th className="px-3 py-2 text-left text-[12px] font-bold text-[#433422] uppercase tracking-wider">
-                                Status
-                            </th>
+                            {isAvailabilityMode ? (
+                                <>
+                                    <th className="px-3 py-2 text-left text-[12px] font-bold text-[#433422] uppercase tracking-wider">
+                                        Orders
+                                    </th>
+                                    <th className="px-3 py-2 text-left text-[12px] font-bold text-[#433422] uppercase tracking-wider">
+                                        Availability
+                                    </th>
+                                    <th className="px-3 py-2 text-left text-[12px] font-bold text-[#433422] uppercase tracking-wider">
+                                        Last Confirmed
+                                    </th>
+                                </>
+                            ) : (
+                                <>
+                                    <th className="px-3 py-2 text-left text-[12px] font-bold text-[#433422] uppercase tracking-wider">
+                                        Stock
+                                    </th>
+                                    <th className="px-3 py-2 text-left text-[12px] font-bold text-[#433422] uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                </>
+                            )}
                             <th className="px-3 py-2 text-center text-[12px] font-bold text-[#433422] uppercase tracking-wider">
                                 Actions
                             </th>
@@ -156,13 +194,19 @@ const ProductsTable = ({
                                     {/* Product */}
                                     <td className="px-3 py-2">
                                         <div className="flex items-center gap-2">
-                                            <div className="relative">
-                                                <img
-                                                    src={productImage}
-                                                    alt={product.name}
-                                                    className="w-9 h-9 rounded-md object-cover border border-[#F3E8D3]"
-                                                    onError={(e) => { e.target.src = universalFallback; }}
-                                                />
+                                            <div className="relative w-9 h-9 rounded-md overflow-hidden border border-[#F3E8D3] flex items-center justify-center bg-[#FAFAF9]">
+                                                {!productImage || productImage === universalFallback || productImage.includes('photo-1542838132-92c53300491e') ? (
+                                                    <div className="w-full h-full bg-[#433422]/5 text-[#433422] flex items-center justify-center text-[10px] font-black uppercase">
+                                                        {product.name.substring(0, 2)}
+                                                    </div>
+                                                ) : (
+                                                    <img
+                                                        src={productImage}
+                                                        alt={product.name}
+                                                        className="w-full h-full object-cover"
+                                                        onError={(e) => { e.target.src = universalFallback; }}
+                                                    />
+                                                )}
                                                 {product.needsReview && (
                                                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-amber-500 rounded-full border-2 border-white" title="Needs Category Review" />
                                                 )}
@@ -195,117 +239,159 @@ const ProductsTable = ({
                                         <span className="text-[#92817A] text-[13px]">{product.unit || 'piece'}</span>
                                     </td>
 
-                                    {/* Stock (The Main UX Change) */}
-                                    <td className="px-3 py-2 w-48">
-                                        {showRestockAction ? (
-                                            isDaily ? (
-                                                <button
-                                                    onClick={() => onRestockDaily(product._id)}
-                                                    className="w-full bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors border border-emerald-200"
-                                                >
-                                                    <FaPlus className="text-emerald-600" size={10} />
-                                                    Restock Today
-                                                </button>
-                                            ) : (
-                                                /* Periodic: Inline Input */
-                                                addStockMode[product._id] ? (
-                                                    <div className="flex flex-col gap-1 min-w-[140px] animate-fade-in-up">
-                                                        <div className="flex items-center gap-1">
-                                                            <input
-                                                                type="number"
-                                                                value={addStockValues[product._id] || ''}
-                                                                onChange={(e) => setAddStockValues(prev => ({ ...prev, [product._id]: e.target.value }))}
-                                                                placeholder="Qty"
-                                                                className="w-16 h-7 text-xs border border-emerald-300 rounded px-1 focus:outline-none focus:border-emerald-500"
-                                                                autoFocus
-                                                            />
-                                                            <button
-                                                                onClick={() => submitAddStock(product._id)}
-                                                                className="bg-emerald-600 text-white h-7 px-2 rounded text-xs font-bold hover:bg-emerald-700"
-                                                            >
-                                                                Add
-                                                            </button>
-                                                            <button
-                                                                onClick={() => toggleAddStockMode(product._id)}
-                                                                className="text-slate-400 hover:text-slate-600"
-                                                            >
-                                                                ×
-                                                            </button>
-                                                        </div>
-                                                        <label className="flex items-center gap-1.5 cursor-pointer">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={updateBaselineMap[product._id] || false}
-                                                                onChange={(e) => setUpdateBaselineMap(prev => ({ ...prev, [product._id]: e.target.checked }))}
-                                                                className="w-3 h-3 text-emerald-600 rounded border-gray-300"
-                                                            />
-                                                            <span className="text-[10px] text-slate-500">Set as full level</span>
-                                                        </label>
-                                                    </div>
-                                                ) : (
-                                                    <button
-                                                        onClick={() => toggleAddStockMode(product._id)}
-                                                        className="w-full bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors border border-amber-200"
-                                                    >
-                                                        <FaPlus className="text-amber-600" size={10} />
-                                                        Add Stock
-                                                    </button>
-                                                )
-                                            )
-                                        ) : (
-                                            /* Normal State (+/-) */
-                                            <div className="flex items-center gap-3">
-                                                <span className={`text-[13px] font-semibold ${isLowStock ? 'text-amber-600' : 'text-[#433422]'}`}>
-                                                    {product.quantity || 0}
+                                    {isAvailabilityMode ? (
+                                        <>
+                                            {/* Online Orders */}
+                                            <td className="px-3 py-2">
+                                                <span className="text-[#433422] font-semibold text-[13px]">
+                                                    {product.onlineSalesCount || 0}
                                                 </span>
-                                                <div className="flex items-center bg-[#FAFAF9] border border-[#F3E8D3] rounded-lg overflow-hidden h-7">
+                                            </td>
+
+                                            {/* Availability Pill + Toggle Button */}
+                                            <td className="px-3 py-2">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex items-center gap-1.5 leading-none mr-2">
+                                                        <div className={`w-2 h-2 rounded-full ${product.availability === 'AVAILABLE' ? 'bg-green-500' : 'bg-red-500'}`} />
+                                                        <span className={`text-[12px] font-bold ${product.availability === 'AVAILABLE' ? 'text-green-700' : 'text-red-700'}`}>
+                                                            {product.availability === 'AVAILABLE' ? 'Available' : 'Unavailable'}
+                                                        </span>
+                                                    </div>
                                                     <button
-                                                        onClick={() => onAdjustStock(product._id, -1)}
-                                                        className="px-2 hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors h-full flex items-center"
-                                                        disabled={product.quantity <= 0}
+                                                        onClick={() => onToggleAvailability(product._id, product.availability === 'AVAILABLE' ? 'UNAVAILABLE' : 'AVAILABLE')}
+                                                        className={`px-2 py-1 text-[10px] font-black uppercase tracking-wider rounded-md border transition-all ${
+                                                            product.availability === 'AVAILABLE'
+                                                                ? 'bg-white text-stone-500 border-stone-200 hover:bg-stone-50 hover:text-red-655 hover:border-red-200 cursor-pointer'
+                                                                : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 cursor-pointer'
+                                                        }`}
                                                     >
-                                                        <FaMinus size={10} />
-                                                    </button>
-                                                    <div className="w-[1px] bg-[#F3E8D3] h-4" />
-                                                    <button
-                                                        onClick={() => onAdjustStock(product._id, 1)}
-                                                        className="px-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 transition-colors h-full flex items-center"
-                                                    >
-                                                        <FaPlus size={10} />
+                                                        {product.availability === 'AVAILABLE' ? 'Mark Unavailable' : 'Mark Available'}
                                                     </button>
                                                 </div>
-                                            </div>
-                                        )}
-                                    </td>
+                                            </td>
 
-                                    {/* Status Column */}
-                                    <td className="px-3 py-2">
-                                        <div className="flex items-center gap-1.5 lead-tight">
-                                            <div className={`w-2 h-2 rounded-full ${isOutOfStock ? 'bg-red-500' :
-                                                isLowStock ? 'bg-amber-500' :
-                                                    'bg-emerald-500'
-                                                }`} />
-                                            <span className="text-[12px] font-medium text-[#57534E]">
-                                                {isOutOfStock ? 'Out of Stock' :
-                                                    isLowStock ? 'Limited' :
-                                                        'In Stock'}
-                                            </span>
-                                        </div>
-                                    </td>
+                                            {/* Last Confirmed */}
+                                            <td className="px-3 py-2">
+                                                <span className="text-[#92817A] text-[12px] font-medium">
+                                                    {formatLastConfirmed(product.lastConfirmedAt)}
+                                                </span>
+                                            </td>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {/* Stock */}
+                                            <td className="px-3 py-2 w-48">
+                                                {showRestockAction ? (
+                                                    isDaily ? (
+                                                        <button
+                                                            onClick={() => onRestockDaily(product._id)}
+                                                            className="w-full bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors border border-emerald-200"
+                                                        >
+                                                            <FaPlus className="text-emerald-600" size={10} />
+                                                            Restock Today
+                                                        </button>
+                                                    ) : (
+                                                        /* Periodic: Inline Input */
+                                                        addStockMode[product._id] ? (
+                                                            <div className="flex flex-col gap-1 min-w-[140px] animate-fade-in-up">
+                                                                <div className="flex items-center gap-1">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={addStockValues[product._id] || ''}
+                                                                        onChange={(e) => setAddStockValues(prev => ({ ...prev, [product._id]: e.target.value }))}
+                                                                        placeholder="Qty"
+                                                                        className="w-16 h-7 text-xs border border-emerald-300 rounded px-1 focus:outline-none focus:border-emerald-500"
+                                                                        autoFocus
+                                                                    />
+                                                                    <button
+                                                                        onClick={() => submitAddStock(product._id)}
+                                                                        className="bg-emerald-600 text-white h-7 px-2 rounded text-xs font-bold hover:bg-emerald-700"
+                                                                    >
+                                                                        Add
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => toggleAddStockMode(product._id)}
+                                                                        className="text-slate-400 hover:text-slate-600"
+                                                                    >
+                                                                        ×
+                                                                    </button>
+                                                                </div>
+                                                                <label className="flex items-center gap-1.5 cursor-pointer">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={updateBaselineMap[product._id] || false}
+                                                                        onChange={(e) => setUpdateBaselineMap(prev => ({ ...prev, [product._id]: e.target.checked }))}
+                                                                        className="w-3 h-3 text-emerald-600 rounded border-gray-300"
+                                                                    />
+                                                                    <span className="text-[10px] text-slate-500">Set as full level</span>
+                                                                </label>
+                                                            </div>
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => toggleAddStockMode(product._id)}
+                                                                className="w-full bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors border border-amber-200"
+                                                            >
+                                                                <FaPlus className="text-amber-600" size={10} />
+                                                                Add Stock
+                                                            </button>
+                                                        )
+                                                    )
+                                                ) : (
+                                                    /* Normal State (+/-) */
+                                                    <div className="flex items-center gap-3">
+                                                        <span className={`text-[13px] font-semibold ${isLowStock ? 'text-amber-600' : 'text-[#433422]'}`}>
+                                                            {product.quantity || 0}
+                                                        </span>
+                                                        <div className="flex items-center bg-[#FAFAF9] border border-[#F3E8D3] rounded-lg overflow-hidden h-7">
+                                                            <button
+                                                                onClick={() => onAdjustStock(product._id, -1)}
+                                                                className="px-2 hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors h-full flex items-center"
+                                                                disabled={product.quantity <= 0}
+                                                            >
+                                                                <FaMinus size={10} />
+                                                            </button>
+                                                            <div className="w-[1px] bg-[#F3E8D3] h-4" />
+                                                            <button
+                                                                onClick={() => onAdjustStock(product._id, 1)}
+                                                                className="px-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 transition-colors h-full flex items-center"
+                                                            >
+                                                                <FaPlus size={10} />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </td>
+
+                                            {/* Status Column */}
+                                            <td className="px-3 py-2">
+                                                <div className="flex items-center gap-1.5 lead-tight">
+                                                    <div className={`w-2 h-2 rounded-full ${isOutOfStock ? 'bg-red-500' :
+                                                        isLowStock ? 'bg-amber-500' :
+                                                            'bg-emerald-500'
+                                                        }`} />
+                                                    <span className="text-[12px] font-medium text-[#57534E]">
+                                                        {isOutOfStock ? 'Out of Stock' :
+                                                            isLowStock ? 'Limited' :
+                                                                'In Stock'}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </>
+                                    )}
 
                                     {/* Actions */}
                                     <td className="px-3 py-2">
                                         <div className="flex justify-center gap-1">
                                             <button
                                                 onClick={() => onEdit(product)}
-                                                className="p-1.5 text-[#92817A] hover:text-[#433422] hover:bg-white rounded-md transition-all"
+                                                className="p-1.5 text-[#92817A] hover:text-[#433422] hover:bg-white rounded-md transition-all cursor-pointer"
                                                 title="Edit"
                                             >
                                                 <FaEdit size={14} />
                                             </button>
                                             <button
                                                 onClick={() => onDelete(product._id)}
-                                                className="p-1.5 text-[#92817A] hover:text-red-600 hover:bg-red-50 rounded-md transition-all"
+                                                className="p-1.5 text-[#92817A] hover:text-red-600 hover:bg-red-50 rounded-md transition-all cursor-pointer"
                                                 title="Delete"
                                             >
                                                 <FaTrash size={14} />

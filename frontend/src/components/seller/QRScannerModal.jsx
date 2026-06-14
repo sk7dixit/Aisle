@@ -116,7 +116,7 @@ const QRScannerModal = ({ onClose, onScanSuccess }) => {
             </div>
 
             <div className="mt-8 text-white/30 text-[10px] font-black uppercase tracking-[0.3em]">
-                ShopLens Verification Core
+                Aisle Verification Core
             </div>
         </div>,
         document.body

@@ -7,6 +7,9 @@ import { useInterested } from '../../context/InterestedContext';
 import { useActivity } from '../../context/ActivityContext';
 import CertaintyBadge from '../../components/common/CertaintyBadge';
 import RatingForm from '../../components/customer/RatingForm';
+import { useAuth } from '../../context/AuthContext';
+import { useChat } from '../../context/ChatContext';
+import { toast } from 'react-hot-toast';
 
 import io from 'socket.io-client'; // Real-time sync
 
@@ -15,8 +18,8 @@ const getImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith('data:')) return path; // Base64
     if (path.startsWith('http')) return path; // External or full URL
-    // Prepend Backend URL (Hardcoded for now as per env context)
-    return `http://localhost:5000${path.startsWith('/') ? '' : '/'}${path}`;
+    // Return relative path to utilize Vite proxy and avoid CORS/CORP issues
+    return `${path.startsWith('/') ? '' : '/'}${path}`;
 };
 
 const ShopProfile = () => {
@@ -25,6 +28,23 @@ const ShopProfile = () => {
     const { hasActiveVisit, trustScore } = useActivity();
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('All');
+
+    const { user } = useAuth();
+    const { startConversation } = useChat();
+
+    const handleChatWithShop = async () => {
+        if (!user) {
+            toast.error("Please login to chat with this shop.");
+            navigate('/login');
+            return;
+        }
+        const conv = await startConversation(shop._id, 'business', shop._id);
+        if (conv) {
+            navigate(`/messages?conversationId=${conv._id}`);
+        } else {
+            toast.error("Failed to start chat with the shop.");
+        }
+    };
 
     // States for Real Data
     const [shop, setShop] = useState(null);
@@ -35,6 +55,7 @@ const ShopProfile = () => {
     const [hasVisited, setHasVisited] = useState(false);
     const [hasReviewed, setHasReviewed] = useState(false);
     const [showRatingForm, setShowRatingForm] = useState(false);
+    const isHomeBusiness = shop?.shopDetails?.shopType === 'HOME_BUSINESS' || shop?.shopDetails?.category === 'HOME_BUSINESS' || shop?.category === 'HOME_BUSINESS';
 
     useEffect(() => {
         const loadShopData = async () => {
@@ -121,7 +142,7 @@ const ShopProfile = () => {
     // Simple Visit Logging & Check
     useEffect(() => {
         const handleVisitAndCheck = async () => {
-            const userStr = localStorage.getItem('shoplensUser');
+            const userStr = localStorage.getItem('aisleUser');
             const token = userStr ? JSON.parse(userStr).token : null;
             if (!token || !shopId) return;
 
@@ -197,12 +218,12 @@ const ShopProfile = () => {
 
                 {/* STEP 5: High Rush Banner */}
                 {shop.shopDetails?.operatingMode === 'RUSH' && (
-                    <div className="mb-4 bg-orange-50 border border-orange-200 rounded-2xl p-4 flex items-start gap-3 animate-fade-in">
-                        <FaExclamationCircle className="text-orange-600 mt-1 shrink-0" />
+                    <div className="mb-4 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3 animate-fade-in">
+                        <FaExclamationCircle className="text-amber-600 mt-1 shrink-0" />
                         <div>
-                            <h3 className="font-bold text-orange-800 text-sm uppercase tracking-wide">High Rush at this Shop</h3>
-                            <p className="text-orange-700 text-xs mt-1">
-                                Availability is not guaranteed right now due to heavy crowd. Please confirm items at the shop.
+                            <h3 className="font-bold text-amber-800 text-sm uppercase tracking-wide">Check Before Visit</h3>
+                            <p className="text-amber-700 text-xs mt-1">
+                                Availability may change. Contact seller for confirmation.
                             </p>
                         </div>
                     </div>
@@ -243,7 +264,7 @@ const ShopProfile = () => {
                             <div className="text-white mb-2 motion-page-enter" style={{ animationDelay: '100ms' }}>
                                 <h1 className="text-3xl md:text-4xl font-black leading-tight drop-shadow-md tracking-tight">{shop.name}</h1>
                                 <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 text-white/90 text-sm mt-2 font-medium">
-                                    <span className="flex items-center gap-1.5"><FaMapMarkerAlt className="text-orange-400" /> {shop.address || "Local Shop"}</span>
+                                    <span className="flex items-center gap-1.5"><FaMapMarkerAlt className="text-orange-400" /> {shop.address || "Nearby Business"}</span>
                                     {shop.rating > 0 && (
                                         <>
                                             <span className="hidden md:inline text-white/40">•</span>
@@ -269,14 +290,19 @@ const ShopProfile = () => {
                         </span>
 
                         {/* Step 4: Shop Level Stock Indicator */}
-                        {/* Step 4: Shop Level Stock Indicator */}
-                        {shop.shopDetails?.operatingMode === 'GUARANTEED' ? (
-                            <span className="ml-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest backdrop-blur-md bg-blue-500/20 text-blue-100 border border-blue-500/50">
-                                Availability Confirmed Today
+                        {shop.shopDetails?.operatingMode === 'GUARANTEED' && (
+                            <span className="ml-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest backdrop-blur-md bg-emerald-500/25 text-emerald-100 border border-emerald-500/50">
+                                🟢 Live Inventory
                             </span>
-                        ) : (
-                            <span className="ml-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest backdrop-blur-md bg-stone-500/20 text-stone-300 border border-stone-500/50">
-                                Availability Approximate
+                        )}
+                        {shop.shopDetails?.operatingMode === 'BEST_EFFORT' && (
+                            <span className="ml-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest backdrop-blur-md bg-blue-500/25 text-blue-100 border border-blue-500/50">
+                                🔵 Verified Availability
+                            </span>
+                        )}
+                        {shop.shopDetails?.operatingMode === 'RUSH' && (
+                            <span className="ml-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest backdrop-blur-md bg-amber-500/25 text-amber-100 border border-amber-500/50">
+                                🟡 Check Before Visit
                             </span>
                         )}
                     </div>
@@ -301,6 +327,15 @@ const ShopProfile = () => {
 
                         {/* 2.2 Action Buttons */}
                         <div className="flex items-center gap-2">
+                            {/* Chat with Shop Button */}
+                            <button
+                                onClick={handleChatWithShop}
+                                className="bg-white hover:bg-stone-100 text-stone-900 border border-stone-200 font-black uppercase tracking-widest py-2.5 px-6 rounded-xl flex items-center gap-2 transition-all shadow-md hover:shadow-lg text-[10px] cursor-pointer"
+                            >
+                                💬
+                                <span className="hidden sm:inline">Chat with Shop</span>
+                                <span className="sm:hidden">Chat</span>
+                            </button>
                             {/* Get Directions Button */}
                             {shop.shopLocation?.coordinates && (
                                 <button
@@ -378,8 +413,12 @@ const ShopProfile = () => {
                 {/* --- 4. PRODUCT GRID --- */}
                 <div className="mt-8">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-stone-900 text-lg font-black uppercase tracking-tight">Products ({filteredProducts.length})</h2>
-                        <div className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">Live Inventory</div>
+                        <h2 className="text-stone-900 text-lg font-black uppercase tracking-tight">
+                            {isHomeBusiness ? 'Creations' : 'Products'} ({filteredProducts.length})
+                        </h2>
+                        <div className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
+                            {isHomeBusiness ? 'Handcrafted Catalog' : 'Live Inventory'}
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
@@ -387,8 +426,17 @@ const ShopProfile = () => {
                             <div key={product.id} className="motion-card" style={{ animationDelay: `${idx * 50}ms` }}>
                                 <ProductCard
                                     product={product}
-                                    shop={{ id: shopId, name: shop.name }}
+                                    shop={{
+                                        id: shopId,
+                                        name: shop.name,
+                                        phone: shop.phone || shop.shopDetails?.phone,
+                                        address: shop.address || shop.shopDetails?.address,
+                                        isOpen: shop.isOpen,
+                                        openingHours: shop.shopDetails?.openingHours || "9:00 AM - 9:00 PM",
+                                        lastActiveAt: shop.shopDetails?.lastActiveAt || shop.sellerStats?.lastActiveAt
+                                    }}
                                     operatingMode={shop.shopDetails?.operatingMode}
+                                    isHomeBusiness={isHomeBusiness}
                                 />
                             </div>
                         ))}
@@ -410,14 +458,56 @@ const ShopProfile = () => {
 
 
 // --- SUB-COMPONENT: The Product Card (Handles Stock Logic) ---
-const ProductCard = ({ product, shop, operatingMode }) => {
+const ProductCard = ({ product, shop, operatingMode, isHomeBusiness }) => {
+    const navigate = useNavigate();
     const { updateQuantity, getQuantity } = useInterested();
+    const [currentImgIndex, setCurrentImgIndex] = useState(0);
+
+    const { user } = useAuth();
+    const { startConversation } = useChat();
+
+    const handleAskAvailability = async (e) => {
+        e.stopPropagation();
+        if (!user) {
+            toast.error("Please login to ask about availability.");
+            navigate('/login');
+            return;
+        }
+        
+        try {
+            const conv = await startConversation(shop.id, 'business', shop.id);
+            if (conv) {
+                const text = `Hi! Is the product "${product.name}" available at your shop right now?`;
+                const userStr = localStorage.getItem('aisleUser');
+                const token = JSON.parse(userStr).token;
+                await axios.post('/api/chat/messages', {
+                    conversationId: conv._id,
+                    text
+                }, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                
+                toast.success("Availability query sent!");
+                navigate(`/messages?conversationId=${conv._id}`);
+            } else {
+                toast.error("Failed to start chat.");
+            }
+        } catch (err) {
+            console.error("Ask availability error:", err);
+            toast.error("Failed to send query.");
+        }
+    };
+
+    const imagesList = product.images && product.images.length > 0
+        ? product.images
+        : [product.image || product.fallbackImage];
 
     // Use quantity-based stock status
     const stockQuantity = product.quantity || 0;
-    const isOutOfStock = stockQuantity <= 0;
-    const isLimited = stockQuantity > 0 && stockQuantity <= 5;
-    const isInStock = stockQuantity > 5;
+    const isOutOfStock = !isHomeBusiness
+        ? stockQuantity <= 0
+        : (product.homeBusinessType === 'READY_STOCK' && stockQuantity <= 0);
+    const isLimited = !isOutOfStock && stockQuantity > 0 && stockQuantity <= 5;
 
     // Get current cart quantity
     const quantity = getQuantity(shop.id, product.id);
@@ -430,7 +520,13 @@ const ProductCard = ({ product, shop, operatingMode }) => {
             productId: product.id,
             productName: product.name,
             price: product.price,
-            image: product.image
+            image: product.image,
+            shopPhone: shop.phone || "9876543210",
+            shopAddress: shop.address,
+            shopIsOpen: shop.isOpen,
+            shopHours: shop.openingHours,
+            shopLastActive: shop.lastActiveAt,
+            stockConfidence: product.stockConfidence || "MEDIUM"
         }, 1);
     };
 
@@ -444,137 +540,232 @@ const ProductCard = ({ product, shop, operatingMode }) => {
         updateQuantity({ shopId: shop.id, productId: product.id }, -1);
     };
 
-    return (
-        <div className={`group relative bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md transition-all flex flex-col overflow-hidden ${isOutOfStock ? 'opacity-60' : ''}`}>
+    const handleCardClick = () => {
+        navigate(`/product/${product.id}`);
+    };
 
-            {/* 1. Image Area */}
-            <div className="relative h-44 w-full bg-white p-4 flex items-center justify-center overflow-hidden">
-                <img
-                    src={getImageUrl(product.image) || product.fallbackImage}
-                    alt={product.name}
-                    className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-500"
-                    onError={(e) => { e.target.src = product.fallbackImage || "https://via.placeholder.com/150"; }}
-                />
+    const handlePrevImg = (e) => {
+        e.stopPropagation();
+        setCurrentImgIndex(prev => (prev - 1 + imagesList.length) % imagesList.length);
+    };
+
+    const handleNextImg = (e) => {
+        e.stopPropagation();
+        setCurrentImgIndex(prev => (prev + 1) % imagesList.length);
+    };
+
+    return (
+        <div 
+            onClick={handleCardClick}
+            className={`group relative bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md transition-all flex flex-col overflow-hidden cursor-pointer ${isOutOfStock ? 'opacity-60' : ''}`}
+        >
+            {/* 1. Image Area / Carousel */}
+            <div className="relative h-48 w-full bg-slate-50 flex items-center justify-center overflow-hidden">
+                {(!imagesList[currentImgIndex] || 
+                  imagesList[currentImgIndex].includes('photo-1542838132-92c53300491e') || 
+                  imagesList[currentImgIndex] === "/placeholder-product.png") ? (
+                    <div className="w-full h-full p-4 flex flex-col items-center justify-center bg-gradient-to-br from-amber-500/5 to-slate-100 text-slate-800 text-center font-bold">
+                        <span className="text-[8px] font-black uppercase tracking-[0.15em] text-amber-500 mb-1 leading-none">{product.brand || 'Product'}</span>
+                        <span className="text-[11px] font-black text-slate-700 line-clamp-3 leading-snug px-2">{product.name}</span>
+                    </div>
+                ) : (
+                    <img
+                        src={getImageUrl(imagesList[currentImgIndex]) || product.fallbackImage}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => { e.target.src = product.fallbackImage || "https://via.placeholder.com/150"; }}
+                    />
+                )}
+
+                {/* Carousel Controls (Only if multiple images) */}
+                {imagesList.length > 1 && (
+                    <>
+                        <button
+                            type="button"
+                            onClick={handlePrevImg}
+                            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 text-xs font-bold"
+                        >
+                            ‹
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleNextImg}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 text-xs font-bold"
+                        >
+                            ›
+                        </button>
+                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+                            {imagesList.map((_, i) => (
+                                <span
+                                    key={i}
+                                    className={`w-1.5 h-1.5 rounded-full transition-all ${i === currentImgIndex ? 'bg-indigo-600 scale-125' : 'bg-slate-300'}`}
+                                />
+                            ))}
+                        </div>
+                    </>
+                )}
 
                 {/* STOCK STATUS BADGE - Top Right */}
-                <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
-                    {/* Step 6: Inventory Type Badges */}
-                    {product.inventoryType === 'LOOSE' && (
-                        <span className="bg-stone-100/90 text-stone-600 text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm border border-stone-200">
-                            Loose Item
-                        </span>
-                    )}
-                    {product.inventoryType === 'DAILY' && (
-                        <span className="bg-emerald-50/90 text-emerald-700 text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm border border-emerald-200">
-                            Fresh Today
-                        </span>
-                    )}
-
-                    {/* Status / Confidence Badge Chain */}
-                    {/* Status / Confidence Badge Chain (Refactored Logic) */}
-                    {isOutOfStock ? (
-                        <span className="flex items-center gap-1 bg-red-50 border border-red-200 text-red-700 text-[10px] font-bold px-2 py-1 rounded-full">
-                            <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
-                            Out of Stock
-                        </span>
+                <div className="absolute top-2 right-2 flex flex-col items-end gap-1 z-10">
+                    {isHomeBusiness ? (
+                        <>
+                            {product.homeBusinessType === 'MADE_TO_ORDER' ? (
+                                <span className="bg-amber-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                                    🎂 Made To Order
+                                </span>
+                            ) : isOutOfStock ? (
+                                <span className="bg-rose-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                                    Sold Out
+                                </span>
+                            ) : (
+                                <span className="bg-emerald-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                                    📦 Ready Stock
+                                </span>
+                            )}
+                        </>
                     ) : (
-                        (() => {
-                            // User Mandated Logic
-                            if (operatingMode === 'GUARANTEED') {
-                                return (
-                                    <span className="flex items-center gap-1 bg-green-50 border border-green-200 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
-                                        Available Today
-                                    </span>
-                                );
-                            } else if (operatingMode === 'BEST_EFFORT') {
-                                return product.stockConfidence === 'MEDIUM' ? (
-                                    <span className="flex items-center gap-1 bg-yellow-50 border border-yellow-200 text-yellow-700 text-[10px] font-bold px-2 py-1 rounded-full">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-yellow-600"></span>
-                                        Limited Availability
-                                    </span>
-                                ) : (
-                                    <span className="flex items-center gap-1 bg-green-50 border border-green-200 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
-                                        Available
-                                    </span>
-                                );
-                            } else {
-                                // RUSH
-                                return (
-                                    <span className="flex items-center gap-1 bg-orange-50 border border-orange-200 text-orange-700 text-[10px] font-bold px-2 py-1 rounded-full">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-orange-600"></span>
-                                        Availability Not Guaranteed
-                                    </span>
-                                );
-                            }
-                        })()
+                        <>
+                            {/* Step 6: Inventory Type Badges */}
+                            {product.inventoryType === 'LOOSE' && (
+                                <span className="bg-stone-100/90 text-stone-600 text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm border border-stone-200">
+                                    Loose Item
+                                </span>
+                            )}
+                            {product.inventoryType === 'DAILY' && (
+                                <span className="bg-emerald-50/90 text-emerald-700 text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm border border-emerald-200">
+                                    Fresh Today
+                                </span>
+                            )}
+
+                            {isOutOfStock ? (
+                                <span className="flex items-center gap-1 bg-red-50 border border-red-200 text-red-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                                    Out of Stock
+                                </span>
+                            ) : (
+                                (() => {
+                                    if (operatingMode === 'GUARANTEED') {
+                                        return (
+                                            <span className="flex items-center gap-1 bg-green-50 border border-green-200 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                                Available Today
+                                            </span>
+                                        );
+                                    } else if (operatingMode === 'BEST_EFFORT') {
+                                        return product.stockConfidence === 'MEDIUM' ? (
+                                            <span className="flex items-center gap-1 bg-yellow-50 border border-yellow-200 text-yellow-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-yellow-600"></span>
+                                                Limited Availability
+                                            </span>
+                                        ) : (
+                                            <span className="flex items-center gap-1 bg-green-50 border border-green-200 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                                Available
+                                            </span>
+                                        );
+                                    } else {
+                                        return (
+                                            <span className="flex items-center gap-1 bg-orange-50 border border-orange-200 text-orange-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-orange-600"></span>
+                                                Availability Not Guaranteed
+                                            </span>
+                                        );
+                                    }
+                                })()
+                            )}
+                        </>
                     )}
                 </div>
             </div>
 
-            {/* Category Tooltip (Optional visual) */}
-            {!isOutOfStock && (
-                <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="bg-stone-800/80 text-white text-[9px] px-2 py-0.5 rounded backdrop-blur-sm">
-                        {product.category}
-                    </span>
-                </div>
-            )}
-
             {/* 2. Content Area */}
             <div className="p-4 flex flex-col flex-grow">
                 <div className="flex-grow">
-                    <h3 className="text-sm font-bold text-stone-800 leading-tight mb-1 line-clamp-2 min-h-[40px]">
+                    <h3 className="text-sm font-black text-slate-800 leading-tight mb-1 line-clamp-1">
                         {product.name}
                     </h3>
-                    <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">{product.category}</p>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{product.category}</p>
+                    
+                    {/* Story snippet for Home Business */}
+                    {isHomeBusiness && product.productStory && (
+                        <p className="text-[11px] text-slate-500 italic mt-2 line-clamp-2 leading-snug border-l-2 border-indigo-100 pl-2">
+                            "{product.productStory}"
+                        </p>
+                    )}
                 </div>
+
+                {/* Subtext info (Prep time / Qty left) */}
+                {isHomeBusiness && (
+                    <div className="mt-3 text-[10px] font-bold text-slate-500 flex items-center gap-1.5">
+                        {product.homeBusinessType === 'MADE_TO_ORDER' ? (
+                            <span className="bg-amber-50 text-amber-700 px-2 py-0.5 rounded">🧑‍🍳 Prep: {product.preparationTime}</span>
+                        ) : (
+                            <span className={`px-2 py-0.5 rounded ${stockQuantity <= 5 ? 'bg-rose-50 text-rose-700' : 'bg-slate-50 text-slate-700'}`}>
+                                📦 Stock: {stockQuantity} {product.unit || 'pieces'}
+                            </span>
+                        )}
+                    </div>
+                )}
 
                 {/* 3. Price & Action */}
                 <div className="mt-4 flex items-center justify-between">
                     <div className="flex flex-col">
                         <span className="text-base font-black text-stone-900 leading-none">{product.price}</span>
-                        {product.mrp && (
+                        {product.mrp && !isHomeBusiness && (
                             <span className="text-[10px] text-stone-400 line-through mt-0.5">{product.mrp}</span>
                         )}
                     </div>
 
-                    {/* QUANTITY CONTROLLER */}
-                    {isOutOfStock ? (
+                    <div className="flex items-center gap-2">
+                        {/* Ask Availability Button */}
                         <button
-                            disabled
-                            className="w-9 h-9 rounded-xl flex items-center justify-center bg-stone-200 text-stone-400 cursor-not-allowed"
+                            onClick={handleAskAvailability}
+                            title="Ask Availability"
+                            className="w-9 h-9 rounded-xl flex items-center justify-center bg-stone-100 hover:bg-indigo-50 text-slate-750 hover:text-indigo-600 transition-all border border-stone-200/60 shadow-sm cursor-pointer"
                         >
-                            ✕
+                            💬
                         </button>
-                    ) : quantity === 0 ? (
-                        <button
-                            onClick={handleAdd}
-                            className="w-9 h-9 rounded-xl flex items-center justify-center bg-stone-900 text-white hover:bg-orange-500 hover:shadow-orange-200 transition-all shadow-sm"
-                        >
-                            +
-                        </button>
-                    ) : (
-                        <div className="flex items-center bg-stone-900 text-white rounded-xl shadow-md h-9 overflow-hidden">
+
+                        {/* QUANTITY CONTROLLER */}
+                        {isOutOfStock ? (
                             <button
-                                onClick={handleDecrement}
-                                className="w-8 h-full flex items-center justify-center hover:bg-stone-700 active:bg-stone-600 transition-colors"
+                                disabled
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-9 h-9 rounded-xl flex items-center justify-center bg-stone-200 text-stone-400 cursor-not-allowed"
                             >
-                                -
+                                ✕
                             </button>
-                            <span className="w-6 text-center text-xs font-bold">{quantity}</span>
+                        ) : quantity === 0 ? (
                             <button
-                                onClick={handleIncrement}
-                                className="w-8 h-full flex items-center justify-center hover:bg-stone-700 active:bg-stone-600 transition-colors"
+                                onClick={handleAdd}
+                                className="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-900 text-white hover:bg-indigo-600 hover:shadow-indigo-200 transition-all shadow-sm font-black"
                             >
                                 +
                             </button>
-                        </div>
-                    )}
+                        ) : (
+                            <div 
+                                onClick={(e) => e.stopPropagation()}
+                                className="flex items-center bg-slate-900 text-white rounded-xl shadow-md h-9 overflow-hidden"
+                            >
+                                <button
+                                    onClick={handleDecrement}
+                                    className="w-8 h-full flex items-center justify-center hover:bg-slate-700 active:bg-slate-600 transition-colors font-black"
+                                >
+                                    -
+                                </button>
+                                <span className="w-6 text-center text-xs font-bold">{quantity}</span>
+                                <button
+                                    onClick={handleIncrement}
+                                    className="w-8 h-full flex items-center justify-center hover:bg-slate-700 active:bg-slate-600 transition-colors font-black"
+                                >
+                                    +
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 

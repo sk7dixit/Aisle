@@ -23,7 +23,7 @@ export const benefits = [
     {
         id: 4,
         title: 'Community First',
-        description: 'Connect with neighbors and shop owners. Build relationships that make your community stronger.',
+        description: 'Connect with neighbors and local businesses. Build relationships that make your community stronger.',
         icon: 'Users',
         color: 'teal'
     }
@@ -39,7 +39,7 @@ export const howItWorks = [
     {
         step: 2,
         title: 'Locate',
-        description: 'See which nearby shops have it.',
+        description: 'See which nearby businesses have it.',
         icon: 'MapPin'
     },
     {
@@ -123,7 +123,7 @@ export const testimonials = [
         location: "Mission District",
         image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&h=200&fit=crop",
         rating: 5,
-        text: "I used to order everything online and wait days. Now I check ShopLens, walk two blocks, and support my neighbors. It's changed how I shop completely."
+        text: "I used to order everything online and wait days. Now I check Aisle, walk two blocks, and support my neighbors. It's changed how I shop completely."
     },
     {
         id: 2,
@@ -132,7 +132,7 @@ export const testimonials = [
         location: "Downtown",
         image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&fit=crop",
         rating: 5,
-        text: "Since listing on ShopLens, my foot traffic has doubled. People come in knowing exactly what they want. It's the best tool for local businesses I've ever seen."
+        text: "Since listing on Aisle, my foot traffic has doubled. People come in knowing exactly what they want. It's the best tool for local businesses I've ever seen."
     },
     {
         id: 3,
@@ -141,7 +141,7 @@ export const testimonials = [
         location: "North Beach",
         image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&h=200&fit=crop",
         rating: 5,
-        text: "Finding specialty ingredients for my cooking used to be a treasure hunt. ShopLens makes it effortless. I save so much time and discover cute shops along the way."
+        text: "Finding specialty ingredients for my cooking used to be a treasure hunt. Aisle makes it effortless. I save so much time and discover neighborhood creators and businesses along the way."
     },
     {
         id: 4,

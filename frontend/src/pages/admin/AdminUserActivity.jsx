@@ -15,7 +15,7 @@ const AdminUserActivity = () => {
     useEffect(() => {
         const fetchActivity = async () => {
             try {
-                const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+                const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
                 const res = await fetch(`/api/admin/users/${id}/activity`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -36,7 +36,7 @@ const AdminUserActivity = () => {
             if (!id) return;
             setAccountLoading(true);
             try {
-                const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+                const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
                 const res = await fetch(`/api/admin/users/${id}/account-details`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });

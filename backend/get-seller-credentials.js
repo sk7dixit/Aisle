@@ -30,7 +30,7 @@ const run = async () => {
             console.log('No sellers found. Creating demo seller...');
             const newSeller = await User.create({
                 name: 'Demo Seller',
-                email: 'seller@shoplens.com',
+                email: 'seller@aisle.com',
                 password: 'password123',
                 role: 'seller',
                 phone: '9876543210',

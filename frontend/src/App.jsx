@@ -14,6 +14,7 @@ import AuthPage from './pages/AuthPage';
 import About from './pages/About';
 import HowItWorks from './pages/HowItWorks';
 import ForShops from './pages/ForShops';
+import HomeBusiness from './pages/HomeBusiness';
 import Explore from './pages/Explore';
 import Demo from './pages/Demo';
 import Guide from './pages/Guide';
@@ -43,13 +44,16 @@ import Settings from './pages/admin/Settings';
 import Products from './pages/admin/Products';
 import Reports from './pages/admin/Reports';
 import ActivityLogs from './pages/admin/ActivityLogs';
+import SecurityCommandCenter from './pages/admin/SecurityCommandCenter';
 import Announcements from './pages/admin/Announcements';
 import NotificationCenter from './pages/admin/NotificationCenter';
 import AdminProfile from './pages/admin/AdminProfile';
 import FaceRequests from './pages/admin/FaceRequests';
 import AdminAssistedListings from './pages/admin/AdminAssistedListings';
+import AdminCatalogRequests from './pages/admin/AdminCatalogRequests';
 import LocationVerification from './pages/admin/LocationVerification';
 import LocationHealth from './pages/admin/LocationHealth';
+import TrustDashboard from './pages/admin/TrustDashboard';
 // Seller Dashboard (New Modular Structure)
 import SellerLayout from './components/seller/SellerLayout';
 import SellerHome from './pages/seller/SellerHome';
@@ -72,6 +76,7 @@ import BulkMappingPage from './pages/seller/product-add/BulkMappingPage'; // Ste
 import BulkPreviewPage from './pages/seller/product-add/BulkPreviewPage'; // NEW Step 3
 import CatalogProductAdd from './pages/seller/product-add/CatalogProductAdd';
 import CatalogReviewPage from './pages/seller/product-add/CatalogReviewPage'; // NEW Step 2
+import CatalogRequestsPage from './pages/seller/CatalogRequestsPage';
 
 import AssistedProductAdd from './pages/seller/product-add/AssistedProductAdd';
 import ImageListingPage from './pages/seller/ImageListingPage';
@@ -81,6 +86,7 @@ import ServiceHome from './pages/seller/ServiceHome';
 import ServiceRequests from './pages/seller/ServiceRequests';
 import ServiceProfile from './pages/seller/ServiceProfile';
 import { ServiceEarnings, ServiceReviews } from './pages/seller/ServiceModules';
+import BookingsPage from './pages/seller/bookings/BookingsPage';
 
 import AdminShopDetail from './pages/admin/AdminShopDetail'; // NEW
 import AdminUserActivity from './pages/admin/AdminUserActivity'; // NEW Forensic Timeline
@@ -108,6 +114,8 @@ import ShopProfile from './pages/customer/ShopProfile';
 import VisitsOrdersPage from './pages/customer/VisitsOrdersPage';
 import { InterestedProvider } from './context/InterestedContext';
 import { ActivityProvider } from './context/ActivityContext';
+import { ChatProvider } from './context/ChatContext';
+import CustomerMessages from './pages/customer/CustomerMessages';
 import Checkout from './pages/customer/Checkout';
 
 import CustomerSearchResults from './pages/customer/CustomerSearchResults';
@@ -120,6 +128,9 @@ import CustomerDiscover from './pages/customer/CustomerDiscover';
 import Bookings from './pages/customer/Bookings';
 import AddAddressPage from './pages/customer/AddAddressPage'; // NEW Step 2
 import ProjectPoster from './pages/ProjectPoster';
+import CustomerCreators from './pages/customer/CustomerCreators';
+import CreatorProfile from './pages/customer/CreatorProfile';
+
 
 // Admin Auth
 import AdminLogin from './pages/admin/AdminLogin';
@@ -130,58 +141,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from './context/AuthContext';
 
 // 6. Dynamic Seller Router
-const SellerDashboardRouter = () => {
-  const { user } = useAuth();
+import SellerDashboardRouter from './dashboards/SellerDashboardRouter';
 
-  // Logic: Decide which dashboard to show based on shopType
-  if (user?.shopDetails?.category === 'Services' || user?.shopDetails?.shopCategory === 'Services') {
-    return (
-      <Routes>
-        <Route element={<ServiceLayout />}>
-          <Route path="home" element={<ServiceHome />} />
-          <Route path="requests" element={<ServiceRequests />} />
-          <Route path="earnings" element={<ServiceEarnings />} />
-          <Route path="reviews" element={<ServiceReviews />} />
-          <Route path="profile" element={<ServiceProfile />} />
-          <Route path="settings" element={<SellerSettings />} />
-          <Route index element={<Navigate to="/seller/home" replace />} />
-          {/* Catch-all for service sellers - redirect to home if they try to access retail paths */}
-          <Route path="*" element={<Navigate to="/seller/home" replace />} />
-        </Route>
-      </Routes>
-    );
-  }
-
-  // Default: Retail Dashboard
-  return (
-    <Routes>
-      <Route element={<SellerLayout />}>
-        <Route path="home" element={<SellerHome />} />
-        <Route path="products" element={<SellerProducts />} />
-        <Route path="inventory" element={<SellerInventory />} />
-        <Route path="customer-visits" element={<SellerCustomerVisits />} /> {/* One Source of Truth */}
-        <Route path="profile" element={<SellerProfile />} />
-        <Route path="settings" element={<SellerSettings />} />
-        <Route path="add-product/manual" element={<SellerAddProductManual />} />
-        <Route path="add-product/voice" element={<VoiceProductAdd />} />
-        <Route path="add-product/vision" element={<VisionProductAdd />} />
-        <Route path="add-product/bulk" element={<BulkProductAdd />} />
-        <Route path="add-product/bulk/mapping" element={<BulkMappingPage />} /> {/* Step 2 */}
-        <Route path="add-product/bulk/preview" element={<BulkPreviewPage />} /> {/* NEW Step 3 */}
-        <Route path="product-add/catalog" element={<CatalogProductAdd />} />
-        <Route path="product-add/catalog-review" element={<CatalogReviewPage />} />
-        <Route path="add-product/assisted" element={<AssistedProductAdd />} />
-        <Route path="image-listing" element={<ImageListingPage />} />
-        <Route path="history" element={<SellerHistory />} />
-        <Route path="offers" element={<SellerOffers />} />
-        <Route path="feedback" element={<SellerFeedback />} />
-        <Route path="subscription" element={<SellerSubscription />} />
-        <Route index element={<Navigate to="/seller/home" replace />} />
-        <Route path="*" element={<Navigate to="/seller/home" replace />} />
-      </Route>
-    </Routes>
-  );
-};
 
 function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -237,8 +198,11 @@ function App() {
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="reports" element={<Reports />} />
                 <Route path="assisted-listing" element={<AdminAssistedListings />} />
+                <Route path="catalog-requests" element={<AdminCatalogRequests />} />
                 <Route path="feedback" element={<AdminFeedbackInbox />} /> {/* NEW Feedback Inbox */}
                 <Route path="activity-logs" element={<ActivityLogs />} />
+                <Route path="security" element={<SecurityCommandCenter />} />
+                <Route path="trust" element={<TrustDashboard />} />
                 <Route path="announcements" element={<Announcements />} />
                 <Route path="notifications" element={<NotificationCenter />} />
                 <Route path="settings" element={<Settings />} />
@@ -253,6 +217,7 @@ function App() {
               <Route path="/demo" element={<Demo />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/for-shops" element={<ForShops />} />
+              <Route path="/home-business" element={<HomeBusiness />} />
               <Route path="/guide" element={<Guide />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/careers" element={<Careers />} />
@@ -282,7 +247,9 @@ function App() {
                       <InterestedProvider>
                         <SavedProvider>
                           <ActivityProvider>
-                            <Outlet />
+                            <ChatProvider>
+                              <Outlet />
+                            </ChatProvider>
                           </ActivityProvider>
                         </SavedProvider>
                       </InterestedProvider>
@@ -307,6 +274,7 @@ function App() {
                   <Route path="/notifications" element={<CustomerNotifications />} />
                   <Route path="/profile" element={<CustomerProfile />} />
                   <Route path="/settings" element={<CustomerSettings />} />
+                  <Route path="/messages" element={<CustomerMessages />} />
 
                   <Route path="/search" element={<CustomerSearchResults />} />
                   <Route path="/bookings" element={<Bookings />} /> {/* NEW Step 2 */}
@@ -314,6 +282,9 @@ function App() {
                   <Route path="/category/:slug" element={<CategoryProducts />} />
                   <Route path="/discover" element={<CustomerDiscover />} />
                   <Route path="/product/:id" element={<CustomerItemDetail />} />
+                  <Route path="/creators" element={<CustomerCreators />} />
+                  <Route path="/creator/:id" element={<CreatorProfile />} />
+
                 </Route> {/* End Customer Layout */}
 
                 {/* Seller Section (Dynamic Router) */}

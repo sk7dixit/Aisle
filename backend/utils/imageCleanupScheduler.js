@@ -1,66 +1,65 @@
 const cron = require('node-cron');
 const ImageListingSession = require('../models/ImageListingSession');
 const cloudinary = require('../config/cloudinaryConfig');
+const { runDataRetentionPurge } = require('../services/dataRetentionService');
 
-// 4️⃣ CLEANUP STRATEGY (CRON / JOB)
-// Runs daily at 3:00 AM
-const startImageCleanupScheduler = () => {
-    console.log('[Cleanup Scheduler] Initialized. running daily at 3 AM.');
+const performImageCleanup = async () => {
+    console.log('[Job] Starting cleanup of abandoned image sessions...');
+    try {
+        const cutoffDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-    cron.schedule('0 3 * * *', async () => {
-        console.log('[Cleanup Scheduler] Starting cleanup of abandoned image sessions...');
+        const oldSessions = await ImageListingSession.find({
+            status: "active",
+            updatedAt: { $lt: cutoffDate }
+        });
 
-        try {
-            // Find sessions active for more than 24 hours
-            const cutoffDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
-            const oldSessions = await ImageListingSession.find({
-                status: "active",
-                updatedAt: { $lt: cutoffDate }
-            });
-
-            if (oldSessions.length === 0) {
-                console.log('[Cleanup Scheduler] No abandoned sessions found.');
-                return;
-            }
-
-            console.log(`[Cleanup Scheduler] Found ${oldSessions.length} sessions to clean.`);
+        if (oldSessions.length > 0) {
+            console.log(`[Cleanup Job] Found ${oldSessions.length} sessions to clean.`);
 
             for (const session of oldSessions) {
-                // Delete images from Cloudinary
                 for (const item of session.items) {
                     if (item.imageUrl) {
                         try {
-                            // Extract public_id from secure_url if possible, or assume simple handling
-                            // Standard Cloudinary URL: https://res.cloudinary.com/.../shoplens/camera_uploads/filename.jpg
-                            // We need 'shoplens/camera_uploads/filename'
-
                             const urlParts = item.imageUrl.split('/');
                             const filename = urlParts.pop().split('.')[0];
-                            const folder = urlParts.pop(); // camera_uploads
-                            const rootFolder = urlParts.pop(); // shoplens
+                            const folder = urlParts.pop();
+                            const rootFolder = urlParts.pop();
                             const publicId = `${rootFolder}/${folder}/${filename}`;
 
                             await cloudinary.uploader.destroy(publicId);
-                            console.log(`[Cleanup Scheduler] Deleted image: ${publicId}`);
+                            console.log(`[Cleanup Job] Deleted image: ${publicId}`);
                         } catch (err) {
-                            console.error(`[Cleanup Scheduler] Failed to delete image ${item.imageUrl}:`, err.message);
+                            console.error(`[Cleanup Job] Failed to delete image ${item.imageUrl}:`, err.message);
                         }
                     }
                 }
 
-                // Mark session as abandoned (or delete if prefer hard delete)
                 session.status = 'abandoned';
                 await session.save();
-                // await session.deleteOne(); // Option: Hard Delete
             }
-
-            console.log('[Cleanup Scheduler] Cleanup complete.');
-
-        } catch (error) {
-            console.error('[Cleanup Scheduler] Error:', error);
+        } else {
+            console.log('[Cleanup Job] No abandoned sessions found.');
         }
-    });
+
+        console.log('[Cleanup Job] Session image cleanup complete.');
+
+        // Trigger data retention purging
+        await runDataRetentionPurge();
+
+    } catch (error) {
+        console.error('[Cleanup Job Error] Error:', error);
+        throw error;
+    }
 };
 
-module.exports = { startImageCleanupScheduler };
+const startImageCleanupScheduler = () => {
+    if (process.env.DISABLE_SCHEDULERS === 'true' || process.env.NODE_ENV === 'production') {
+        console.log('[Cleanup Scheduler] Running via background workers.');
+        return;
+    }
+
+    console.log('[Cleanup Scheduler] Initialized. running daily at 3 AM.');
+    cron.schedule('0 3 * * *', performImageCleanup);
+};
+
+module.exports = { startImageCleanupScheduler, performImageCleanup };

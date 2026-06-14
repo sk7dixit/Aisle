@@ -17,7 +17,7 @@ const Announcements = () => {
 
     const fetchAnnouncements = async () => {
         try {
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             const res = await fetch('/api/admin/announcements', {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -64,7 +64,7 @@ const Announcements = () => {
 
     const handleSave = async (data) => {
         try {
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             let res;
             if (selectedAnnouncement) {
                 // Update

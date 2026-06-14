@@ -20,19 +20,23 @@ const connectDB = async () => {
 const findOrCreateSeller = async () => {
     await connectDB();
     try {
-        const sellers = await User.find({ role: 'seller' }).select('name email');
+        const count = await User.countDocuments({});
+        console.log(`Total Users Count: ${count}`);
 
+        const collections = await mongoose.connection.db.listCollections().toArray();
+        console.log('Collections in Database:', collections.map(c => c.name));
+
+        const sellers = await User.find({}).select('name email role');
         if (sellers.length > 0) {
-            console.log('FOUND EXISTING SELLERS:');
+            console.log('ALL EXISTING USERS:');
             sellers.forEach(s => {
-                console.log(`- Email: ${s.email} (Password: User defined)`);
+                console.log(`- Email: ${s.email} | Role: ${s.role} | Name: ${s.name}`);
             });
-            console.log('If you do not know the password, I can reset it for you.');
         } else {
             console.log('No sellers found. Creating demo seller...');
             const newSeller = await User.create({
                 name: 'Demo Seller',
-                email: 'seller@shoplens.com',
+                email: 'seller@aisle.com',
                 password: 'password123',
                 role: 'seller',
                 phone: '1234567890',
@@ -41,7 +45,7 @@ const findOrCreateSeller = async () => {
                     shopName: 'Demo Shop',
                     address: '123 Market St',
                     shopCategory: 'General',
-                    shopType: 'physical'
+                    shopType: 'GROCERY_KIRANA'
                 }
             });
             console.log('CREATED NEW SELLER:');

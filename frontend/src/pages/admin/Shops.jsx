@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ShopInspector from '../../components/admin/ShopInspector';
 
 /* 
   STEP 14 - SHOPS WIREFRAME EXECUTION
@@ -24,7 +25,7 @@ const Shops = () => {
     const fetchShops = async () => {
         try {
             setLoading(true);
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             const res = await fetch('/api/admin/sellers', {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -69,7 +70,7 @@ const Shops = () => {
 
         setActionLoading(true);
         try {
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             const newStatus = modalAction.type === 'suspend' ? 'suspended' : 'approved';
 
             const body = {
@@ -122,7 +123,7 @@ const Shops = () => {
             {/* 2️⃣ PAGE HEADER */}
             <div>
                 <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Shops</h1>
-                <p className="text-sm text-gray-500 mt-1">Manage shop operational status on ShopLens</p>
+                <p className="text-sm text-gray-500 mt-1">Manage shop operational status on Aisle</p>
             </div>
 
             {/* 3️⃣ PRIMARY ACTION ZONE */}

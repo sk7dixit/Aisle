@@ -1,18 +1,46 @@
-import React, { useState } from 'react';
-import { FaTag, FaPlus, FaBan, FaTrash, FaEdit, FaTimes, FaCheck } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaTag, FaPlus, FaBan, FaTrash, FaEdit, FaTimes, FaCheck, FaSpinner } from 'react-icons/fa';
+import { useAuth } from '../../context/AuthContext';
 
 const SellerOffers = () => {
+    const { token } = useAuth();
     const [offers, setOffers] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [editingOffer, setEditingOffer] = useState(null);
     const [formData, setFormData] = useState({
         title: '',
         type: 'percentage',
         value: '',
-        applicableTo: 'all',
+        applicableTo: 'All Products',
         validFrom: '',
         validUntil: ''
     });
+
+    const fetchOffers = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/seller/offers', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setOffers(data);
+            }
+        } catch (error) {
+            console.error('Error fetching offers:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (token) {
+            fetchOffers();
+        }
+    }, [token]);
 
     const hasOffers = offers.length > 0;
 
@@ -22,7 +50,7 @@ const SellerOffers = () => {
             title: '',
             type: 'percentage',
             value: '',
-            applicableTo: 'all',
+            applicableTo: 'All Products',
             validFrom: '',
             validUntil: ''
         });
@@ -31,49 +59,105 @@ const SellerOffers = () => {
 
     const openEditModal = (offer) => {
         setEditingOffer(offer);
+        const formatDate = (dStr) => {
+            if (!dStr) return '';
+            const d = new Date(dStr);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
         setFormData({
             title: offer.title,
-            type: offer.type.toLowerCase(),
+            type: offer.type || 'percentage',
             value: offer.value,
-            applicableTo: offer.match,
-            validFrom: offer.validFrom || '',
-            validUntil: offer.validUntil || ''
+            applicableTo: offer.match || 'All Products',
+            validFrom: formatDate(offer.validFrom),
+            validUntil: formatDate(offer.validUntil)
         });
         setShowModal(true);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const newOffer = {
-            id: editingOffer ? editingOffer.id : Date.now(),
+        const payload = {
             title: formData.title,
-            type: formData.type === 'percentage' ? `${formData.value}% Off` : `₹${formData.value} Off`,
-            value: formData.value,
+            type: formData.type,
+            value: Number(formData.value),
             match: formData.applicableTo,
-            status: 'Active',
-            validFrom: formData.validFrom,
-            validUntil: formData.validUntil
+            validFrom: formData.validFrom || null,
+            validUntil: formData.validUntil || null
         };
 
-        if (editingOffer) {
-            setOffers(offers.map(o => o.id === editingOffer.id ? newOffer : o));
-        } else {
-            setOffers([...offers, newOffer]);
+        try {
+            let res;
+            if (editingOffer) {
+                res = await fetch(`/api/seller/offers/${editingOffer._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+            } else {
+                res = await fetch('/api/seller/offers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+            }
+
+            if (res.ok) {
+                setShowModal(false);
+                fetchOffers();
+            } else {
+                alert('Failed to save offer');
+            }
+        } catch (error) {
+            console.error('Error submitting offer:', error);
         }
-
-        setShowModal(false);
     };
 
-    const toggleOfferStatus = (id) => {
-        setOffers(offers.map(o =>
-            o.id === id ? { ...o, status: o.status === 'Active' ? 'Disabled' : 'Active' } : o
-        ));
+    const toggleOfferStatus = async (offer) => {
+        try {
+            const nextStatus = offer.status === 'Active' ? 'Disabled' : 'Active';
+            const res = await fetch(`/api/seller/offers/${offer._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: nextStatus })
+            });
+            if (res.ok) {
+                fetchOffers();
+            }
+        } catch (error) {
+            console.error('Error toggling offer status:', error);
+        }
     };
 
-    const deleteOffer = (id) => {
+    const deleteOffer = async (id) => {
         if (window.confirm('Are you sure you want to delete this offer?')) {
-            setOffers(offers.filter(o => o.id !== id));
+            try {
+                const res = await fetch(`/api/seller/offers/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (res.ok) {
+                    fetchOffers();
+                }
+            } catch (error) {
+                console.error('Error deleting offer:', error);
+            }
         }
     };
 
@@ -101,49 +185,60 @@ const SellerOffers = () => {
             </div>
 
             {/* 2. Main Content */}
-            {hasOffers ? (
+            {loading && offers.length === 0 ? (
+                <div className="flex justify-center items-center py-24">
+                    <FaSpinner className="animate-spin text-3xl text-purple-600" />
+                </div>
+            ) : hasOffers ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {offers.map((offer) => (
-                        <div key={offer.id} className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-                            {/* Status Badge */}
-                            <div className={`absolute top-4 right-4 text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded-md ${offer.status === 'Active'
-                                ? 'bg-emerald-50 text-emerald-600'
-                                : 'bg-slate-100 text-slate-500'
-                                }`}>
-                                {offer.status}
-                            </div>
+                    {offers.map((offer) => {
+                        const isExpired = offer.validUntil ? new Date(offer.validUntil) < new Date() : false;
+                        
+                        return (
+                            <div key={offer._id} className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                {/* Status Badge */}
+                                <div className={`absolute top-4 right-4 text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded-md ${isExpired ? 'bg-red-50 text-red-500' : offer.status === 'Active'
+                                    ? 'bg-emerald-50 text-emerald-600'
+                                    : 'bg-slate-100 text-slate-500'
+                                    }`}>
+                                    {isExpired ? 'Expired' : offer.status}
+                                </div>
 
-                            <div className="mb-4">
-                                <h3 className="font-black text-slate-800 text-lg">{offer.title}</h3>
-                                <p className="text-sm text-purple-600 font-bold mt-1">{offer.type}</p>
-                                <p className="text-xs text-slate-400 mt-1">Applies to: {offer.match}</p>
-                                {offer.validUntil && (
-                                    <p className="text-xs text-slate-400 mt-1">Valid until: {new Date(offer.validUntil).toLocaleDateString()}</p>
-                                )}
-                            </div>
+                                <div className="mb-4">
+                                    <h3 className="font-black text-slate-800 text-lg">{offer.title}</h3>
+                                    <p className="text-sm text-purple-600 font-bold mt-1">
+                                        {offer.type === 'percentage' ? `${offer.value}% Off` : `₹${offer.value} Off`}
+                                    </p>
+                                    <p className="text-xs text-slate-400 mt-1">Applies to: {offer.match || 'All Products'}</p>
+                                    {offer.validUntil && (
+                                        <p className="text-xs text-slate-400 mt-1">Valid until: {new Date(offer.validUntil).toLocaleDateString()}</p>
+                                    )}
+                                </div>
 
-                            <div className="flex gap-2 mt-4 pt-4 border-t border-slate-50">
-                                <button
-                                    onClick={() => openEditModal(offer)}
-                                    className="flex-1 bg-slate-50 text-slate-600 font-bold text-xs py-2 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center gap-1"
-                                >
-                                    <FaEdit /> Edit
-                                </button>
-                                <button
-                                    onClick={() => toggleOfferStatus(offer.id)}
-                                    className="flex-1 bg-slate-50 text-slate-600 font-bold text-xs py-2 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center gap-1"
-                                >
-                                    {offer.status === 'Active' ? <><FaBan /> Disable</> : <><FaCheck /> Enable</>}
-                                </button>
-                                <button
-                                    onClick={() => deleteOffer(offer.id)}
-                                    className="w-10 bg-red-50 text-red-500 font-bold text-xs py-2 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center"
-                                >
-                                    <FaTrash />
-                                </button>
+                                <div className="flex gap-2 mt-4 pt-4 border-t border-slate-50">
+                                    <button
+                                        onClick={() => openEditModal(offer)}
+                                        className="flex-1 bg-slate-50 text-slate-600 font-bold text-xs py-2 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center gap-1"
+                                    >
+                                        <FaEdit /> Edit
+                                    </button>
+                                    <button
+                                        onClick={() => toggleOfferStatus(offer)}
+                                        className="flex-1 bg-slate-50 text-slate-600 font-bold text-xs py-2 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center gap-1"
+                                        disabled={isExpired}
+                                    >
+                                        {offer.status === 'Active' ? <><FaBan /> Disable</> : <><FaCheck /> Enable</>}
+                                    </button>
+                                    <button
+                                        onClick={() => deleteOffer(offer._id)}
+                                        className="w-10 bg-red-50 text-red-500 font-bold text-xs py-2 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center"
+                                    >
+                                        <FaTrash />
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             ) : (
                 /* 3. Empty State */

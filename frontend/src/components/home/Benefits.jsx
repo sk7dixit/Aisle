@@ -40,7 +40,7 @@ const Benefits = () => {
                         </span>
                     </div>
                     <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                        Why Neighbors Love ShopLens
+                        Why Neighbors Love Aisle
                     </h2>
                     <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                         Shopping, stripped of nonsense. No markups, no hidden fees, just direct local connections.

@@ -93,7 +93,7 @@ const LiveSpotlight = () => {
                                 transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
                                 className="absolute top-5 left-5 bg-black/60 backdrop-blur-md text-white text-[9px] font-black px-3.5 py-1.5 rounded-xl uppercase tracking-[0.2em] flex items-center gap-2 z-10"
                             >
-                                {currentItem.type === 'SHOP' ? <><FaStore className="text-[#E07A5F]" /> Local Shop</> : <><FaBoxOpen className="text-[#E07A5F]" /> Hot Product</>}
+                                {currentItem.type === 'SHOP' ? <><FaStore className="text-[#E07A5F]" /> Business</> : <><FaBoxOpen className="text-[#E07A5F]" /> Hot Product</>}
                             </motion.div>
                         </AnimatePresence>
                     </div>
@@ -138,7 +138,7 @@ const LiveSpotlight = () => {
                             }}
                             className="relative group overflow-hidden w-full md:w-fit bg-[#E07A5F] text-white hover:bg-[#3D405B] px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.25em] transition-all shadow-lg active:scale-95"
                         >
-                            <span className="relative z-10">{currentItem.type === 'SHOP' ? 'Visit Store' : 'View Availability'}</span>
+                            <span className="relative z-10">{currentItem.type === 'SHOP' ? 'Visit Business' : 'View Availability'}</span>
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-sweep duration-700" />
                         </button>
                     </div>

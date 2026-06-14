@@ -245,7 +245,7 @@ const AnnouncementInspector = ({ announcement, onClose, onSave, onPublish }) => 
                                 >
                                     <FiSave /> Save Draft
                                 </button>
-                                {JSON.parse(localStorage.getItem('shoplensUser') || '{}').role === 'moderator' ? (
+                                {JSON.parse(localStorage.getItem('aisleUser') || '{}').role === 'moderator' ? (
                                     <button
                                         disabled
                                         className="flex-1 py-3 rounded-xl bg-gray-200 text-gray-400 font-bold cursor-not-allowed flex items-center justify-center gap-2"

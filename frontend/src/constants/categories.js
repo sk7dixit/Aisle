@@ -16,12 +16,11 @@ export const CATEGORIES = [
     { id: 'organic-gourmet', label: 'Organic / Gourmet', icon: '🥣', group: 'Daily Needs & Food' },
 
     // --- 2. Electrical, Hardware & Auto ---
-    { id: 'electrical-lighting', label: 'Electrical & Lighting', icon: '💡', group: 'Electrical & Hardware' },
-    { id: 'hardware-fittings', label: 'Hardware & Furniture Fittings', icon: '🔩', group: 'Electrical & Hardware' },
-    { id: 'plumbing-sanitary', label: 'Plumbing & Sanitaryware', icon: '🚿', group: 'Electrical & Hardware' },
-    { id: 'paints-waterproofing', label: 'Paints & Waterproofing', icon: '🎨', group: 'Electrical & Hardware' },
-    { id: 'automobile-spares', label: 'Automobile Spares & Care', icon: '🏍️', group: 'Electrical & Hardware' },
-    { id: 'tools-industrial', label: 'Tools & Industrial Supply', icon: '🔧', group: 'Electrical & Hardware' },
+    { id: 'electrical-shop', label: 'Electrical Shop', icon: '💡', group: 'Electrical & Hardware' },
+    { id: 'hardware-sanitary', label: 'Hardware & Sanitary', icon: '🔩', group: 'Electrical & Hardware' },
+    { id: 'paints-decor', label: 'Paints & Decor', icon: '🎨', group: 'Electrical & Hardware' },
+    { id: 'automobile-spares', label: 'Automobile Spares', icon: '🏍️', group: 'Electrical & Hardware' },
+    { id: 'tools-industrial', label: 'Industrial / Power Tools', icon: '🔧', group: 'Electrical & Hardware' },
 
     // --- 3. Tech & Accessories ---
     { id: 'mobiles-wearables', label: 'Mobiles, Audio & Wearables', icon: '📱', group: 'Tech & Accessories' },
@@ -46,14 +45,11 @@ export const CATEGORIES = [
     { id: 'clothing-garments', label: 'Clothing & Garments', icon: '👕', group: 'Home & Lifestyle' },
 
     // --- 6. Pharmacy / Medical Store ---
-    { id: 'allopathic-medicines', label: 'Allopathic Medicines', icon: '💊', group: 'Pharmacy & Wellness' },
-    { id: 'ayurvedic-wellness', label: 'Ayurvedic & Wellness', icon: '🌿', group: 'Pharmacy & Wellness' },
-    { id: 'surgical-rehab', label: 'Surgical, Rehab & General', icon: '🏥', group: 'Pharmacy & Wellness' },
+    { id: 'allopathic-chemist', label: 'Allopathic Chemist', icon: '💊', group: 'Pharmacy & Wellness' },
+    { id: 'ayurvedic-herbal', label: 'Ayurvedic & Herbal', icon: '🌿', group: 'Pharmacy & Wellness' },
+    { id: 'surgical-equipment', label: 'Surgical & Equipment', icon: '🏥', group: 'Pharmacy & Wellness' },
 
-    // --- 8. Home Businesses ---
-    { id: 'homemade-food', label: 'Homemade Food, Bakery & Catering', icon: '🍱', group: 'Home Businesses' },
-    { id: 'handmade-crafts', label: 'Handmade Arts, Crafts & Jewelry', icon: '🧶', group: 'Home Businesses' },
-    { id: 'tuition-coaching', label: 'Tuition, Coaching & Skill Classes', icon: '🎓', group: 'Home Businesses' },
+
 
     // --- 9. Seasonal / Festive Store ---
     { id: 'festival-specific', label: 'Festival Specific', icon: '🪔', group: 'Seasonal & Festive' },
@@ -72,8 +68,8 @@ export const SHOP_TYPE_TO_IDS = {
         'wholesale-grain', 'organic-gourmet'
     ],
     "ELECTRICAL_HARDWARE_AUTO": [
-        'electrical-lighting', 'hardware-fittings', 'plumbing-sanitary',
-        'paints-waterproofing', 'automobile-spares', 'tools-industrial'
+        'electrical-shop', 'hardware-sanitary', 'paints-decor',
+        'automobile-spares', 'tools-industrial'
     ],
     "TECH_ACCESSORIES": [
         'mobiles-wearables', 'computers-gaming', 'tv-appliances', 'spares-components'
@@ -86,11 +82,9 @@ export const SHOP_TYPE_TO_IDS = {
         'toys-sports', 'furnishing-decor', 'bags-luggage', 'footwear', 'clothing-garments'
     ],
     "PHARMACY": [
-        'allopathic-medicines', 'ayurvedic-wellness', 'surgical-rehab'
+        'allopathic-chemist', 'ayurvedic-herbal', 'surgical-equipment'
     ],
-    "HOME_BUSINESS": [
-        'homemade-food', 'handmade-crafts', 'tuition-coaching'
-    ],
+
     "SEASONAL_FESTIVE": [
         'festival-specific', 'crackers-fireworks', 'winter-rain-gear'
     ]
@@ -101,15 +95,34 @@ export const SHOP_TYPE_TO_IDS = {
  * Fallback: If shop type mismatches, return nothing or all (Safety: Log warning)
  */
 export const getCategoriesForShop = (shopType) => {
-    // Normalization to handle potential slight string mismatches if needed (optional)
-    // For now, strict match.
+    if (!shopType) return CATEGORIES;
 
-    if (!shopType || !SHOP_TYPE_TO_IDS[shopType]) {
-        console.warn(`ShopLens Warning: Unknown shop type "${shopType}". Filtering may be incorrect.`);
-        // Fallback for valid lookups like 'General' -> maybe return common?
+    // Normalize shopType to match keys in SHOP_TYPE_TO_IDS
+    let key = shopType.toUpperCase().trim();
+
+    // Map human-friendly category names/labels to strict uppercase keys
+    if (key.includes("GROCERY") || key.includes("KIRANA")) {
+        key = "GROCERY_KIRANA";
+    } else if (key.includes("ELECTRICAL") || key.includes("HARDWARE") || key.includes("AUTO") || key.includes("ELECTRONICS")) {
+        key = "ELECTRICAL_HARDWARE_AUTO";
+    } else if (key.includes("TECH") || key.includes("ACCESSORIES")) {
+        key = "TECH_ACCESSORIES";
+    } else if (key.includes("STUDENT") || key.includes("OFFICE")) {
+        key = "STUDENT_OFFICE";
+    } else if (key.includes("LIFESTYLE") || key.includes("HOME & LIFESTYLE")) {
+        key = "HOME_LIFESTYLE";
+    } else if (key.includes("PHARMACY") || key.includes("MEDICAL")) {
+        key = "PHARMACY";
+
+    } else if (key.includes("SEASONAL") || key.includes("FESTIVE")) {
+        key = "SEASONAL_FESTIVE";
+    }
+
+    if (!SHOP_TYPE_TO_IDS[key]) {
+        console.warn(`Aisle Warning: Unknown shop type "${shopType}" (normalized to "${key}"). Filtering may be incorrect.`);
         return CATEGORIES;
     }
 
-    const allowedIds = SHOP_TYPE_TO_IDS[shopType];
+    const allowedIds = SHOP_TYPE_TO_IDS[key];
     return CATEGORIES.filter(cat => allowedIds.includes(cat.id));
 };

@@ -6,13 +6,13 @@ export const LocationProvider = ({ children }) => {
     // 1. Initialize State from LocalStorage (Source of Truth)
     const [userLocation, setUserLocation] = useState(() => {
         try {
-            const saved = localStorage.getItem("shoplens_location");
+            const saved = localStorage.getItem("aisle_location");
             if (saved) {
                 return JSON.parse(saved);
             }
         } catch (e) {
             console.error("Error parsing stored location", e);
-            localStorage.removeItem("shoplens_location");
+            localStorage.removeItem("aisle_location");
         }
         return null;
     });
@@ -82,12 +82,12 @@ export const LocationProvider = ({ children }) => {
                 lng,
                 city: data.city || "Unknown City",
                 area: data.city || "Unknown Area", // Standardizing on city name for 'area' if not specific
-                address: `${data.city || ""}, ${data.state || ""}`.trim().replace(/^,|,$/g, ''),
+                address: data.displayName || `${data.city || ""}, ${data.state || ""}`.trim().replace(/^,|,$/g, ''),
                 country: data.country
             };
 
             if (persist) {
-                localStorage.setItem("shoplens_location", JSON.stringify(locationData));
+                localStorage.setItem("aisle_location", JSON.stringify(locationData));
             }
 
             setUserLocation(locationData);
@@ -109,7 +109,7 @@ export const LocationProvider = ({ children }) => {
             };
 
             if (persist) {
-                localStorage.setItem("shoplens_location", JSON.stringify(fallbackData));
+                localStorage.setItem("aisle_location", JSON.stringify(fallbackData));
             }
 
             setUserLocation(fallbackData);
@@ -118,9 +118,23 @@ export const LocationProvider = ({ children }) => {
         }
     };
 
+    const updateLocationByCity = (cityName) => {
+        const locationData = {
+            city: cityName,
+            area: cityName,
+            address: cityName,
+            lat: null,
+            lng: null
+        };
+        localStorage.setItem("aisle_location", JSON.stringify(locationData));
+        setUserLocation(locationData);
+        setStatus('READY');
+        return locationData;
+    };
+
     // 3. Clear Manual Override (Reset)
     const clearLocation = () => {
-        localStorage.removeItem("shoplens_location");
+        localStorage.removeItem("aisle_location");
         setUserLocation(null);
         setStatus('IDLE');
     };
@@ -134,6 +148,7 @@ export const LocationProvider = ({ children }) => {
             detectLocation,
             refreshLocation: detectLocation, // Alias for compatibility
             updateLocation,
+            updateLocationByCity,
             clearLocation,
             error
         }}>

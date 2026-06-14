@@ -18,7 +18,7 @@ const {
     markAllAsRead
 } = require('../controllers/customerNotificationController');
 const {
-    getProfile,
+    getProfile: getProfileBasic,
     updateLocation,
     addAddress,
     getAddresses,
@@ -26,7 +26,31 @@ const {
     toggleInterest
 } = require('../controllers/customerProfileController');
 
+const {
+    searchProducts: searchProductsIntel,
+    searchShops: searchShopsIntel,
+    getRecommendations,
+    getHomeBusinesses,
+    getAlternatives
+} = require('../controllers/customerIntelligenceController');
+
+const {
+    getCustomerAlerts,
+    getCustomerInsights,
+    getTrendingNearby,
+    getPriceDrops,
+    getActionCenter,
+    requestQuote,
+    getCustomerHealth
+} = require('../controllers/customerSuccessController');
+
 // Public routes (No auth required for viewing)
+router.get('/search-products', protect, searchProductsIntel);
+router.get('/search-shops', protect, searchShopsIntel);
+router.get('/recommendations', protect, getRecommendations);
+router.get('/home-businesses', protect, getHomeBusinesses);
+router.get('/alternatives', protect, getAlternatives);
+
 router.get('/search', searchProducts);
 router.get('/popular', getPopularProducts);
 router.get('/nearby-shops', getNearbyShops);
@@ -51,7 +75,70 @@ router.put('/notifications/:id/read', protect, markAsRead);
 router.put('/notifications/read-all', protect, markAllAsRead);
 
 // Protected Profile Routes
-router.get('/profile', protect, getProfile);
+const {
+    getProfile: getPersonalizedProfile,
+    getFavorites,
+    getRecentActivity,
+    createReminder,
+    updatePreferences: updatePersonalizedPreferences,
+    getHomeFeed,
+    logActivity,
+    logRecommendationAction,
+    getPersonalizedAssistant
+} = require('../controllers/customerPersonalizationController');
+
+const {
+    getOrders,
+    getOrderStatus,
+    processRefundRequest,
+    raiseDisputeUnified,
+    cancelOrder,
+    getTickets,
+    getTicketDetail,
+    escalateTicket
+} = require('../controllers/customerResolutionController');
+
+const {
+    processSupportChat,
+    updateChatFeedback
+} = require('../controllers/customerPersonalityController');
+
+router.get('/profile-basic', protect, getProfileBasic);
+router.get('/profile', protect, getPersonalizedProfile);
+router.get('/favorites', protect, getFavorites);
+router.get('/recent-activity', protect, getRecentActivity);
+router.post('/reminder', protect, createReminder);
+router.post('/preferences', protect, updatePersonalizedPreferences);
+
+// Personalization & Recommendation Routes
+router.get('/home/feed', protect, getHomeFeed);
+router.post('/activity', protect, logActivity);
+router.post('/recommendations/action', protect, logRecommendationAction);
+router.post('/assistant', protect, getPersonalizedAssistant);
+
+// NEW Resolution & Support Operations Routes (Phase 4)
+router.get('/orders', protect, getOrders);
+router.get('/order-status/:id', protect, getOrderStatus);
+router.post('/refund-request', protect, processRefundRequest);
+router.post('/dispute', protect, raiseDisputeUnified);
+router.post('/cancel-order', protect, cancelOrder);
+router.get('/tickets', protect, getTickets);
+router.get('/ticket/:id', protect, getTicketDetail);
+router.post('/escalate', protect, escalateTicket);
+
+// NEW: Personality & Small Talk AI Routes (Phase 5)
+router.post('/support-chat', protect, processSupportChat);
+router.post('/support-chat/feedback', protect, updateChatFeedback);
+
+// NEW: Proactive Success & Action Center AI Routes (Phase 6)
+router.get('/alerts', protect, getCustomerAlerts);
+router.get('/insights', protect, getCustomerInsights);
+router.get('/trending', protect, getTrendingNearby);
+router.get('/price-drops', protect, getPriceDrops);
+router.get('/action-center', protect, getActionCenter);
+router.post('/request-quote', protect, requestQuote);
+router.get('/customer-health', protect, getCustomerHealth);
+
 router.put('/profile/location', protect, updateLocation);
 router.post('/profile/address', protect, addAddress);
 router.get('/profile/address', protect, getAddresses);

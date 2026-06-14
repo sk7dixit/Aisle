@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import CustomerTopBar from './CustomerTopBar';
-import CustomerBottomNav from './CustomerBottomNav';
 import SupportPanel from './SupportPanel';
 
 const CustomerLayout = ({ children }) => {
@@ -10,7 +9,7 @@ const CustomerLayout = ({ children }) => {
     // The layout is strictly single-column, centered.
 
     return (
-        <div className="min-h-screen w-full font-sans selection:bg-[var(--accent-terracotta)] selection:text-white pb-20 md:pb-0 relative bg-gradient-to-br from-pink-50 via-white to-orange-50">
+        <div className="min-h-screen w-full font-sans selection:bg-[var(--accent-terracotta)] selection:text-white relative bg-gradient-to-br from-pink-50 via-white to-orange-50">
 
             {/* AURORA GLOW HANDLED BY CSS BODY::BEFORE */}
 
@@ -35,7 +34,6 @@ const CustomerLayout = ({ children }) => {
                     </main>
                 </div>
 
-                <CustomerBottomNav />
 
                 {/* SLIDE-IN SUPPORT PANEL */}
                 <SupportPanel isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} />

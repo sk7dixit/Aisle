@@ -12,7 +12,7 @@ const AdminProductActivity = () => {
     useEffect(() => {
         const fetchActivity = async () => {
             try {
-                const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+                const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
                 const res = await fetch(`/api/admin/products/${id}/activity`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });

@@ -36,14 +36,16 @@ const KEYWORD_MAP = {
     "almond": "Dry Fruits & Spices", "cashew": "Dry Fruits & Spices", "kishmish": "Dry Fruits & Spices",
     "chilli": "Dry Fruits & Spices", "turmeric": "Dry Fruits & Spices", "spice": "Dry Fruits & Spices",
 
-    // ELECTRICAL / HARDWARE (Basic coverage)
-    "bulb": "Electrical & Lighting", "led": "Electrical & Lighting", "switch": "Electrical & Lighting", "wire": "Electrical & Lighting",
-    "hammer": "Tools & Industrial Supply", "drill": "Tools & Industrial Supply", "screw": "Hardware & Furniture Fittings",
-    "pipe": "Plumbing & Sanitaryware", "paint": "Paints & Waterproofing",
+    // ELECTRICAL / HARDWARE
+    "bulb": "Electrical Shop", "led": "Electrical Shop", "switch": "Electrical Shop", "wire": "Electrical Shop", "fan": "Electrical Shop",
+    "pipe": "Hardware & Sanitary", "tap": "Hardware & Sanitary", "screw": "Hardware & Sanitary", "fitting": "Hardware & Sanitary",
+    "paint": "Paints & Decor", "brush": "Paints & Decor", "putty": "Paints & Decor",
+    "bike": "Automobile Spares", "car": "Automobile Spares", "engine": "Automobile Spares", "helmet": "Automobile Spares",
+    "drill": "Industrial / Power Tools", "cutting": "Industrial / Power Tools", "equipment": "Industrial / Power Tools", "hammer": "Industrial / Power Tools", "tool": "Industrial / Power Tools",
 
     // PHARMACY
-    "tablet": "Allopathic Medicines", "syrup": "Allopathic Medicines", "capsule": "Allopathic Medicines",
-    "protein": "Ayurvedic & Wellness", "thermometer": "Surgical, Rehab & General"
+    "tablet": "Allopathic Chemist", "syrup": "Allopathic Chemist", "capsule": "Allopathic Chemist",
+    "protein": "Ayurvedic & Herbal", "thermometer": "Surgical & Equipment"
 };
 
 const BRAND_MAP = {
@@ -57,10 +59,10 @@ const BRAND_MAP = {
     "fortune": "General Provision / Kirana",
     "surf excel": "General Provision / Kirana",
     "colgate": "General Provision / Kirana",
-    "havells": "Electrical & Lighting",
-    "philips": "Electrical & Lighting",
-    "asian paints": "Paints & Waterproofing",
-    "cipla": "Allopathic Medicines"
+    "havells": "Electrical Shop",
+    "philips": "Electrical Shop",
+    "asian paints": "Paints & Decor",
+    "cipla": "Allopathic Chemist"
 };
 
 const CATEGORIES = require('../config/categories');

@@ -15,7 +15,7 @@ const FaceRequests = () => {
     const [rejectAction, setRejectAction] = useState(false); // Reject sub-modal state
     const [rejectReason, setRejectReason] = useState('');
 
-    const user = JSON.parse(localStorage.getItem('shoplensUser') || '{}');
+    const user = JSON.parse(localStorage.getItem('aisleUser') || '{}');
     const role = user.role?.toLowerCase() || 'visitor';
 
     const fetchRequests = async () => {

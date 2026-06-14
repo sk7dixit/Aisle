@@ -21,12 +21,12 @@ export const CATEGORY_ID_IMAGES = {
     'organic-gourmet': 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80',
 
     // --- 2. Electrical, Hardware & Auto ---
-    'electrical-lighting': electronicsImg,
-    'hardware-fittings': electronicsImg,
-    'plumbing-sanitary': electronicsImg,
-    'paints-waterproofing': electronicsImg,
+    'electrical-shop': electronicsImg,
+    'hardware-sanitary': electronicsImg,
+    'paints-decor': electronicsImg,
     'automobile-spares': electronicsImg,
     'tools-industrial': electronicsImg,
+
 
     // --- 3. Tech & Accessories ---
     'mobiles-wearables': techImg,

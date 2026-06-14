@@ -1,5 +1,5 @@
 const Notification = require('../models/Notification');
-const { getIO } = require('../config/socket');
+const { getIO, queueAndEmit } = require('../config/socket');
 
 // @desc    Get notifications for seller
 // @route   GET /api/seller/notifications
@@ -112,11 +112,9 @@ const createNotification = async (sellerId, type, title, message, priority = 'me
             actionUrl: actionLink
         });
 
-        // Push Real-Time Event
+        // Push Real-Time Event via Redis queue & ACK support
         try {
-            const io = getIO();
-            io.to(sellerId.toString()).emit("notification:new", notification);
-            console.log(`[SOCKET] Pushed notification to room ${sellerId}`);
+            await queueAndEmit(sellerId.toString(), "notification:new", notification);
         } catch (socketError) {
             console.error("Socket Push Failed (Non-critical):", socketError.message);
         }
@@ -127,10 +125,70 @@ const createNotification = async (sellerId, type, title, message, priority = 'me
     }
 };
 
+// @desc    Create a new notification manually
+// @route   POST /api/notifications
+// @access  Private (Admin/User)
+const createNewNotification = async (req, res) => {
+    try {
+        const { user, type, title, message, priority, actionUrl } = req.body;
+
+        if (!user || !type || !title || !message) {
+            return res.status(400).json({ message: "Required fields: user, type, title, message" });
+        }
+
+        const notification = await Notification.create({
+            user,
+            type,
+            title,
+            message,
+            priority: priority || 'NORMAL',
+            actionUrl
+        });
+
+        // Push Real-Time Event via Redis queue & ACK support
+        try {
+            await queueAndEmit(user.toString(), "notification:new", notification);
+        } catch (socketError) {
+            console.error("Socket Push Failed (Non-critical):", socketError.message);
+        }
+
+        res.status(201).json(notification);
+    } catch (error) {
+        console.error('Create Notification Error:', error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+// @desc    Delete a notification
+// @route   DELETE /api/notifications/:id
+// @access  Private
+const deleteNotification = async (req, res) => {
+    try {
+        const notification = await Notification.findById(req.params.id);
+
+        if (!notification) {
+            return res.status(404).json({ message: 'Notification not found' });
+        }
+
+        if (notification.user.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ message: 'Not authorized' });
+        }
+
+        await Notification.findByIdAndDelete(req.params.id);
+
+        res.json({ message: 'Notification deleted successfully' });
+    } catch (error) {
+        console.error('Delete Notification Error:', error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
 module.exports = {
     getNotifications,
     getUnreadCount,
     markAsRead,
     markAllAsRead,
-    createNotification
+    createNotification,
+    createNewNotification,
+    deleteNotification
 };

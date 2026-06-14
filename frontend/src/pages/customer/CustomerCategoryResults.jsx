@@ -182,13 +182,13 @@ const CustomerCategoryResults = () => {
                         </div>
                         <h3 className="text-lg font-black text-slate-900 mb-2">No {id} products found</h3>
                         <p className="text-slate-500 text-sm mb-8 max-w-xs mx-auto">
-                            Try a different keyword or browse local shops directly.
+                            Try a different keyword or browse nearby businesses directly.
                         </p>
                         <button
                             onClick={() => navigate('/shops')}
                             className="bg-white border border-slate-200 text-slate-900 font-bold py-3 px-8 rounded-xl hover:bg-slate-50 transition-all shadow-sm active:scale-95 motion-button"
                         >
-                            <FaStore className="inline mr-2 mb-0.5" /> View Shops
+                            <FaStore className="inline mr-2 mb-0.5" /> View Businesses
                         </button>
                     </div>
                 )}
@@ -199,13 +199,13 @@ const CustomerCategoryResults = () => {
                         <div className="text-amber-500 text-3xl mb-3 flex justify-center"><FaStoreSlash /></div>
                         <h3 className="font-bold text-amber-900 mb-1">Products currently unavailable</h3>
                         <p className="text-xs text-amber-700 font-medium mb-4">
-                            Local shops usually stock these, but they seem to be out of stock right now.
+                            Nearby businesses usually stock these, but they seem to be out of stock right now.
                         </p>
                         <button
                             onClick={() => navigate('/shops')}
                             className="text-xs font-bold text-amber-800 bg-white border border-amber-200 px-4 py-2 rounded-lg hover:bg-amber-50 motion-button"
                         >
-                            View Shops
+                            View Businesses
                         </button>
                     </div>
                 )}
@@ -266,7 +266,7 @@ const CustomerCategoryResults = () => {
                                                         onClick={() => navigate(`/shops/${product.shopId}`)}
                                                         className="px-4 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-black transition-colors whitespace-nowrap shadow-md shadow-slate-900/10 motion-button"
                                                     >
-                                                        View Shop
+                                                        View Business
                                                     </button>
                                                 </div>
                                             </div>

@@ -187,7 +187,7 @@ const BulkPreviewPage = () => {
             {/* Product Cards Grid */}
             <div className="grid grid-cols-1 gap-6">
                 {products.map((product, index) => (
-                    <div key={index} className={`bg-white rounded-3xl border shadow-sm p-6 flex flex-col md:flex-row gap-6
+                    <div key={product.barcode || product._id || index} className={`bg-white rounded-3xl border shadow-sm p-6 flex flex-col md:flex-row gap-6
                         ${product._isValid ? 'border-slate-100' : 'border-red-300 ring-4 ring-red-50'}`}>
 
                         {/* Left: Image Placeholder */}

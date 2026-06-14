@@ -19,7 +19,7 @@ const Careers = () => {
                     <h1 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">Join Our Journey</h1>
 
                     <p className="text-slate-500 text-lg mb-10 leading-relaxed font-medium">
-                        We’re a small, passionate team building ShopLens to empower local commerce.
+                        We’re a small, passionate team building Aisle to empower local commerce.
                     </p>
 
                     <div className="border-t border-slate-100 pt-10 mt-6">

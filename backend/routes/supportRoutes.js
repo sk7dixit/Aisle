@@ -65,4 +65,27 @@ router.post('/request', upload.array('images', 3), async (req, res) => {
     }
 });
 
+const { protect } = require('../middleware/authMiddleware');
+const {
+    startInvestigation,
+    continueInvestigation,
+    getInvestigationStatus,
+    getFollowUpStatus
+} = require('../controllers/supportAgentController');
+
+router.post('/investigate', protect, startInvestigation);
+router.post('/session', protect, continueInvestigation);
+router.get('/session/:id', protect, getInvestigationStatus);
+router.get('/followup', protect, getFollowUpStatus);
+
+const {
+    getSuccessCenterDashboard,
+    askBusinessCoach,
+    getWeeklyReportsList
+} = require('../controllers/sellerSuccessController');
+
+router.get('/success-center', protect, getSuccessCenterDashboard);
+router.post('/coach', protect, askBusinessCoach);
+router.get('/reports', protect, getWeeklyReportsList);
+
 module.exports = router;

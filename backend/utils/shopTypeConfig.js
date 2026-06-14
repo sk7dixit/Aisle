@@ -17,12 +17,11 @@ const SHOP_TYPE_CONFIG = {
     "ELECTRICAL_HARDWARE_AUTO": {
         label: "Electrical, Hardware & Auto",
         categories: [
-            "Electrical & Lighting",
-            "Hardware & Furniture Fittings",
-            "Plumbing & Sanitaryware",
-            "Paints & Waterproofing",
-            "Automobile Spares & Care",
-            "Tools & Industrial Supply",
+            "Electrical Shop",
+            "Hardware & Sanitary",
+            "Paints & Decor",
+            "Automobile Spares",
+            "Industrial / Power Tools",
             "Other"
         ]
     },
@@ -67,9 +66,9 @@ const SHOP_TYPE_CONFIG = {
     "PHARMACY": {
         label: "Pharmacy / Medical Store",
         categories: [
-            "Allopathic Medicines",
-            "Ayurvedic & Wellness",
-            "Surgical, Rehab & General",
+            "Allopathic Chemist",
+            "Ayurvedic & Herbal",
+            "Surgical & Equipment",
             "Other"
         ]
     },

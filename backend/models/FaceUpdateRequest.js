@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { encrypt, decrypt } = require('../utils/encryption');
 
 const faceUpdateRequestSchema = mongoose.Schema({
     sellerId: {
@@ -8,11 +9,15 @@ const faceUpdateRequestSchema = mongoose.Schema({
     },
     currentFaceData: {
         type: String, // Base64 or URL
-        required: true
+        required: true,
+        set: (v) => v ? encrypt(v) : null,
+        get: (v) => v ? decrypt(v) : null
     },
     newFaceData: {
         type: String, // Base64 or URL
-        required: true
+        required: true,
+        set: (v) => v ? encrypt(v) : null,
+        get: (v) => v ? decrypt(v) : null
     },
     reason: {
         type: String,
@@ -26,7 +31,9 @@ const faceUpdateRequestSchema = mongoose.Schema({
     adminComment: String,
     reviewedAt: Date
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { getters: true },
+    toObject: { getters: true }
 });
 
 module.exports = mongoose.model('FaceUpdateRequest', faceUpdateRequestSchema);

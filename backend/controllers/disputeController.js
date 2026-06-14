@@ -56,6 +56,16 @@ const raiseDispute = async (req, res) => {
 
         await order.save();
 
+        // Log security audit event
+        const { logSecurityEvent } = require('../utils/securityLogger');
+        await logSecurityEvent(
+            req.user._id,
+            req.user.email,
+            'ORDER_MODIFIED',
+            req,
+            { orderId: order._id, currentStatus: 'DISPUTED', type: 'dispute_raised' }
+        );
+
         // 4. Update Seller Stats (Silent Penalty Tracking)
         await User.findByIdAndUpdate(order.sellerId, {
             $inc: { 'sellerStats.totalDisputes': 1 }

@@ -32,6 +32,14 @@ router.patch(
     protect,
     serviceSellerOnly,
     async (req, res) => {
+        const { acquireLock } = require('../utils/lockManager');
+        let lock;
+        try {
+            lock = await acquireLock(`lock:booking:${req.params.id}`, 5000);
+        } catch (lockErr) {
+            return res.status(409).json({ message: 'Booking is currently being updated by another operation. Please retry.' });
+        }
+
         try {
             const { status } = req.body;
 
@@ -81,6 +89,10 @@ router.patch(
             res.json(booking);
         } catch (error) {
             res.status(500).json({ message: 'Server Error', error: error.message });
+        } finally {
+            if (lock) {
+                await lock.release().catch(err => console.error('[Redlock] Release failed:', err.message));
+            }
         }
     }
 );

@@ -177,7 +177,25 @@ const getSellerStats = async (req, res) => {
                 stats.daysSinceLastUpdate = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 stats.lastProductUpdate = lastProduct.updatedAt;
             }
+
+            // Home Business metrics
+            stats.activeCreations = await Product.countDocuments({ seller: req.user._id, isDraft: { $ne: true } });
+            stats.readyStockItems = await Product.countDocuments({ seller: req.user._id, isDraft: { $ne: true }, homeBusinessType: 'READY_STOCK' });
+            stats.madeToOrderItems = await Product.countDocuments({ seller: req.user._id, isDraft: { $ne: true }, homeBusinessType: 'MADE_TO_ORDER' });
+            stats.draftCreations = await Product.countDocuments({ seller: req.user._id, isDraft: true });
         } catch (e) { console.error("[Dashboard] Product Stats Failed:", e.message); }
+
+        // --- ORDERS & SALES ---
+        try {
+            const todayOrders = await Order.find({
+                sellerId: req.user._id,
+                createdAt: { $gte: today }
+            });
+            stats.ordersToday = todayOrders.length;
+            stats.salesToday = todayOrders
+                .filter(o => o.status !== 'CANCELLED')
+                .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+        } catch (e) { console.error("[Dashboard] Order/Sales Stats Failed:", e.message); }
 
         // --- VISITS ---
         try {
@@ -187,14 +205,7 @@ const getSellerStats = async (req, res) => {
                 scheduledTime: { $gte: today }
             }).sort({ scheduledTime: 1 });
 
-            const completedVisits = await Visit.find({
-                shopId: req.user._id,
-                status: 'COMPLETED',
-                updatedAt: { $gte: today }
-            });
-
             stats.upcomingVisitsCount = upcomingVisits.length;
-            stats.ordersToday = completedVisits.length;
             stats.nextVisitTime = upcomingVisits.length > 0 ? upcomingVisits[0].scheduledTime : null;
         } catch (e) { console.error("[Dashboard] Visit Stats Failed:", e.message); }
 
@@ -380,22 +391,30 @@ const getSellerProducts = async (req, res) => {
 
         // 1. Fetch Linked Products (Global Master)
         const linkedProducts = await SellerProduct.find({ seller: req.user._id })
+            .select('_id variant category subCategory shopType mrp sellingPrice quantity stockStatus productType expiryDate needsReview initialStock createdAt updatedAt')
             .populate({
                 path: 'variant',
+                select: 'brand_id pack_size',
                 populate: {
                     path: 'brand_id',
+                    select: 'brand_name product_base_id',
                     populate: {
-                        path: 'product_base_id'
+                        path: 'product_base_id',
+                        select: 'base_name category'
                     }
                 }
             })
+            .limit(1000)
             .lean();
 
         // 2. Fetch Legacy/Loose Products (Quick Catalog, Custom Adds)
         const looseProducts = await Product.find({
             seller: req.user._id,
             isLegacy: { $ne: true }
-        }).lean();
+        })
+        .select('_id name category subCategory shopType mrp sellingPrice quantity stockStatus imageUrl productType expiryDate needsReview initialStock createdAt updatedAt')
+        .limit(1000)
+        .lean();
 
         const finalProducts = [
             ...linkedProducts.map(sp => mapLinkedProduct(sp)).filter(p => p !== null),
@@ -508,6 +527,14 @@ const getInventory = async (req, res) => {
 // @route   PATCH /api/seller/inventory/:id/quantity
 // @access  Private (Seller)
 const updateQuantity = async (req, res) => {
+    const { acquireLock } = require('../utils/lockManager');
+    let lock;
+    try {
+        lock = await acquireLock(`lock:product:${req.params.id}`, 5000);
+    } catch (lockErr) {
+        return res.status(409).json({ message: 'Product stock is currently being updated. Please retry.' });
+    }
+
     try {
         const { change, reason = 'MANUAL_ADJUST', notes } = req.body; // e.g. +5 or -2
         if (change === undefined) return res.status(400).json({ message: 'Change value required' });
@@ -570,13 +597,28 @@ const updateQuantity = async (req, res) => {
             };
         }
 
+        // Broadcast product update via Event Bus
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('PRODUCT_UPDATED', { productId: product._id.toString(), version: product.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish stock update:', busErr.message);
+        }
+
         res.json({
             ...finalProduct,
             status: finalProduct.stockStatus === 'OUT_OF_STOCK' ? 'OUT_OF_STOCK' : 'IN_STOCK' // Explicit helper for frontend
         });
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Product was modified by another request. Please retry.' });
+        }
         console.error("Adjust Stock Error:", error);
         res.status(500).json({ message: 'Adjustment failed' });
+    } finally {
+        if (lock) {
+            await lock.release().catch(err => console.error('[Redlock] Release failed:', err.message));
+        }
     }
 };
 
@@ -591,14 +633,19 @@ const updateProduct = async (req, res) => {
             sellingPrice,
             mrp,
             quantity,
-            // initialStock, // REMOVED: Cannot edit initial stock manually
-            // lowStockThreshold, // REMOVED: Computed automatically
+            availability,
             description,
             category,
             subCategory,
             unit,
             productType,
-            restockType // NEW: Inventory Logic
+            restockType,
+            // Home Business Fields
+            homeBusinessType,
+            preparationTime,
+            productStory,
+            isDraft,
+            isAvailable
         } = req.body;
 
         const product = await Product.findOne({ _id: req.params.id, seller: req.user._id });
@@ -607,19 +654,50 @@ const updateProduct = async (req, res) => {
             return res.status(404).json({ message: 'Product not found' });
         }
 
+        // Handle File uploads
+        let images = product.images || [];
+        if (req.files && req.files.length > 0) {
+            const newImages = req.files.map(file => file.path.replace(/\\/g, "/"));
+            images = [...images, ...newImages];
+            product.imageUrl = images[0];
+            product.images = images;
+        }
+
+        // Also allow passing a structured images array if they delete/reorder photos
+        if (req.body.images) {
+            try {
+                const parsed = typeof req.body.images === 'string' ? JSON.parse(req.body.images) : req.body.images;
+                if (Array.isArray(parsed)) {
+                    product.images = parsed;
+                    if (parsed.length > 0) product.imageUrl = parsed[0];
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+
         const prevQty = product.quantity || 0;
         let change = 0;
 
         // Update Allowed Fields
         if (name) product.name = name;
-        if (sellingPrice) product.sellingPrice = sellingPrice;
-        if (mrp) product.mrp = mrp;
-        if (description) product.description = description;
+        if (sellingPrice !== undefined) product.sellingPrice = Number(sellingPrice);
+        if (mrp !== undefined) product.mrp = Number(mrp);
+        if (description !== undefined) product.description = description;
         if (category) product.category = category;
         if (subCategory) product.subCategory = subCategory;
         if (unit) product.unit = unit;
         if (productType) product.productType = productType;
         if (restockType) product.restockType = restockType; // NEW
+        if (homeBusinessType) product.homeBusinessType = homeBusinessType;
+        if (preparationTime !== undefined) product.preparationTime = preparationTime;
+        if (productStory !== undefined) product.productStory = productStory;
+        if (isDraft !== undefined) product.isDraft = (isDraft === 'true' || isDraft === true);
+        if (isAvailable !== undefined) product.isAvailable = (isAvailable === 'true' || isAvailable === true);
+        if (availability !== undefined) {
+            product.availability = availability;
+            product.lastConfirmedAt = new Date();
+        }
 
         // 3. Handle Quantity Updates (Current Stock Only)
         if (quantity !== undefined) {
@@ -628,12 +706,26 @@ const updateProduct = async (req, res) => {
             product.quantity = newQty;
             product.baselineStock = newQty; // RESET BASELINE: Manual Edit defines new "N"
             // Note: initialStock is NEVER updated here (history only)
+            
+            // Auto availability logic on quantity update
+            const isAvailabilityMode = product.shopType !== 'HOME_BUSINESS' && product.shopType !== 'SERVICES';
+            if (isAvailabilityMode && newQty <= 0) {
+                product.availability = 'UNAVAILABLE';
+            }
         }
 
         // Logic Note: lowStockThreshold is computed in pre-save hook based on initialStock (locked)
         // status is also computed in pre-save hook based on quantity vs threshold
 
         await product.save();
+
+        // Broadcast product update via Event Bus
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('PRODUCT_UPDATED', { productId: product._id.toString(), version: product.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish product update:', busErr.message);
+        }
 
         // 4. AI Feedback Loop (Learning)
         if (req.body.subCategory && product.needsReview) {
@@ -680,6 +772,9 @@ const updateProduct = async (req, res) => {
 
         res.json(product);
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Product was modified by another request. Please retry.' });
+        }
         console.error("Update Product Error:", error);
         res.status(500).json({ message: 'Update failed' });
     }
@@ -757,7 +852,17 @@ const updateShopVisibility = async (req, res) => {
             controlledBy: 'MANUAL',
             isManualOverride: true
         });
+
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('USER_UPDATED', { userId: user._id.toString(), version: user.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish USER_UPDATED:', busErr.message);
+        }
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Shop state was modified by another request. Please retry.' });
+        }
         res.status(500).json({ message: error.message });
     }
 };
@@ -786,7 +891,17 @@ const updateShopSchedule = async (req, res) => {
             closingTime: user.shopDetails.closingTime,
             derivedStatus: newStatus
         });
+
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('USER_UPDATED', { userId: user._id.toString(), version: user.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish USER_UPDATED:', busErr.message);
+        }
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Shop schedule was modified by another request. Please retry.' });
+        }
         res.status(500).json({ message: error.message });
     }
 };
@@ -814,7 +929,17 @@ const resetManualStatus = async (req, res) => {
             controlledBy: 'AUTO',
             isManualOverride: false
         });
+
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('USER_UPDATED', { userId: user._id.toString(), version: user.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish USER_UPDATED:', busErr.message);
+        }
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Shop status was modified by another request. Please retry.' });
+        }
         res.status(500).json({ message: error.message });
     }
 };
@@ -850,8 +975,8 @@ const updateOperatingMode = async (req, res) => {
         try {
             const io = getIO();
             const shopId = req.user._id.toString();
-            // Emit to 'shop_ID' room where customers are listening
-            io.to(`shop_${shopId}`).emit("shop_status_updated", {
+            // Emit to 'shop:ID' room where customers are listening
+            io.to(`shop:${shopId}`).emit("shop_status_updated", {
                 operatingMode: mode,
                 updatedAt: new Date()
             });
@@ -865,83 +990,127 @@ const updateOperatingMode = async (req, res) => {
             operatingMode: user.shopDetails.operatingMode,
             autoAccept: user.shopDetails.autoAccept
         });
+
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('USER_UPDATED', { userId: user._id.toString(), version: user.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish USER_UPDATED:', busErr.message);
+        }
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Shop operating mode was modified by another request. Please retry.' });
+        }
         console.error("Update Operating Mode Error:", error);
         res.status(500).json({ message: 'Failed to update operating mode' });
     }
 };
 
-// @desc    Set Daily Opening Stock (Step 2 - Baseline Reset)
+// @desc    Update Shop AI Automation Mode (Phase 7)
+// @route   PUT /api/seller/automation-mode
+// @access  Private (Seller)
+const updateAutomationMode = async (req, res) => {
+    try {
+        const { mode, automationMode } = req.body;
+        const targetMode = mode || automationMode;
+        if (!['MANUAL', 'ASSISTED', 'AUTONOMOUS'].includes(targetMode)) {
+            return res.status(400).json({ message: 'Invalid Automation Mode' });
+        }
+
+        const user = await User.findById(req.user._id);
+        if (!user || !user.shopDetails) {
+            return res.status(404).json({ message: 'User or shop not found' });
+        }
+
+        user.shopDetails.automationMode = targetMode;
+        await user.save();
+
+        res.json({
+            message: `Automation Mode set to ${targetMode}`,
+            automationMode: user.shopDetails.automationMode
+        });
+
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('USER_UPDATED', { userId: user._id.toString(), version: user.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish USER_UPDATED:', busErr.message);
+        }
+    } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Shop automation mode was modified by another request. Please retry.' });
+        }
+        console.error("Update Automation Mode Error:", error);
+        res.status(500).json({ message: 'Failed to update automation mode' });
+    }
+};
+
+// @desc    Set Daily Opening Stock (Step 2 - Confirm Availability)
 // @route   POST /api/seller/inventory/start-day
 // @access  Private (Seller)
 const setOpeningStock = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
 
+        if (!user || !user.shopDetails) {
+            return res.status(404).json({ message: 'Shop details not found.' });
+        }
+
         // 1. Check Eligibility
-        if (user.shopDetails?.shopType !== 'GROCERY_KIRANA') {
-            return res.status(403).json({ message: 'Start Today is only for Grocery shops.' });
+        const isAvailabilityMode = user.shopDetails.shopType !== 'HOME_BUSINESS' && user.shopDetails.shopType !== 'SERVICES';
+        if (!isAvailabilityMode) {
+            return res.status(403).json({ message: 'Confirm Availability is not supported for this shop type.' });
         }
         if (user.shopDetails?.operatingMode === 'RUSH') {
-            return res.status(400).json({ message: 'Cannot set opening stock during Rush Mode.' });
+            return res.status(400).json({ message: 'Cannot confirm availability during Rush Mode.' });
         }
 
         // 2. Check Daily Limit (Once per day)
         const now = new Date();
-        const lastSet = user.shopDetails.lastOpeningStockSetAt ? new Date(user.shopDetails.lastOpeningStockSetAt) : null;
+        const lastSet = user.shopDetails.lastAvailabilityConfirmedAt ? new Date(user.shopDetails.lastAvailabilityConfirmedAt) : 
+                        (user.shopDetails.lastOpeningStockSetAt ? new Date(user.shopDetails.lastOpeningStockSetAt) : null);
 
         if (lastSet && lastSet.toDateString() === now.toDateString()) {
-            return res.status(400).json({ message: 'Opening stock already set for today.' });
+            return res.status(400).json({ message: 'Availability already confirmed for today.' });
         }
 
-        // 3. Reset Baseline for All Products
-        console.log(`[Opening Stock] Resetting baseline for user ${user._id}`);
+        // 3. Confirm Availability for All Products
+        console.log(`[Availability V2] Confirming availability for user ${user._id}`);
 
-        // Find all products by seller
-        // We set baselineStock = quantity
-        // And update status if needed
-        const products = await Product.find({ seller: user._id });
+        // Update lastConfirmedAt for all local products of this seller
+        await Product.updateMany(
+            { seller: user._id },
+            { $set: { lastConfirmedAt: now } }
+        );
 
-        if (products.length > 0) {
-            const bulkOps = products.map(p => {
-                let newQuantity = p.quantity || 0;
-
-                // Step 6: Daily Reset Logic
-                // If Item is DAILY and Empty -> Reset to Baseline (Start Fresh)
-                if (p.inventoryType === 'DAILY' && newQuantity === 0) {
-                    newQuantity = p.baselineStock || 20; // Reset to previous baseline or default
-                }
-
-                // For all items: Sync Baseline to this "Start of Day" value
-                return {
-                    updateOne: {
-                        filter: { _id: p._id },
-                        update: {
-                            $set: {
-                                quantity: newQuantity,
-                                baselineStock: newQuantity, // Sync baseline for today
-                                stockStatus: newQuantity > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK'
-                            }
-                        }
-                    }
-                };
-            });
-
-            await Product.bulkWrite(bulkOps);
-        }
+        // Also update SellerProduct if they have linked products
+        await SellerProduct.updateMany(
+            { seller: user._id },
+            { $set: { lastConfirmedAt: now } }
+        );
 
         // 4. Update User Stamp
-        user.shopDetails.lastOpeningStockSetAt = now;
+        user.shopDetails.lastOpeningStockSetAt = now; // keep for backward compatibility
+        user.shopDetails.lastAvailabilityConfirmedAt = now; // new V2 field
         await user.save();
 
         res.json({
-            message: 'Today’s stock confirmed',
-            lastOpeningStockSetAt: user.shopDetails.lastOpeningStockSetAt
+            message: 'Availability confirmed for today!',
+            lastAvailabilityConfirmedAt: user.shopDetails.lastAvailabilityConfirmedAt
         });
 
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('USER_UPDATED', { userId: user._id.toString(), version: user.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish USER_UPDATED:', busErr.message);
+        }
     } catch (error) {
-        console.error("Set Opening Stock Error:", error);
-        res.status(500).json({ message: 'Failed to set opening stock' });
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Shop availability status was modified by another request. Please retry.' });
+        }
+        console.error("Confirm Availability Error:", error);
+        res.status(500).json({ message: 'Failed to confirm availability' });
     }
 };
 
@@ -1000,6 +1169,9 @@ const scanOrderQR = async (req, res) => {
                             $set: {
                                 quantity: {
                                     $max: [0, { $subtract: ["$quantity", item.quantity] }]
+                                },
+                                onlineSalesCount: {
+                                    $add: [{ $ifNull: ["$onlineSalesCount", 0] }, item.quantity]
                                 }
                             }
                         },
@@ -1007,9 +1179,16 @@ const scanOrderQR = async (req, res) => {
                             $set: {
                                 stockStatus: {
                                     $cond: {
-                                        if: { $eq: [{ $max: [0, { $subtract: ["$quantity", item.quantity] }] }, 0] },
+                                        if: { $eq: ["$quantity", 0] },
                                         then: "OUT_OF_STOCK",
-                                        else: "IN_STOCK" // Simplification; could check low stock but this is safer
+                                        else: "IN_STOCK"
+                                    }
+                                },
+                                availability: {
+                                    $cond: {
+                                        if: { $eq: ["$quantity", 0] },
+                                        then: "UNAVAILABLE",
+                                        else: "$availability"
                                     }
                                 }
                             }
@@ -1030,6 +1209,23 @@ const scanOrderQR = async (req, res) => {
             order.paymentStatus = 'PAID'; // Assumes cash collected handled by seller on scan
         }
         await order.save();
+
+        try {
+            const { calculateSellerTrust, calculateCustomerTrust } = require('../services/trustService');
+            await calculateSellerTrust(order.sellerId);
+            await calculateCustomerTrust(order.customerId);
+        } catch (trustErr) {
+            console.error('[SellerController] Trust recalculate failed:', trustErr.message);
+        }
+
+        const { logSecurityEvent } = require('../utils/securityLogger');
+        await logSecurityEvent(
+            req.user._id,
+            req.user.email,
+            'ORDER_MODIFIED',
+            req,
+            { orderId: order._id, previousStatus: 'READY_FOR_PICKUP', currentStatus: 'FULFILLED', type: 'order' }
+        );
 
         res.json({
             message: 'Order fulfilled & Stock updated',
@@ -1069,6 +1265,15 @@ const updateLeadStatus = async (req, res) => {
 // @access  Private
 const addProduct = async (req, res) => {
     try {
+        const { calculateSellerRiskScore } = require('../utils/fraudEngine');
+        const fraudResult = await calculateSellerRiskScore(req.user._id);
+        if (fraudResult.score >= 80) {
+            return res.status(403).json({
+                message: 'Action blocked by fraud engine. Your account is suspended pending review due to suspicious activity.',
+                fraudRiskScore: fraudResult.score
+            });
+        }
+
         const currentCount = await Product.countDocuments({ seller: req.user._id });
         const sellerPlanId = req.user.subscription?.planId?.toUpperCase() || 'FREE';
         const planLimit = SUBSCRIPTION_PLANS[sellerPlanId]?.productLimit;
@@ -1098,11 +1303,39 @@ const addProduct = async (req, res) => {
             packSize,
             parentId,
             subCategory,
-            quantity
+            quantity,
+            availability,
+            // Home Business Fields
+            homeBusinessType,
+            preparationTime,
+            productStory,
+            isDraft
         } = req.body;
 
         let imageUrl = '';
-        if (req.file) imageUrl = req.file.path.replace(/\\/g, "/");
+        let images = [];
+        if (req.files && req.files.length > 0) {
+            images = req.files.map(file => file.path.replace(/\\/g, "/"));
+            imageUrl = images[0];
+        } else if (req.file) {
+            imageUrl = req.file.path.replace(/\\/g, "/");
+            images = [imageUrl];
+        }
+
+        // Also allow passing a structured images array in the body if sent from client
+        if (req.body.images) {
+            try {
+                const parsed = typeof req.body.images === 'string' ? JSON.parse(req.body.images) : req.body.images;
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    images = [...images, ...parsed];
+                    if (!imageUrl || imageUrl === 'https://via.placeholder.com/150') {
+                        imageUrl = images[0];
+                    }
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
 
         let finalName = name;
         if (parentId) {
@@ -1113,7 +1346,7 @@ const addProduct = async (req, res) => {
         }
 
         // 3. AI Category & Stock Logic
-        const shopType = req.user.shopDetails?.shopType || 'grocery_kirana';
+        const shopType = req.user.shopDetails?.shopType || 'GROCERY_KIRANA';
         const aiResult = assignCategoryAI(finalName, brand, shopType);
         const identityHash = getProductIdentity({ name: finalName, unit: subCategory || 'piece', packSize, brand });
 
@@ -1134,7 +1367,22 @@ const addProduct = async (req, res) => {
             });
 
             await existing.save();
+            try {
+                const { publishEvent } = require('../utils/eventBus');
+                await publishEvent('PRODUCT_UPDATED', { productId: existing._id.toString(), version: existing.version });
+            } catch (busErr) {
+                console.error('[SellerController-EventBus] Failed to publish stock update:', busErr.message);
+            }
             return res.status(200).json(existing);
+        }
+
+        const isAvailabilityMode = shopType !== 'HOME_BUSINESS' && shopType !== 'SERVICES';
+        let productAvailability = availability || 'AVAILABLE';
+        if (isAvailabilityMode) {
+            const qty = quantity !== undefined ? Number(quantity) : 0;
+            if (qty <= 0) {
+                productAvailability = 'UNAVAILABLE';
+            }
         }
 
         const product = await Product.create({
@@ -1153,12 +1401,19 @@ const addProduct = async (req, res) => {
             description: description || '',
             quantity: quantity !== undefined ? Number(quantity) : 0,
             initialStock: quantity !== undefined ? Number(quantity) : 0, // LOCKED: Initial = Current on Day 1
+            availability: productAvailability,
+            lastConfirmedAt: new Date(),
             identityHash,
             productType: 'STANDARD',
-            imageUrl,
+            imageUrl: imageUrl || 'https://via.placeholder.com/150',
             isExact: true,
             isParent: false,
-            parentProduct: parentId || null
+            parentProduct: parentId || null,
+            homeBusinessType: homeBusinessType || 'READY_STOCK',
+            preparationTime: preparationTime || '',
+            productStory: productStory || '',
+            images: images,
+            isDraft: isDraft === 'true' || isDraft === true
         });
 
         await User.findByIdAndUpdate(req.user._id, {
@@ -1166,14 +1421,34 @@ const addProduct = async (req, res) => {
             'shopDetails.lastProductAddedAt': new Date()
         });
 
+        // Broadcast product update via Event Bus
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('PRODUCT_CREATED', { productId: product._id.toString(), version: product.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish product creation:', busErr.message);
+        }
+
         res.status(201).json(product);
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Product was modified by another request. Please retry.' });
+        }
         res.status(500).json({ message: error.message });
     }
 };
 
 const addProductsBulk = async (req, res) => {
     try {
+        const { calculateSellerRiskScore } = require('../utils/fraudEngine');
+        const fraudResult = await calculateSellerRiskScore(req.user._id);
+        if (fraudResult.score >= 80) {
+            return res.status(403).json({
+                message: 'Action blocked by fraud engine. Your account is suspended pending review due to suspicious activity.',
+                fraudRiskScore: fraudResult.score
+            });
+        }
+
         const { products } = req.body;
         if (!products || !Array.isArray(products) || products.length === 0) {
             return res.status(400).json({ message: 'No products provided' });
@@ -1258,11 +1533,22 @@ const addProductsBulk = async (req, res) => {
             'shopDetails.lastStockUpdateAt': Date.now()
         });
 
+        // Broadcast product update via Event Bus
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('PRODUCT_CREATED', { bulk: true, version: 1 });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish bulk product addition:', busErr.message);
+        }
+
         res.status(201).json({
             message: `Bulk processing complete: ${results.created} created, ${results.merged} merged`,
             summary: results
         });
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict during bulk update. Please retry.' });
+        }
         console.error("Bulk Add Error:", error);
         res.status(500).json({ message: error.message });
     }
@@ -1302,6 +1588,7 @@ const updateSellerProfile = async (req, res) => {
             shopName,
             shopPhone,
             shopAddress,
+            description,
             openingTime,
             closingTime,
             lat,
@@ -1327,6 +1614,8 @@ const updateSellerProfile = async (req, res) => {
             if (shopName) user.shopDetails.shopName = shopName;
             if (shopPhone) user.shopDetails.phone = shopPhone;
             if (shopAddress) user.shopDetails.address = shopAddress;
+            if (description !== undefined) user.shopDetails.description = description;
+
             if (category) {
                 user.shopDetails.category = category;
                 user.shopDetails.shopCategory = category; // Sync both for safety
@@ -1381,7 +1670,17 @@ const updateSellerProfile = async (req, res) => {
                 shopDetails: user.shopDetails
             }
         });
+
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('USER_UPDATED', { userId: user._id.toString(), version: user.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish USER_UPDATED:', busErr.message);
+        }
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Seller profile was modified by another request. Please retry.' });
+        }
         console.error("Profile Update Error:", error);
         res.status(500).json({ message: error.message });
     }
@@ -1421,20 +1720,45 @@ const deleteProductsBulk = async (req, res) => {
             return res.status(400).json({ message: 'No products selected' });
         }
 
-        // Delete from Product collection (Loose/Quick Catalog)
-        await Product.deleteMany({
-            _id: { $in: productIds },
-            seller: req.user._id
-        });
+        // Soft Delete from Product collection (Loose/Quick Catalog)
+        const products = await Product.find({ _id: { $in: productIds }, seller: req.user._id });
+        for (const prod of products) {
+            prod.deleted = true;
+            prod.deletedAt = new Date();
+            await prod.save();
+        }
 
-        // Delete from SellerProduct collection (Linked/Master)
-        await SellerProduct.deleteMany({
-            _id: { $in: productIds },
-            seller: req.user._id
-        });
+        // Soft Delete from SellerProduct collection (Linked/Master)
+        const linkedProducts = await SellerProduct.find({ _id: { $in: productIds }, seller: req.user._id });
+        for (const lp of linkedProducts) {
+            lp.deleted = true;
+            lp.deletedAt = new Date();
+            await lp.save();
+        }
+
+        // Audit log bulk delete
+        const { logSecurityEvent } = require('../utils/securityLogger');
+        await logSecurityEvent(
+            req.user._id,
+            req.user.email,
+            'PRODUCT_DELETED',
+            req,
+            { productIds, bulk: true }
+        );
+
+        // Broadcast product update via Event Bus
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('PRODUCT_DELETED', { productIds, bulk: true, version: 1 });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish bulk delete:', busErr.message);
+        }
 
         res.json({ message: 'Products deleted successfully' });
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: One or more products were modified. Please retry.' });
+        }
         res.status(500).json({ message: error.message });
     }
 };
@@ -1444,24 +1768,89 @@ const deleteProductsBulk = async (req, res) => {
 // @access  Private (Seller)
 const deleteProduct = async (req, res) => {
     try {
+        const { logSecurityEvent } = require('../utils/securityLogger');
         const product = await Product.findOne({ _id: req.params.id, seller: req.user._id });
 
         if (product) {
-            await Product.deleteOne({ _id: req.params.id });
-            // Also try delete from SellerProduct if it exists (linked)
-            await SellerProduct.deleteMany({ _id: req.params.id });
+            product.deleted = true;
+            product.deletedAt = new Date();
+            await product.save();
+
+            // Also try soft delete from SellerProduct if it exists (linked)
+            await SellerProduct.updateMany(
+                { _id: req.params.id },
+                { $set: { deleted: true, deletedAt: new Date() } }
+            );
+
+            await logSecurityEvent(
+                req.user._id,
+                req.user.email,
+                'PRODUCT_DELETED',
+                req,
+                { productId: req.params.id, name: product.name }
+            );
+
+            // Broadcast product update via Event Bus
+            try {
+                const { publishEvent } = require('../utils/eventBus');
+                await publishEvent('PRODUCT_DELETED', { productId: req.params.id, version: product.version });
+            } catch (busErr) {
+                console.error('[SellerController-EventBus] Failed to publish product delete:', busErr.message);
+            }
+
             res.json({ message: 'Product removed' });
         } else {
             // Check SellerProduct (Linked)
             const linked = await SellerProduct.findOne({ _id: req.params.id, seller: req.user._id });
             if (linked) {
-                await SellerProduct.deleteOne({ _id: req.params.id });
+                linked.deleted = true;
+                linked.deletedAt = new Date();
+                await linked.save();
+
+                await logSecurityEvent(
+                    req.user._id,
+                    req.user.email,
+                    'PRODUCT_DELETED',
+                    req,
+                    { productId: req.params.id, linked: true }
+                );
+
+                // Broadcast product update via Event Bus
+                try {
+                    const { publishEvent } = require('../utils/eventBus');
+                    await publishEvent('PRODUCT_DELETED', { productId: req.params.id, version: linked.version || 1 });
+                } catch (busErr) {
+                    console.error('[SellerController-EventBus] Failed to publish product delete:', busErr.message);
+                }
+
                 res.json({ message: 'Product removed' });
             } else {
+                // Check if it exists but is already deleted (to ensure idempotency)
+                const mongoose = require('mongoose');
+                if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+                    const existsDeleted = await Product.collection.findOne({ 
+                        _id: new mongoose.Types.ObjectId(req.params.id), 
+                        seller: req.user._id 
+                    });
+                    if (existsDeleted && existsDeleted.deleted === true) {
+                        return res.json({ message: 'Product removed' });
+                    }
+                    
+                    const existsLinkedDeleted = await SellerProduct.collection.findOne({
+                        _id: new mongoose.Types.ObjectId(req.params.id),
+                        seller: req.user._id
+                    });
+                    if (existsLinkedDeleted && existsLinkedDeleted.deleted === true) {
+                        return res.json({ message: 'Product removed' });
+                    }
+                }
                 res.status(404).json({ message: 'Product not found' });
             }
         }
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Product was modified by another request. Please retry.' });
+        }
         res.status(500).json({ message: error.message });
     }
 };
@@ -1478,36 +1867,65 @@ const updateProductsStatusBulk = async (req, res) => {
         }
 
         // Validate status
-        if (!['AVAILABLE', 'LIMITED', 'OUT_OF_STOCK'].includes(status)) {
+        if (!['AVAILABLE', 'UNAVAILABLE', 'IN_STOCK', 'LIMITED', 'OUT_OF_STOCK'].includes(status)) {
             return res.status(400).json({ message: 'Invalid status' });
         }
 
-        // Determine quantity based on status
-        let newCount = 100;
-        if (status === 'OUT_OF_STOCK') newCount = 0;
-        else if (status === 'LIMITED') newCount = 5; // Conservative for bulk limited
+        const isAvailableStatus = ['AVAILABLE', 'IN_STOCK', 'LIMITED'].includes(status);
+        const availabilityVal = isAvailableStatus ? 'AVAILABLE' : 'UNAVAILABLE';
+        const stockStatusVal = isAvailableStatus ? 'IN_STOCK' : 'OUT_OF_STOCK';
 
-        // Update Loose Products
-        await Product.updateMany(
-            { _id: { $in: productIds }, seller: req.user._id },
-            { $set: { countInStock: newCount } }
-        );
+        // 1. Update Product Collection
+        if (isAvailableStatus) {
+            await Product.updateMany(
+                { _id: { $in: productIds }, seller: req.user._id },
+                { $set: { availability: availabilityVal, stockStatus: stockStatusVal } }
+            );
+            await Product.updateMany(
+                { _id: { $in: productIds }, seller: req.user._id, quantity: { $lte: 0 } },
+                { $set: { quantity: 50, baselineStock: 50 } }
+            );
+        } else {
+            await Product.updateMany(
+                { _id: { $in: productIds }, seller: req.user._id },
+                { $set: { availability: availabilityVal, stockStatus: stockStatusVal, quantity: 0 } }
+            );
+        }
 
-        // Update Linked Products
-        await SellerProduct.updateMany(
-            { _id: { $in: productIds }, seller: req.user._id },
-            { $set: { status: status } }
-        );
+        // 2. Update SellerProduct Collection (Linked Products)
+        if (isAvailableStatus) {
+            await SellerProduct.updateMany(
+                { _id: { $in: productIds }, seller: req.user._id },
+                { $set: { availability: availabilityVal, stockStatus: stockStatusVal } }
+            );
+            await SellerProduct.updateMany(
+                { _id: { $in: productIds }, seller: req.user._id, quantity: { $lte: 0 } },
+                { $set: { quantity: 50 } }
+            );
+        } else {
+            await SellerProduct.updateMany(
+                { _id: { $in: productIds }, seller: req.user._id },
+                { $set: { availability: availabilityVal, stockStatus: stockStatusVal, quantity: 0 } }
+            );
+        }
 
         // Update Kirana Timer
         await User.findByIdAndUpdate(req.user._id, {
             'shopDetails.lastStockUpdateAt': new Date()
         });
 
-        // Trigger Alerts for each (Note: simplified, oldQty assumed > threshold)
+        // Trigger Alerts for each
         productIds.forEach(id => {
-            handleStockStatusChange(req.user._id, 'Bulk Update Item', id, 100, newCount, 10).catch(() => { });
+            handleStockStatusChange(req.user._id, 'Bulk Update Item', id, 100, isAvailableStatus ? 50 : 0, 10).catch(() => { });
         });
+
+        // Broadcast product update via Event Bus
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('PRODUCT_UPDATED', { productIds, bulk: true, version: 1 });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish bulk status update:', busErr.message);
+        }
 
         res.json({ message: 'Products updated successfully' });
     } catch (error) {
@@ -1687,7 +2105,7 @@ const uploadCameraImage = async (req, res) => {
 
         // Upload to Cloudinary
         const result = await cloudinary.uploader.upload(req.file.path, {
-            folder: 'shoplens/camera_uploads',
+            folder: 'aisle/camera_uploads',
             use_filename: true,
             unique_filename: true,
         });
@@ -1743,7 +2161,7 @@ const setShopLocation = async (req, res) => {
                         format: 'json'
                     },
                     headers: {
-                        'User-Agent': 'ShopLens/1.0'
+                        'User-Agent': 'Aisle/1.0'
                     }
                 });
 
@@ -1926,10 +2344,20 @@ const updatePaymentPreference = async (req, res) => {
                 success: true,
                 shopDetails: req.user.shopDetails
             });
+
+            try {
+                const { publishEvent } = require('../utils/eventBus');
+                await publishEvent('USER_UPDATED', { userId: req.user._id.toString(), version: req.user.version });
+            } catch (busErr) {
+                console.error('[SellerController-EventBus] Failed to publish USER_UPDATED:', busErr.message);
+            }
         } else {
             res.status(404).json({ message: 'Shop details not found' });
         }
     } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Payment preference was modified by another request. Please retry.' });
+        }
         console.error('Update Payment Preference Error:', error);
         res.status(500).json({ message: 'Server Error' });
     }
@@ -1977,6 +2405,59 @@ const getCustomerVisits = async (req, res) => {
     }
 };
 
+const addCustomCategory = async (req, res) => {
+    try {
+        const { name } = req.body;
+        if (!name || name.trim() === '') {
+            return res.status(400).json({ message: 'Category name is required' });
+        }
+        
+        const user = await User.findById(req.user._id);
+        if (!user) return res.status(404).json({ message: 'Seller not found' });
+
+        const shopType = user.shopDetails?.shopType || '';
+        const isFestive = shopType.toLowerCase().includes('seasonal') || shopType.toLowerCase().includes('festive');
+        if (!isFestive) {
+            return res.status(403).json({ message: 'Custom categories can only be added for Seasonal & Festive shops' });
+        }
+        
+        if (!user.shopDetails.shopCategories) {
+            user.shopDetails.shopCategories = [];
+        }
+        
+        const trimmedName = name.trim();
+        // Check if category already exists (case-insensitive)
+        const exists = user.shopDetails.shopCategories.some(
+            cat => cat.toLowerCase() === trimmedName.toLowerCase()
+        );
+        
+        if (exists) {
+            return res.status(400).json({ message: 'Category already exists' });
+        }
+        
+        user.shopDetails.shopCategories.push(trimmedName);
+        await user.save();
+        
+        res.status(201).json({
+            message: 'Category added successfully',
+            shopCategories: user.shopDetails.shopCategories
+        });
+
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('USER_UPDATED', { userId: user._id.toString(), version: user.version });
+        } catch (busErr) {
+            console.error('[SellerController-EventBus] Failed to publish USER_UPDATED:', busErr.message);
+        }
+    } catch (error) {
+        if (error.name === 'VersionError') {
+            return res.status(409).json({ message: 'Concurrency conflict: Shop categories were modified by another request. Please retry.' });
+        }
+        console.error('Add Custom Category Error:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getSellerStats,
     getShopStatus,
@@ -2012,7 +2493,9 @@ module.exports = {
     restockDaily, // NEW
     addStock,
     updateOperatingMode, // NEW
+    updateAutomationMode, // NEW
     setOpeningStock, // NEW
     scanOrderQR, // NEW
-    getCustomerVisits // NEW Step 2
+    getCustomerVisits, // NEW Step 2
+    addCustomCategory
 };

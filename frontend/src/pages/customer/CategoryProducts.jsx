@@ -5,6 +5,15 @@ import { FaChevronLeft } from 'react-icons/fa';
 import { useInterested } from '../../context/InterestedContext';
 import { CATEGORIES } from '../../constants/categories';
 
+// Helper for image URLs (Duplicated for safety/speed, or import if available)
+const getImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('data:')) return path;
+    if (path.startsWith('http')) return path;
+    // Return relative path to utilize Vite proxy and avoid CORS/CORP issues
+    return `${path.startsWith('/') ? '' : '/'}${path}`;
+};
+
 const CategoryProducts = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
@@ -52,13 +61,7 @@ const CategoryProducts = () => {
         if (slug) fetchProducts();
     }, [slug, userLocation]);
 
-    // Helper for image URLs (Duplicated for safety/speed, or import if available)
-    const getImageUrl = (path) => {
-        if (!path) return null;
-        if (path.startsWith('data:')) return path;
-        if (path.startsWith('http')) return path;
-        return `http://localhost:5000${path.startsWith('/') ? '' : '/'}${path}`;
-    };
+
 
     return (
         <div className="min-h-screen bg-transparent pb-20 pt-[80px]">
@@ -148,9 +151,15 @@ export const ProductCard = ({ product, navigate }) => {
             shopId: product.shop?._id || product.shop,
             productId: product._id,
             productName: product.name,
-            price: product.price,
-            image: product.image,
-            shopName: product.shop?.name // Pass shop name if needed
+            price: product.sellingPrice || product.price || 0,
+            image: product.imageUrl || product.image || 'https://via.placeholder.com/150',
+            shopName: product.shop?.name || product.shop?.shopName || product.seller?.shopDetails?.shopName, // Pass shop name if needed
+            shopPhone: product.shop?.contactPhone || product.seller?.phone || product.seller?.shopDetails?.phone || "9876543210",
+            shopAddress: product.shop?.address || product.shop?.city || product.seller?.shopDetails?.address,
+            shopIsOpen: product.shop?.isOpen !== undefined ? product.shop.isOpen : true,
+            shopHours: product.shop?.openingHours || "9:00 AM - 9:00 PM",
+            shopLastActive: product.seller?.sellerStats?.lastActiveAt || product.seller?.shopDetails?.lastActiveAt || null,
+            stockConfidence: product.stockConfidence || "MEDIUM"
         }, 1);
     };
 
@@ -177,7 +186,7 @@ export const ProductCard = ({ product, navigate }) => {
             {/* 3. PRODUCT IMAGE */}
             <div className="w-full h-[160px] bg-[#fafafa] rounded-[12px] mb-[12px] overflow-hidden relative">
                 <img
-                    src={getImageUrl(product.image) || "https://placehold.co/400x300?text=No+Image"}
+                    src={getImageUrl(product.imageUrl || product.image) || "https://placehold.co/400x300?text=No+Image"}
                     alt={product.name}
                     className="w-full h-full object-contain"
                 />
@@ -203,7 +212,7 @@ export const ProductCard = ({ product, navigate }) => {
             {/* 5. PRICE + UNIT */}
             <div className="flex items-baseline mb-4">
                 <span className="text-[16px] font-bold text-[#111827]">
-                    {typeof product.price === 'string' && product.price.startsWith('₹') ? product.price : `₹${product.price}`}
+                    {typeof product.price === 'string' && product.price.startsWith('₹') ? product.price : `₹${product.sellingPrice || product.price}`}
                 </span>
                 <span className="text-[12px] text-[#6b7280] ml-1">
                     {product.unit ? `/ ${product.unit}` : ''}
@@ -244,7 +253,7 @@ export const ProductCard = ({ product, navigate }) => {
 
             {/* 8. SELLER INFO (Subtle) */}
             <p className="text-[11px] text-[#9ca3af] mt-[8px] text-center truncate">
-                Available at {product.shop?.name || product.shopName || "Local Shop"}
+                Available at {product.shop?.name || product.shopName || "Nearby Business"}
                 {product.planId === 'pro' && <span className="text-[#9ca3af] font-bold"> · Verified</span>}
             </p>
 

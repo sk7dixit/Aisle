@@ -20,7 +20,7 @@ const createAdmin = async () => {
         }
 
         const admin = await User.create({
-            name: 'ShopLens Admin',
+            name: 'Aisle Admin',
             email: adminEmail,
             password: adminPassword,
             role: 'admin',

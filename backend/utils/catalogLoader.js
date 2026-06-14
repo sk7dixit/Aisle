@@ -12,6 +12,21 @@ function slugify(text) {
         .replace(/-+$/, '');
 }
 
+function resolveImageUrl(url) {
+    if (!url) return null;
+    const urlStr = String(url).trim();
+    if (urlStr.includes('drive.google.com')) {
+        const match = urlStr.match(/\/file\/d\/([^\/\?]+)/) || urlStr.match(/[?&]id=([^&]+)/);
+        if (match) {
+            return `https://lh3.googleusercontent.com/d/${match[1]}`;
+        }
+    }
+    if (urlStr.match(/\.(jpeg|jpg|gif|png|webp)/i) || urlStr.includes('googleusercontent.com')) {
+        return urlStr;
+    }
+    return null;
+}
+
 const CATALOG_CONFIGS = {
     'GROCERY_KIRANA': {
         fileName: 'Grocery &Kirana List.xlsx',
@@ -27,20 +42,20 @@ const CATALOG_CONFIGS = {
         ]
     },
     'ELECTRICAL_HARDWARE_AUTO': {
-        fileName: 'Electrical, Hardware & Auto.xlsx',
+        fileName: 'elctrical.xlsx',
+        singleSheetMode: true,
         categories: [
-            "Electrical & Lighting",
-            "Hardware & Furniture Fittings",
-            "Plumbing & Sanitaryware",
-            "Paints & Waterproofing",
-            "Automobile Spares & Care",
-            "Tools & Industrial Supply"
+            "Electrical Shop",
+            "Hardware & Sanitary",
+            "Paints & Decor",
+            "Automobile Spares",
+            "Industrial / Power Tools"
         ]
     },
     'TECH_ACCESSORIES': {
-        fileName: 'Tech & Accessories.xlsx',
+        fileName: 'Tech and acessories.xlsx',
+        singleSheetMode: true,
         categories: [
-            "All Categories",
             "Mobiles, Audio & Wearables",
             "Computers, Gaming & Office",
             "TV & Home Appliances",
@@ -75,9 +90,9 @@ const CATALOG_CONFIGS = {
         fileName: 'Pharmacy or Medical Store.xlsx',
         categories: [
             "All Categories",
-            "Allopathic Medicines",
-            "Ayurvedic & Wellness",
-            "Surgical, Rehab & General"
+            "Allopathic Chemist",
+            "Ayurvedic & Herbal",
+            "Surgical & Equipment"
         ]
     },
     'HOME_BUSINESS': {
@@ -127,6 +142,7 @@ function loadExcelCatalog(shopType = 'GROCERY_KIRANA') {
     try {
         const rootPath = process.cwd();
         const possiblePaths = [
+            path.join('s:\\Aisle\\Excel', config.fileName),
             path.join('s:\\2K27_Project', config.fileName),
             path.join(rootPath, config.fileName),
             path.join(rootPath, 'backend', config.fileName)
@@ -200,64 +216,175 @@ function loadExcelCatalog(shopType = 'GROCERY_KIRANA') {
                         }
                     }
 
-                    if (headerIndex === -1) {
+                    let headers = [];
+                    let dataRows = [];
+                    let nameIdx = 0;
+                    let brandIdx = -1;
+                    let specIdx = -1;
+                    let priceIdx = -1;
+
+                    if (headerIndex === -1 && normalizedType !== 'ELECTRICAL_HARDWARE_AUTO' && normalizedType !== 'ELECTRONICS_TOOLS' && normalizedType !== 'TECH_ACCESSORIES') {
                         return { categoryId: slugify(name), categoryName: name, order: index, products: [] };
                     }
 
-                    const headers = rawRows[headerIndex];
-                    let dataRows = rawRows.slice(headerIndex + 1);
+                    if (headerIndex !== -1) {
+                        headers = rawRows[headerIndex];
+                        dataRows = rawRows.slice(headerIndex + 1);
+                        const findCol = (terms) => headers.findIndex(h => terms.some(t => h && h.toString().toLowerCase().includes(t.toLowerCase())));
+                        nameIdx = findCol(['product name', 'item name', 'brand / variety', 'variety', 'subject', 'details']);
+                        brandIdx = findCol(['brand', 'variety', 'type', 'famous', 'company']);
+                        specIdx = findCol(['weight', 'unit', 'specification', 'size', 'model', 'duration', 'frequency']);
+                        priceIdx = findCol(['price', 'market price', 'mrp', 'rate', 'fee']);
+                    } else {
+                        dataRows = rawRows;
+                        nameIdx = 0;
+                    }
 
                     // Single Sheet Section Filtering
                     if (config.singleSheetMode && !isAll) {
-                        // Find start of section
-                        let startIdx = -1;
-                        let endIdx = dataRows.length;
+                        const targetCategoryName = name;
+                        const sectionProducts = [];
+                        let currentCategory = "";
 
-                        // We look for a row that starts with "N. Category Name"
-                        // The index is roughly (order within categories)
-                        // But verifying by name is safer
-                        const searchTerms = name.toLowerCase().split(/[&/]/).map(s => s.trim()).filter(s => s.length > 3);
+                        // Define maps/keywords
+                        const sheetHeaderToCategory = {
+                            'electrical & lighting': 'Electrical Shop',
+                            'electrical items': 'Electrical Shop',
+                            'tools & industrial supply': 'Industrial / Power Tools',
+                            'industrial / power tools': 'Industrial / Power Tools',
+                            'mobiles, audio & wearables': 'Mobiles, Audio & Wearables',
+                            'computers, gaming & office.': 'Computers, Gaming & Office',
+                            'computers, gaming & office': 'Computers, Gaming & Office'
+                        };
 
-                        for (let i = 0; i < dataRows.length; i++) {
-                            const row = dataRows[i];
-                            if (row && row.length > 0 && row[0] && typeof row[0] === 'string') {
-                                const cellVal = row[0].toLowerCase();
-                                // Check if it's a section header (starts with number dot)
-                                if (cellVal.match(/^\d+\./)) {
-                                    const match = searchTerms.some(term => cellVal.includes(term));
-                                    if (match) {
-                                        startIdx = i + 1; // Start AFTER the section header
-                                    } else if (startIdx !== -1) {
-                                        // We found a NEW section header after ours, so stop
-                                        endIdx = i;
-                                        break;
-                                    }
+                        let lastProductName = "";
+                        dataRows.forEach((row, rowIdx) => {
+                            if (!row || row.length === 0) return;
+
+                            // Check if this row is a category header
+                            const nonOptCells = row.map((val, idx) => ({ val: String(val || '').trim(), idx })).filter(c => c.val !== '');
+                            const isHeader = nonOptCells.length === 1;
+                            
+                            if (isHeader) {
+                                const valStr = nonOptCells[0].val;
+                                const valLower = valStr.toLowerCase();
+                                if (sheetHeaderToCategory[valLower]) {
+                                    currentCategory = sheetHeaderToCategory[valLower];
+                                } else if (valLower.includes('electrical')) {
+                                    currentCategory = 'Electrical Shop';
+                                } else if (valLower.includes('tool') || valLower.includes('industrial')) {
+                                    currentCategory = 'Industrial / Power Tools';
+                                } else if (valLower.includes('mobile') || valLower.includes('audio') || valLower.includes('wearable')) {
+                                    currentCategory = 'Mobiles, Audio & Wearables';
+                                } else if (valLower.includes('computer') || valLower.includes('gaming')) {
+                                    currentCategory = 'Computers, Gaming & Office';
+                                } else {
+                                    const matched = config.categories.find(catName => 
+                                        valLower.includes(catName.toLowerCase()) || catName.toLowerCase().includes(valLower)
+                                    );
+                                    if (matched) currentCategory = matched;
+                                }
+                                return;
+                            }
+
+                            if (!currentCategory) {
+                                currentCategory = config.categories[0];
+                            }
+
+                            if (currentCategory.toLowerCase() !== targetCategoryName.toLowerCase()) {
+                                return;
+                            }
+
+                            // Parse product row
+                            let pName = row[nameIdx];
+                            let pBrand = row[brandIdx] || "Loose / Fresh";
+                            if (brandIdx === -1 && pName) {
+                                const firstWord = pName.trim().split(/\s+/)[0];
+                                const knownBrands = ['anchor', 'havells', 'gm', 'legrand', 'schneider', 'polycab', 'finolex', 'rr', 'kei', 'philips', 'wipro', 'syska', 'crompton', 'orient', 'bajaj', 'usha', 'atomberg', 'apple', 'samsung', 'oneplus', 'redmi', 'realme', 'vivo', 'oppo', 'google', 'motorola', 'mi', 'xiaomi', 'boat', 'noise', 'boult', 'hp', 'dell', 'lenovo', 'asus', 'acer', 'msi', 'logitech'];
+                                if (firstWord && knownBrands.includes(firstWord.toLowerCase())) {
+                                    pBrand = firstWord.charAt(0).toUpperCase() + firstWord.slice(1);
+                                } else {
+                                    pBrand = "General";
                                 }
                             }
-                        }
+                            const pSpec = row[specIdx] || "";
+                            let pPriceRaw = "";
+                            if (priceIdx !== -1) {
+                                pPriceRaw = row[priceIdx] ? row[priceIdx].toString() : "";
+                            }
 
-                        if (startIdx !== -1) {
-                            dataRows = dataRows.slice(startIdx, endIdx);
-                        } else {
-                            // If explicit section not found, fallback to empty or loose match?
-                            // For now, if strict section mapping fails, return empty to prevent bleed
-                            return { categoryId: slugify(name), categoryName: name, order: index, products: [] };
-                        }
+                            if (pName && pName.toString().toLowerCase().includes('product name')) return;
+                            if (pBrand && pBrand.toString().toLowerCase().includes('famous brands')) return;
+                            if (pName && pName.toString().toLowerCase().includes('common brand')) return;
+
+                            if (pName) {
+                                lastProductName = pName;
+                            } else if (pBrand && pBrand !== "Loose / Fresh") {
+                                pName = lastProductName;
+                            }
+
+                            if (!pName) return;
+
+                            const hasPrice = pPriceRaw && pPriceRaw.length > 0;
+                            if (!hasPrice && (pName === 'Product Name' || pName.includes('Category:'))) return;
+
+                            const pPrice = hasPrice ? pPriceRaw.replace(/,/g, '').replace(/[^\d\.]/g, ' ').trim().split(/\s+/)[0] : "0";
+                            const brandDisplay = pBrand.split(',')[0].split('/')[0].trim();
+
+                            let displayName = pName;
+                            if (!row[nameIdx] && pBrand !== "Loose / Fresh") {
+                                displayName = `${pName} - ${brandDisplay}`;
+                            }
+                            if (pSpec) displayName += ` (${pSpec})`;
+
+                            let rawUrl = '';
+                            row.forEach(cell => {
+                                if (cell && String(cell).startsWith('http')) {
+                                    rawUrl = String(cell).trim();
+                                }
+                            });
+                            const pImage = resolveImageUrl(rawUrl);
+
+                            sectionProducts.push({
+                                baseName: displayName,
+                                brand: brandDisplay,
+                                image: pImage || 'https://images.unsplash.com/photo-1468436139062-f60a71c5c892?placeholder=true&w=500',
+                                indicativePrice: pPrice || "0",
+                                variantId: slugify(`${actualSheetName}_${displayName}_${brandDisplay}_${rowIdx}`)
+                            });
+                        });
+
+                        console.log(`[CATALOG_LOADER] Loaded ${sectionProducts.length} products for single-sheet section: ${name}`);
+                        return {
+                            categoryId: slugify(name),
+                            categoryName: name,
+                            order: index,
+                            products: sectionProducts
+                        };
                     }
 
                     const findCol = (terms) => headers.findIndex(h => terms.some(t => h && h.toString().toLowerCase().includes(t.toLowerCase())));
 
-                    const nameIdx = findCol(['product name', 'item name', 'brand / variety', 'variety', 'subject', 'details']);
-                    const brandIdx = findCol(['brand', 'variety', 'type', 'famous', 'company']);
-                    const specIdx = findCol(['weight', 'unit', 'specification', 'size', 'model', 'duration', 'frequency']);
-                    const priceIdx = findCol(['price', 'market price', 'mrp', 'rate', 'fee']);
+                    nameIdx = findCol(['product name', 'item name', 'brand / variety', 'variety', 'subject', 'details']);
+                    brandIdx = findCol(['brand', 'variety', 'type', 'famous', 'company']);
+                    specIdx = findCol(['weight', 'unit', 'specification', 'size', 'model', 'duration', 'frequency']);
+                    priceIdx = findCol(['price', 'market price', 'mrp', 'rate', 'fee']);
 
                     let lastProductName = "";
                     const products = [];
 
                     dataRows.forEach((row, rowIdx) => {
                         let pName = row[nameIdx];
-                        const pBrand = row[brandIdx] || "Loose / Fresh";
+                        let pBrand = row[brandIdx] || "Loose / Fresh";
+                        if (brandIdx === -1 && pName) {
+                            const firstWord = pName.trim().split(/\s+/)[0];
+                            const knownBrands = ['anchor', 'havells', 'gm', 'legrand', 'schneider', 'polycab', 'finolex', 'rr', 'kei', 'philips', 'wipro', 'syska', 'crompton', 'orient', 'bajaj', 'usha', 'atomberg'];
+                            if (firstWord && knownBrands.includes(firstWord.toLowerCase())) {
+                                pBrand = firstWord.charAt(0).toUpperCase() + firstWord.slice(1);
+                            } else {
+                                pBrand = "General";
+                            }
+                        }
                         const pSpec = row[specIdx] || "";
                         let pPriceRaw = "";
                         if (priceIdx !== -1) {

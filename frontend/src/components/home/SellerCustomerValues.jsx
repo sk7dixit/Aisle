@@ -13,7 +13,7 @@ const SellerCustomerValues = () => {
                         <div className="w-16 h-16 rounded-2xl bg-accent-end/10 border border-accent-end/20 flex items-center justify-center text-4xl text-accent-end mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-accent-end/10">
                             <FaStore />
                         </div>
-                        <h3 className="text-3xl font-bold text-text-primary mb-4">For Local Shops</h3>
+                        <h3 className="text-3xl font-bold text-text-primary mb-4">For Growing Businesses</h3>
                         <p className="text-text-secondary text-lg mb-8 leading-relaxed">
                             Compete with e-commerce giants without the tech or marketing headache.
                         </p>
@@ -22,7 +22,7 @@ const SellerCustomerValues = () => {
                                 <FaCheckCircle className="text-accent-end" /> 0% Commission
                             </li>
                             <li className="flex items-center gap-3 text-text-primary font-medium">
-                                <FaCheckCircle className="text-accent-end" /> Instant Local Visibility
+                                <FaCheckCircle className="text-accent-end" /> Get Discovered Nearby
                             </li>
                             <li className="flex items-center gap-3 text-text-primary font-medium">
                                 <FaCheckCircle className="text-accent-end" /> Easy Inventory Sync

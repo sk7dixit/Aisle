@@ -1,13 +1,14 @@
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+dotenv.config();
+
+const mongoose = require('mongoose');
 const User = require('./models/User'); // Adjust path if needed
 const bcrypt = require('bcryptjs');
 
-dotenv.config();
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/shoplens');
+        const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/aisle');
         console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
         console.error(`Error: ${error.message}`);
@@ -28,7 +29,7 @@ const seedAdmins = async () => {
         },
         {
             name: "Moderator",
-            email: "lakshyadwivedi2005@gmail.com",
+            email: "trinovex@gmail.com",
             password: "Admin#123", // Updated as per user request
             role: "moderator",
             phone: "+918888888888"

@@ -12,8 +12,8 @@ const getImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith('data:')) return path; // Base64
     if (path.startsWith('http')) return path; // External or full URL
-    // Prepend Backend URL (Hardcoded for now as per env context)
-    return `http://localhost:5000${path.startsWith('/') ? '' : '/'}${path}`;
+    // Return relative path to utilize Vite proxy and avoid CORS/CORP issues
+    return `${path.startsWith('/') ? '' : '/'}${path}`;
 };
 
 const ShopCard = ({ _id, name, category, location, isVerified, isOpen, image, distanceKm, distanceMeters, shopLocation, planId, rating, operatingMode }) => {
@@ -78,9 +78,28 @@ const ShopCard = ({ _id, name, category, location, isVerified, isOpen, image, di
                         </div>
                     )}
 
-                    <p className="text-[12px] text-gray-500 font-medium truncate mb-1">
+                    <p className="text-[12px] text-gray-500 font-medium truncate mb-0.5">
                         {category || 'General Store'}
                     </p>
+
+                    {/* Modernized Availability System Badges */}
+                    <div className="flex items-center gap-1.5 mb-2">
+                        {operatingMode === 'GUARANTEED' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                🟢 Live Inventory
+                            </span>
+                        )}
+                        {operatingMode === 'BEST_EFFORT' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                🔵 Verified Availability
+                            </span>
+                        )}
+                        {operatingMode === 'RUSH' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                🟡 Check Before Visit
+                            </span>
+                        )}
+                    </div>
 
                     <div className="flex items-center gap-2">
                         <span className="text-[12px] font-bold text-gray-400">
@@ -90,16 +109,6 @@ const ShopCard = ({ _id, name, category, location, isVerified, isOpen, image, di
                         <span className={`text-[12px] font-bold ${isOpen ? 'text-[#137333]' : 'text-gray-400'}`}>
                             {isOpen ? 'OPEN' : 'CLOSED'}
                         </span>
-
-                        {/* Step 5: High Rush Indicator */}
-                        {operatingMode === 'RUSH' && (
-                            <>
-                                <span className="text-gray-300">•</span>
-                                <span className="text-[12px] font-bold text-orange-600 uppercase tracking-tight">
-                                    High Rush
-                                </span>
-                            </>
-                        )}
                     </div>
                 </div>
 

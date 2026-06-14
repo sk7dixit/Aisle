@@ -61,7 +61,7 @@ const AssistedProductAdd = () => {
                 <p className="text-slate-400 font-medium text-lg leading-relaxed max-w-lg mx-auto mb-10">
                     {requested
                         ? "Our team has been notified. We will call you within 24 hours to schedule your shop visit."
-                        : "Our team will visit your shop or take your inventory list to populate your ShopLens digital shelf."
+                        : "Our team will visit your shop or take your inventory list to populate your Aisle digital shelf."
                     }
                 </p>
 
@@ -69,7 +69,7 @@ const AssistedProductAdd = () => {
                 {!requested ? (
                     <div className="flex flex-col items-center gap-6 mb-12">
                         <div className="inline-block bg-slate-900 text-white text-xs font-bold px-6 py-3 rounded-full uppercase tracking-widest">
-                            PAID SERVICE · VERIFIED BY SHOPLENS
+                            PAID SERVICE · VERIFIED BY AISLE
                         </div>
 
                         <button

@@ -7,10 +7,10 @@ const DiscoveryHero = () => {
     return (
         <section className="px-6 py-8 md:py-12 text-center max-w-2xl mx-auto">
             <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-3 tracking-tight leading-tight">
-                Discover what nearby shops <span className="text-blue-600">actually have</span>.
+                Discover what nearby businesses <span className="text-blue-600">actually have</span>.
             </h1>
             <p className="text-gray-500 text-sm md:text-base mb-8 max-w-md mx-auto leading-relaxed">
-                Browse real inventory from local stores — updated by shop owners themselves.
+                Browse real inventory from nearby businesses — updated by the owners themselves.
             </p>
 
             <button

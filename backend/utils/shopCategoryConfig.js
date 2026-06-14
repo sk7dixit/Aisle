@@ -39,10 +39,11 @@ const SHOP_CATEGORIES = {
         'Cables & Chargers'
     ],
     [SHOP_Types.ELECTRICAL_HARDWARE_AUTO]: [
-        'Electrical Items',
-        'Hardware & Tools',
+        'Electrical Shop',
+        'Hardware & Sanitary',
         'Paints & Decor',
-        'Auto Parts'
+        'Automobile Spares',
+        'Industrial / Power Tools'
     ],
     [SHOP_Types.HOME_LIFESTYLE]: [
         'Kitchenware',
@@ -51,9 +52,10 @@ const SHOP_CATEGORIES = {
         'Gifting Items'
     ],
     [SHOP_Types.HOME_BUSINESS]: [
-        'Home Cooked Food',
-        'Handmade Crafts',
-        'Small Batch Products'
+        'Homemade Food, Bakery & Catering',
+        'Handmade Arts, Crafts & Jewelry',
+        'Tuition, Coaching & Skill Classes',
+        'Other'
     ],
     [SHOP_Types.SEASONAL_FESTIVE]: [
         'Festival Specific',

@@ -1,158 +1,129 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag } from 'lucide-react';
+import { useLocation } from '../../context/LocationContext';
+import {
+    Map,
+    MapMarker,
+    MarkerContent,
+    MarkerTooltip,
+    MarkerLabel,
+    MapControls,
+    MapArc
+} from '../ui/mapcn-map-marker';
 
 const InteractiveMap = () => {
-    return (
-        // --- SEAMLESS INTEGRATION ---
-        // Changed bg-gradient to bg-transparent to let Hero's background flow through.
-        // Removed min-height to allow Hero's layout to control dimensions.
-        <div className="relative w-full h-[500px] flex items-center justify-center overflow-visible">
+    const { userLocation } = useLocation();
 
-            {/* Ambient Color Blobs (Reduced opacity for better blending) */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-orange-200/20 rounded-full blur-[100px]" />
+    // Center of the map (Delhi, India as default, or the scanned geolocation coordinates)
+    const userCoords = userLocation 
+        ? [userLocation.lng, userLocation.lat]
+        : [77.209, 28.6139]; // [lng, lat]
+        
+    const shopCoords = userLocation
+        ? [userLocation.lng + 0.015, userLocation.lat + 0.011]
+        : [77.230, 28.6304];
+    
+    const [hoveredArc, setHoveredArc] = useState(null);
+
+    const arcData = [
+        {
+            id: 'user-to-shop',
+            from: userCoords,
+            to: shopCoords
+        }
+    ];
+
+    return (
+        <div className="relative w-full h-[500px] rounded-3xl overflow-hidden border border-white/20 shadow-2xl bg-slate-900/10">
+            {/* Ambient Background Glow behind the map container */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-teal-200/20 rounded-full blur-[100px]" />
                 <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-amber-200/20 rounded-full blur-[100px]" />
             </div>
 
-            {/* Subtle Noise Texture (Lower opacity for white background) */}
-            <div className="absolute inset-0 opacity-[0.015] pointer-events-none"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
-            />
+            <div className="w-full h-full relative z-10">
+                <Map
+                    center={userCoords}
+                    zoom={12.5}
+                    pitch={45}
+                    bearing={-10}
+                    className="w-full h-full rounded-3xl"
+                    theme="light" // Can auto-detect or force light theme for matching hero colors
+                >
+                    {/* Controls */}
+                    <MapControls 
+                        position="top-right" 
+                        showZoom={true} 
+                        showCompass={true} 
+                        showLocate={true}
+                    />
 
-            {/* The 3D Grid Floor (Moved slightly for better composition) */}
-            <div className="absolute inset-0 flex items-center justify-center perspective-[1200px] pointer-events-none">
-                <div
-                    className="w-[180%] h-[180%]"
-                    style={{
-                        backgroundImage: `
-                            linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), 
-                            linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)
-                        `,
-                        backgroundSize: '80px 80px',
-                        transform: 'rotateX(55deg) translateY(-150px)',
-                        maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 70%)',
-                        WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 70%)',
-                    }}
-                />
+                    {/* Route Arc */}
+                    <MapArc
+                        data={arcData}
+                        curvature={0.25}
+                        paint={{
+                            "line-color": "#ea580c",
+                            "line-width": 4,
+                            "line-opacity": 0.8
+                        }}
+                        hoverPaint={{
+                            "line-color": "#0d9488",
+                            "line-width": 6
+                        }}
+                        onHover={(e) => setHoveredArc(e ? e.arc : null)}
+                    />
+
+                    {/* User Location Marker */}
+                    <MapMarker longitude={userCoords[0]} latitude={userCoords[1]}>
+                        <MarkerContent>
+                            <motion.div
+                                animate={{ scale: [1, 1.1, 1] }}
+                                transition={{ repeat: Infinity, duration: 2 }}
+                                className="w-10 h-10 bg-teal-500 rounded-full border-[3px] border-white shadow-lg flex items-center justify-center relative"
+                            >
+                                <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
+                                <div className="absolute inset-0 rounded-full border border-teal-400 animate-ping opacity-75"></div>
+                            </motion.div>
+                        </MarkerContent>
+                        <MarkerTooltip className="bg-teal-600 text-white font-semibold">
+                            {userLocation ? `${userLocation.city || userLocation.area}` : "You are here (Connaught Place)"}
+                        </MarkerTooltip>
+                        <MarkerLabel position="bottom" className="bg-white/90 backdrop-blur-md px-2 py-0.5 rounded shadow border border-gray-100 font-bold text-teal-800 text-[10px]">
+                            You're here
+                        </MarkerLabel>
+                    </MapMarker>
+
+                    {/* Shop Location Marker */}
+                    <MapMarker longitude={shopCoords[0]} latitude={shopCoords[1]}>
+                        <MarkerContent>
+                            <div className="w-12 h-12 bg-orange-500 rounded-full border-[3px] border-white shadow-lg flex items-center justify-center relative hover:scale-110 transition-transform">
+                                <ShoppingBag size={18} className="text-white" />
+                            </div>
+                        </MarkerContent>
+                        <MarkerTooltip className="bg-[#1C140F] text-white font-semibold">
+                            {userLocation ? `Aisle Shop near ${userLocation.city || 'you'}` : "Aisle Home Bakers & Handcrafted"}
+                        </MarkerTooltip>
+                        <MarkerLabel position="top" className="bg-[#1C140F]/95 text-white font-semibold px-2 py-1 rounded-xl shadow-xl flex items-center gap-1.5 text-[10px]">
+                            <span>Shops near you</span>
+                            <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
+                        </MarkerLabel>
+                    </MapMarker>
+                </Map>
             </div>
 
-            {/* THE MAP CONTENT */}
-            <div className="absolute inset-0 z-20">
-                <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
-                    <defs>
-                        <linearGradient id="realGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#0d9488" /> {/* Teal-600 for contrast */}
-                            <stop offset="100%" stopColor="#ea580c" /> {/* Orange-600 for contrast */}
-                        </linearGradient>
-                        <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                            <feMerge>
-                                <feMergeNode in="coloredBlur" />
-                                <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                        </filter>
-                    </defs>
-
-                    {/* Path Background (Slightly more visible) */}
-                    <path
-                        d="M 120 350 C 250 350, 250 180, 450 140"
-                        fill="transparent"
-                        stroke="rgba(0,0,0,0.03)"
-                        strokeWidth="10"
-                        strokeLinecap="round"
-                    />
-
-                    {/* Animated Path */}
-                    <motion.path
-                        d="M 120 350 C 250 350, 250 180, 450 140"
-                        fill="transparent"
-                        stroke="url(#realGradient)"
-                        strokeWidth="8"
-                        strokeLinecap="round"
-                        filter="url(#softGlow)"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 1.8, ease: "easeInOut" }}
-                    />
-                </svg>
-
-                {/* Traveler Dot */}
-                <motion.div
-                    className="absolute w-5 h-5 bg-white rounded-full shadow-lg z-30 border-[3px] border-teal-500"
-                    style={{ offsetPath: 'path("M 120 350 C 250 350, 250 180, 450 140")' }}
-                    animate={{ offsetDistance: ["0%", "100%"] }}
-                    transition={{ duration: 5, ease: "easeInOut", repeat: Infinity, repeatDelay: 1 }}
-                />
-
-                {/* LOCATION: YOU'RE HERE */}
-                <div className="absolute left-[100px] top-[330px]">
-                    <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="w-10 h-10 bg-teal-500 rounded-full border-[4px] border-white shadow-2xl flex items-center justify-center relative z-20"
-                    >
-                        <div className="w-3 h-3 bg-white rounded-full animate-ping opacity-75"></div>
-                        <div className="w-2 h-2 bg-white rounded-full absolute"></div>
-                    </motion.div>
-
-                    {/* Tooltip */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: -10 }}
-                        transition={{ delay: 0.3 }}
-                        className="absolute -top-14 -left-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100/50"
-                    >
-                        <span className="text-sm font-bold text-gray-700 whitespace-nowrap">You're here</span>
-                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-white/90 rotate-45 border-b border-r border-gray-100/50"></div>
-                    </motion.div>
+            {/* Floating Stats Card (Glassmorphic) */}
+            <div className="absolute bottom-4 left-4 bg-white/70 backdrop-blur-md p-3 pr-5 rounded-2xl shadow-xl border border-white/50 flex items-center gap-3 z-20">
+                <div className="flex -space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-teal-500 border-[2.5px] border-white flex items-center justify-center text-[9px] text-white font-bold shadow-sm">S1</div>
+                    <div className="w-8 h-8 rounded-full bg-orange-500 border-[2.5px] border-white flex items-center justify-center text-[9px] text-white font-bold shadow-sm">S2</div>
+                    <div className="w-8 h-8 rounded-full bg-yellow-400 border-[2.5px] border-white flex items-center justify-center text-[9px] text-white font-bold shadow-sm">S3</div>
                 </div>
-
-                {/* LOCATION: SHOPS */}
-                <div className="absolute left-[430px] top-[120px]">
-                    <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 1.5, type: "spring", stiffness: 260, damping: 20 }}
-                        className="w-12 h-12 bg-orange-500 rounded-full border-[4px] border-white shadow-2xl flex items-center justify-center relative z-20"
-                    >
-                        <ShoppingBag size={20} className="text-white" />
-                    </motion.div>
-
-                    {/* Dark Card Tooltip */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 1.8 }}
-                        className="absolute -top-16 -right-12 bg-[#1C140F]/95 backdrop-blur-sm text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 whitespace-nowrap overflow-hidden"
-                    >
-                        <span className="text-sm font-semibold">Shops near you</span>
-                        <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#ea580c]"></div>
-                        {/* Shimmer effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-shimmer"></div>
-                        {/* Arrow */}
-                        <div className="absolute -bottom-1 left-1/2 -translate-x-full w-3 h-3 bg-[#1C140F] rotate-45"></div>
-                    </motion.div>
+                <div>
+                    <h4 className="font-extrabold text-gray-800 text-xs tracking-tight">8 Shops Live</h4>
+                    <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest opacity-80">90+ Products</p>
                 </div>
-
-                {/* STATS FLOATING CARD (Glassmorphic) */}
-                <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 2.2 }}
-                    className="absolute bottom-8 right-8 bg-white/40 backdrop-blur-xl p-4 pr-6 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/60 flex items-center gap-4 z-30"
-                >
-                    <div className="flex -space-x-4">
-                        <div className="w-10 h-10 rounded-full bg-teal-500 border-[3px] border-white flex items-center justify-center text-[10px] text-white font-bold shadow-sm">S1</div>
-                        <div className="w-10 h-10 rounded-full bg-orange-500 border-[3px] border-white flex items-center justify-center text-[10px] text-white font-bold shadow-sm">S2</div>
-                        <div className="w-10 h-10 rounded-full bg-yellow-400 border-[3px] border-white flex items-center justify-center text-[10px] text-white font-bold shadow-sm">S3</div>
-                    </div>
-                    <div>
-                        <h4 className="font-extrabold text-gray-800 text-sm tracking-tight">8 Shops Live</h4>
-                        <p className="text-[11px] text-gray-500 font-bold uppercase tracking-widest opacity-80">90+ Products</p>
-                    </div>
-                </motion.div>
-
             </div>
         </div>
     );

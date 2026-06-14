@@ -83,7 +83,7 @@ const generateContent = (type, payload) => {
     switch (type) {
         case NOTIFICATION_TYPE.ADMIN_WELCOME_ONBOARDING:
             return {
-                title: 'Welcome to ShopLens!',
+                title: 'Welcome to Aisle!',
                 message: `Hi ${payload.name || 'Seller'}, we're excited to have you. Let's start by adding your first product!`
             };
         case NOTIFICATION_TYPE.SYSTEM_STOCK_OUT_ALERT:
@@ -142,102 +142,123 @@ const generateContent = (type, payload) => {
 /**
  * Single Entry Point for Notifications
  */
-const sendNotification = async (sellerId, type, payload = {}) => {
+const sendNotification = async (sellerId, type, payload = {}, forceSync = false) => {
+    // If not running in worker context and not forced synchronously, delegate to BullMQ
+    if (process.env.IS_WORKER !== 'true' && !forceSync) {
+        try {
+            const { notificationQueue } = require('../config/queue');
+            if (notificationQueue) {
+                await notificationQueue.add('dispatchNotification', { sellerId, type, payload });
+                console.log(`[Notification Service] Deferred notification of type ${type} to worker queue.`);
+                return { status: 'DEFERRED' };
+            }
+        } catch (queueErr) {
+            console.error('[Notification Service] Failed to queue notification job, falling back to sync:', queueErr.message);
+        }
+    }
+
     // 1. Enforcement & Config Check
     const config = TYPE_CONFIG[type];
     if (!config) {
         throw new Error(`Invalid notification type: ${type}. Must be added to NOTIFICATION_TYPE first.`);
     }
 
-    const { source, priority } = config;
-    const entityId = payload.entityId || 'GLOBAL';
-
-    // 2. Preference Check
-    const seller = await User.findById(sellerId);
-    if (!seller) throw new Error('Seller not found');
-
-    if (seller.notificationPreferences) {
-        // Map priority/type to preferences
-        // Critical is ALWAYS ON per design logic ("locked ON")
-        if (priority === NOTIFICATION_PRIORITY.INFO && !seller.notificationPreferences.shopUpdates) {
-            console.log(`[Notification Service] Skipping ${type} for ${sellerId} (Muted by User)`);
-            return { status: 'SKIPPED', reason: 'USER_MUTED_INFO' };
-        }
+    // Acquire distributed lock to prevent duplicate sends across nodes
+    const { acquireLock } = require('../utils/lockManager');
+    let lock;
+    try {
+        lock = await acquireLock(`notification_lock:${sellerId}`, 5000);
+    } catch (lockErr) {
+        console.warn(`[Notification Service] Lock acquisition failed for user ${sellerId}. Skipping notification: ${type}`);
+        return { status: 'SKIPPED', reason: 'LOCK_FAILED' };
     }
 
-    // 3. One-Time Welcome Logic
-    if (type === NOTIFICATION_TYPE.ADMIN_WELCOME_ONBOARDING) {
-        if (seller.shopDetails?.hasReceivedWelcomeNotification) {
-            console.log(`[Notification Service] Skipping Welcome for ${sellerId} (Already sent)`);
-            return { status: 'SKIPPED', reason: 'WELCOME_ALREADY_SENT' };
-        }
-    }
+    try {
+        const { source, priority } = config;
+        const entityId = payload.entityId || 'GLOBAL';
 
-    // 3. Cooldown Logic
-    const cooldownMs = COOLDOWN_CONFIG[type];
-    if (cooldownMs !== undefined) {
-        // Special case for stock alerts: if cooldown is 0, we can use a "once per entity" logic 
-        // by checking if any cooldown record exists at all (regardless of time) 
-        // OR we can just treat COOLDOWN_CONFIG[type] = 0 as "no time cooldown" but still track lastSentAt.
-        // User requested: 
-        // SYSTEM_STOCK_LIMITED_ALERT -> Once per product
-        // SYSTEM_STOCK_OUT_ALERT -> Once per product
+        // 2. Preference Check
+        const seller = await User.findById(sellerId);
+        if (!seller) throw new Error('Seller not found');
 
-        const lastSent = await NotificationCooldown.findOne({ sellerId, notificationType: type, entityId });
-
-        if (lastSent) {
-            const timePassed = Date.now() - lastSent.lastSentAt.getTime();
-
-            // For stock alerts (cooldownMs 0), if it was EVER sent for this product, we skip 
-            // until the status changes (this is Step 3 logic usually, but let's implement per-entity lock here)
-            if (cooldownMs === 0) {
-                console.log(`[Notification Service] Skipping ${type} for ${entityId} (Already alerted)`);
-                return { status: 'SKIPPED', reason: 'ENTITY_COOLDOWN_ACTIVE' };
-            }
-
-            if (timePassed < cooldownMs) {
-                console.log(`[Notification Service] Skipping ${type} for ${sellerId} (In cooldown)`);
-                return { status: 'SKIPPED', reason: 'COOLDOWN_ACTIVE' };
+        if (seller.notificationPreferences) {
+            // Map priority/type to preferences
+            // Critical is ALWAYS ON per design logic ("locked ON")
+            if (priority === NOTIFICATION_PRIORITY.INFO && !seller.notificationPreferences.shopUpdates) {
+                console.log(`[Notification Service] Skipping ${type} for ${sellerId} (Muted by User)`);
+                return { status: 'SKIPPED', reason: 'USER_MUTED_INFO' };
             }
         }
-    }
 
-    // 4. Content Generation
-    const { title, message } = generateContent(type, payload);
-    const actionUrl = payload.actionLink || null;
-    const recipientRole = payload.recipientRole || 'seller';
+        // 3. One-Time Welcome Logic
+        if (type === NOTIFICATION_TYPE.ADMIN_WELCOME_ONBOARDING) {
+            if (seller.shopDetails?.hasReceivedWelcomeNotification) {
+                console.log(`[Notification Service] Skipping Welcome for ${sellerId} (Already sent)`);
+                return { status: 'SKIPPED', reason: 'WELCOME_ALREADY_SENT' };
+            }
+        }
 
-    // 5. Create Notification (Consolidated Model)
-    const Notification = require('../models/Notification');
-    notification = await Notification.create({
-        user: sellerId, // This is the recipient ID (seller or customer)
-        recipientRole,
-        type: type.startsWith('ADMIN') ? 'ANNOUNCEMENT' :
-            type.startsWith('SYSTEM_STOCK') ? 'INVENTORY' : 'SYSTEM',
-        priority: priority.toUpperCase(),
-        title,
-        message,
-        actionUrl
-    });
+        // 3. Cooldown Logic
+        const cooldownMs = COOLDOWN_CONFIG[type];
+        if (cooldownMs !== undefined) {
+            const lastSent = await NotificationCooldown.findOne({ sellerId, notificationType: type, entityId });
 
-    // 6. Update Cooldown Tracker (Only for sellers currently, or global)
-    if (payload.recipientRole !== 'customer') {
-        await NotificationCooldown.findOneAndUpdate(
-            { sellerId, notificationType: type, entityId },
-            { lastSentAt: Date.now() },
-            { upsert: true, new: true }
-        );
-    }
+            if (lastSent) {
+                const timePassed = Date.now() - lastSent.lastSentAt.getTime();
 
-    // 7. Update User Flag for Welcome
-    if (type === NOTIFICATION_TYPE.ADMIN_WELCOME_ONBOARDING) {
-        await User.findByIdAndUpdate(sellerId, {
-            'shopDetails.hasReceivedWelcomeNotification': true
+                if (cooldownMs === 0) {
+                    console.log(`[Notification Service] Skipping ${type} for ${entityId} (Already alerted)`);
+                    return { status: 'SKIPPED', reason: 'ENTITY_COOLDOWN_ACTIVE' };
+                }
+
+                if (timePassed < cooldownMs) {
+                    console.log(`[Notification Service] Skipping ${type} for ${sellerId} (In cooldown)`);
+                    return { status: 'SKIPPED', reason: 'COOLDOWN_ACTIVE' };
+                }
+            }
+        }
+
+        // 4. Content Generation
+        const { title, message } = generateContent(type, payload);
+        const actionUrl = payload.actionLink || null;
+        const recipientRole = payload.recipientRole || 'seller';
+
+        // 5. Create Notification (Consolidated Model)
+        const Notification = require('../models/Notification');
+        const notification = await Notification.create({
+            user: sellerId, // This is the recipient ID (seller or customer)
+            recipientRole,
+            type: type.startsWith('ADMIN') ? 'ANNOUNCEMENT' :
+                type.startsWith('SYSTEM_STOCK') ? 'INVENTORY' : 'SYSTEM',
+            priority: priority.toUpperCase(),
+            title,
+            message,
+            actionUrl
         });
-    }
 
-    console.log(`[Notification Service] SENT ${type} to ${sellerId} (${payload.recipientRole || 'seller'})`);
-    return { status: 'SENT', notification };
+        // 6. Update Cooldown Tracker (Only for sellers currently, or global)
+        if (payload.recipientRole !== 'customer') {
+            await NotificationCooldown.findOneAndUpdate(
+                { sellerId, notificationType: type, entityId },
+                { lastSentAt: Date.now() },
+                { upsert: true, new: true }
+            );
+        }
+
+        // 7. Update User Flag for Welcome
+        if (type === NOTIFICATION_TYPE.ADMIN_WELCOME_ONBOARDING) {
+            await User.findByIdAndUpdate(sellerId, {
+                'shopDetails.hasReceivedWelcomeNotification': true
+            });
+        }
+
+        console.log(`[Notification Service] SENT ${type} to ${sellerId} (${payload.recipientRole || 'seller'})`);
+        return { status: 'SENT', notification };
+    } finally {
+        if (lock) {
+            await lock.release().catch(err => console.error('[Notification Lock] Release failed:', err.message));
+        }
+    }
 };
 
 module.exports = {

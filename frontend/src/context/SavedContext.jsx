@@ -6,12 +6,12 @@ export const SavedProvider = ({ children }) => {
     // Saved Items: [{ productId, shopId, shopName, productName, price, category, image, savedAt }]
     // Persist to localStorage for MVP
     const [savedItems, setSavedItems] = useState(() => {
-        const local = localStorage.getItem('shoplens_saved_items');
+        const local = localStorage.getItem('aisle_saved_items');
         return local ? JSON.parse(local) : [];
     });
 
     useEffect(() => {
-        localStorage.setItem('shoplens_saved_items', JSON.stringify(savedItems));
+        localStorage.setItem('aisle_saved_items', JSON.stringify(savedItems));
     }, [savedItems]);
 
     // Action: Save Item (Toggle)

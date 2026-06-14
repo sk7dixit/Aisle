@@ -1,0 +1,35 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 90
+    },
+    "auditLog": "S:\\Aisle\\Aisle\\backend\\logs\\.3e3c3a6c9ca538e0e59c42e92f30a0dc3daedc98-audit.json",
+    "files": [
+        {
+            "date": 1781024791711,
+            "name": "S:\\Aisle\\Aisle\\backend\\logs\\error-2026-06-09.log",
+            "hash": "b623b2d35a459630d98158686bf3194b37519831d8c284e1cdde0177119986c7"
+        },
+        {
+            "date": 1781083318934,
+            "name": "S:\\Aisle\\Aisle\\backend\\logs\\error-2026-06-10.log",
+            "hash": "15698ed0fa17edcfa6ffe4ba92f54f2de47f0319c34e8b86eea26b2d040f47bc"
+        },
+        {
+            "date": 1781146147176,
+            "name": "S:\\Aisle\\Aisle\\backend\\logs\\error-2026-06-11.log",
+            "hash": "3be73f39c451017b397ab82f85b7f97ba4b91840ec610daef71e250847841490"
+        },
+        {
+            "date": 1781316972086,
+            "name": "S:\\Aisle\\Aisle\\backend\\logs\\error-2026-06-13.log",
+            "hash": "2bdf4a5416d0f54883e1a9e451229574a202923a9b3bc5827422a58f1d27325c"
+        },
+        {
+            "date": 1781399133258,
+            "name": "S:\\Aisle\\Aisle\\backend\\logs\\error-2026-06-14.log",
+            "hash": "36825f4b16b82496d33ee98f8a7af42a30cb112dd1b44087eb8575d6633bd419"
+        }
+    ],
+    "hashType": "sha256"
+}

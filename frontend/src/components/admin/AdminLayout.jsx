@@ -3,9 +3,10 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
     FiGrid, FiCheckSquare, FiShoppingBag, FiUsers, FiBarChart2, FiSettings,
     FiLogOut, FiBell, FiPackage, FiFlag, FiActivity, FiSpeaker, FiMenu, FiX,
-    FiHome, FiAlertCircle, FiFileText, FiMoreHorizontal, FiAlertTriangle, FiUserCheck, FiMapPin
+    FiHome, FiAlertCircle, FiFileText, FiMoreHorizontal, FiAlertTriangle, FiUserCheck, FiMapPin,
+    FiMessageSquare, FiShield, FiCheckCircle
 } from 'react-icons/fi';
-import ShopLensLogo from '../ShopLensLogo';
+import AisleLogo from '../AisleLogo';
 
 const AdminLayout = () => {
     const [isDockExpanded, setIsDockExpanded] = useState(false);
@@ -14,7 +15,7 @@ const AdminLayout = () => {
     const navigate = useNavigate();
 
     // Protect Admin Route
-    const storedUser = JSON.parse(localStorage.getItem('shoplensUser') || '{}');
+    const storedUser = JSON.parse(localStorage.getItem('aisleUser') || '{}');
     const role = storedUser.role?.toLowerCase();
 
     React.useEffect(() => {
@@ -30,7 +31,7 @@ const AdminLayout = () => {
         }
         // Note: Specific redirects for restricted pages handled by filtering/routing, 
         // but we can add a guard here if needed.
-    }, [navigate, location.pathname, role]);
+    }, [navigate, role]);
 
     // Desktop Menu Items (GROUPED)
     const menuGroups = [
@@ -44,13 +45,17 @@ const AdminLayout = () => {
                 { icon: FiShoppingBag, label: 'Shops', path: '/admin/shops', roles: ['super_admin', 'admin'] },
                 { icon: FiUsers, label: 'Users', path: '/admin/users', roles: ['super_admin', 'admin'] },
                 { icon: FiPackage, label: 'Products', path: '/admin/products', roles: ['super_admin', 'admin'] },
+                { icon: FiFileText, label: 'Catalog Requests', path: '/admin/catalog-requests', roles: ['super_admin', 'admin'] },
                 { icon: FiFlag, label: 'Reports', path: '/admin/reports', roles: ['super_admin', 'admin', 'moderator'] },
+                { icon: FiMessageSquare, label: 'Feedback', path: '/admin/feedback', roles: ['super_admin', 'admin', 'moderator'] },
             ]
         },
         {
             title: 'OVERSIGHT',
             items: [
                 { icon: FiActivity, label: 'Activity Logs', path: '/admin/activity-logs', roles: ['super_admin', 'admin', 'moderator'] },
+                { icon: FiShield, label: 'Security Center', path: '/admin/security', roles: ['super_admin', 'admin'] },
+                { icon: FiCheckCircle, label: 'Trust Center', path: '/admin/trust', roles: ['super_admin', 'admin', 'moderator'] },
                 { icon: FiSpeaker, label: 'Announcements', path: '/admin/announcements', roles: ['super_admin', 'admin', 'moderator'] },
                 { icon: FiBarChart2, label: 'Analytics', path: '/admin/analytics', roles: ['super_admin', 'admin'] }, // Mods don't see deep analytics
             ]
@@ -76,8 +81,8 @@ const AdminLayout = () => {
     const moreMenuItems = [];
 
     const handleLogout = () => {
-        localStorage.removeItem('shoplensUser');
-        localStorage.removeItem('shoplensToken');
+        localStorage.removeItem('aisleUser');
+        localStorage.removeItem('aisleToken');
         window.location.href = '/admin/login';
     };
 
@@ -105,7 +110,7 @@ const AdminLayout = () => {
             >
                 {/* Logo Area */}
                 <div className="h-[80px] flex items-center justify-center border-b border-[#CBCBCB] mb-2 px-4">
-                    <ShopLensLogo className="h-12 w-40" />
+                    <AisleLogo className="h-12 w-40" />
                 </div>
 
                 {/* Navigation Items */}
@@ -187,11 +192,11 @@ const AdminLayout = () => {
                             >
                                 <div className="text-right hidden sm:block">
                                     <p className="text-sm font-bold text-gray-800">
-                                        {JSON.parse(localStorage.getItem('shoplensUser') || '{}').name || 'Admin User'}
+                                        {JSON.parse(localStorage.getItem('aisleUser') || '{}').name || 'Admin User'}
                                     </p>
                                 </div>
                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center bg-[#174D38] text-white font-bold`}>
-                                    {(JSON.parse(localStorage.getItem('shoplensUser') || '{}').name || 'A').charAt(0).toUpperCase()}
+                                    {(JSON.parse(localStorage.getItem('aisleUser') || '{}').name || 'A').charAt(0).toUpperCase()}
                                 </div>
                             </button>
 
@@ -201,14 +206,14 @@ const AdminLayout = () => {
                                     {/* Identity Header */}
                                     <div className="p-4 bg-gray-50 rounded-xl mb-2 flex items-center gap-3 border border-gray-100">
                                         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#174D38]`}>
-                                            {(JSON.parse(localStorage.getItem('shoplensUser') || '{}').name || 'A').charAt(0).toUpperCase()}
+                                            {(JSON.parse(localStorage.getItem('aisleUser') || '{}').name || 'A').charAt(0).toUpperCase()}
                                         </div>
                                         <div className="overflow-hidden">
                                             <h4 className="font-bold text-gray-800 truncate">
-                                                {JSON.parse(localStorage.getItem('shoplensUser') || '{}').name || 'Admin User'}
+                                                {JSON.parse(localStorage.getItem('aisleUser') || '{}').name || 'Admin User'}
                                             </h4>
                                             <p className="text-xs text-gray-500 truncate">
-                                                {JSON.parse(localStorage.getItem('shoplensUser') || '{}').email || 'admin@shoplens.com'}
+                                                {JSON.parse(localStorage.getItem('aisleUser') || '{}').email || 'admin@aisle.com'}
                                             </p>
                                         </div>
                                     </div>
@@ -247,7 +252,7 @@ const AdminLayout = () => {
 
                 {/* Mobile Header */}
                 <header className="flex md:hidden h-[72px] items-center justify-between px-4 bg-white/50 backdrop-blur-md sticky top-0 z-30 border-b border-gray-100">
-                    <ShopLensLogo className="h-12 w-40" />
+                    <AisleLogo className="h-12 w-40" />
                     <div className="flex items-center gap-3">
                         <button onClick={() => navigate('/admin/notifications')} className="relative p-2">
                             <FiBell size={20} className="text-gray-600" />
@@ -300,24 +305,24 @@ const AdminLayout = () => {
 
                         {/* Admin Profile Summary */}
                         <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 mb-6">
-                            <div className={`w-12 h-12 rounded-full p-[2px] shrink-0 ${JSON.parse(localStorage.getItem('shoplensUser') || '{}').role === 'moderator'
+                            <div className={`w-12 h-12 rounded-full p-[2px] shrink-0 ${JSON.parse(localStorage.getItem('aisleUser') || '{}').role === 'moderator'
                                 ? 'bg-gradient-to-tr from-purple-500 to-pink-600'
                                 : 'bg-gradient-to-tr from-blue-500 to-indigo-600'
                                 }`}>
-                                <div className={`w-full h-full rounded-full bg-white flex items-center justify-center font-bold text-lg ${JSON.parse(localStorage.getItem('shoplensUser') || '{}').role === 'moderator'
+                                <div className={`w-full h-full rounded-full bg-white flex items-center justify-center font-bold text-lg ${JSON.parse(localStorage.getItem('aisleUser') || '{}').role === 'moderator'
                                     ? 'text-purple-600'
                                     : 'text-blue-600'
                                     }`}>
-                                    {(JSON.parse(localStorage.getItem('shoplensUser') || '{}').name || 'A').charAt(0).toUpperCase()}
+                                    {(JSON.parse(localStorage.getItem('aisleUser') || '{}').name || 'A').charAt(0).toUpperCase()}
                                 </div>
                             </div>
                             <div>
-                                <h3 className="font-bold text-gray-800">{JSON.parse(localStorage.getItem('shoplensUser') || '{}').name || 'Admin User'}</h3>
-                                <span className={`inline-block px-2 py-0.5 text-[10px] font-bold rounded uppercase mt-1 ${JSON.parse(localStorage.getItem('shoplensUser') || '{}').role === 'moderator'
+                                <h3 className="font-bold text-gray-800">{JSON.parse(localStorage.getItem('aisleUser') || '{}').name || 'Admin User'}</h3>
+                                <span className={`inline-block px-2 py-0.5 text-[10px] font-bold rounded uppercase mt-1 ${JSON.parse(localStorage.getItem('aisleUser') || '{}').role === 'moderator'
                                     ? 'bg-purple-100 text-purple-700'
                                     : 'bg-blue-100 text-blue-700'
                                     }`}>
-                                    {JSON.parse(localStorage.getItem('shoplensUser') || '{}').role === 'moderator' ? 'Moderator' : 'Super Admin'}
+                                    {JSON.parse(localStorage.getItem('aisleUser') || '{}').role === 'moderator' ? 'Moderator' : 'Super Admin'}
                                 </span>
                             </div>
                         </div>

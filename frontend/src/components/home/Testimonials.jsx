@@ -30,7 +30,7 @@ const Testimonials = () => {
                         Real People, Real Results
                     </h2>
                     <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Join thousands discovering local shops and supporting their communities
+                        Join thousands discovering nearby businesses & creators and supporting their communities
                     </p>
                 </div>
 

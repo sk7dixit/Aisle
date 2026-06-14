@@ -67,6 +67,15 @@ const triggerAIVerification = async (userId) => {
 
         await user.save();
         console.log(`[AI Verification] Result saved for user ${userId}: ${user.verificationStatus}`);
+
+        if (user.verificationStatus === 'rejected_by_system' || user.verificationStatus === 'suspended') {
+            try {
+                const { publishEvent } = require('../utils/eventBus');
+                await publishEvent('SELLER_STATUS_CHANGED', { sellerId: user._id.toString(), status: user.verificationStatus });
+            } catch (busErr) {
+                console.error('[AI-Verification-EventBus] Failed to publish verification status change event:', busErr.message);
+            }
+        }
     } catch (error) {
         console.error(`[AI Verification] Error for user ${userId}:`, error);
     }

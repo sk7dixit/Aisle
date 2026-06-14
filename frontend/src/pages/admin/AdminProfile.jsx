@@ -8,7 +8,7 @@ const AdminProfile = () => {
     const navigate = useNavigate();
     const [admin, setAdmin] = useState({
         name: 'Admin',
-        email: 'admin@shoplens.com',
+        email: 'admin@aisle.com',
         role: 'Super Admin',
         lastLogin: 'Just now',
     });
@@ -29,7 +29,7 @@ const AdminProfile = () => {
     ];
 
     useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem('shoplensUser') || '{}');
+        const storedUser = JSON.parse(localStorage.getItem('aisleUser') || '{}');
         if (storedUser.email) {
             setAdmin({
                 name: storedUser.name || 'Admin',

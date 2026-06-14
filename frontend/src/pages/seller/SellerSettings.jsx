@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
     FaBell, FaRobot, FaShieldAlt, FaExclamationTriangle, FaCheckCircle,
-    FaClock, FaSave, FaUserShield, FaCamera
+    FaClock, FaSave, FaUserShield, FaCamera, FaLaptop, FaMobileAlt, FaTrash,
+    FaStore, FaSpinner
 } from 'react-icons/fa';
 import Webcam from 'react-webcam';
+import axios from 'axios';
 
 const SellerSettings = () => {
     const { user, token } = useAuth();
@@ -25,6 +27,181 @@ const SellerSettings = () => {
     const [reason, setReason] = useState('');
     const webcamRef = React.useRef(null);
 
+    // Operations states
+    const [operationsStats, setOperationsStats] = useState({
+        derivedStatus: 'CLOSED',
+        isManualOverride: false,
+        operatingMode: 'GUARANTEED',
+        openingTime: '09:00',
+        closingTime: '20:00'
+    });
+    const [editTiming, setEditTiming] = useState(false);
+    const [openTimeInput, setOpenTimeInput] = useState('09:00');
+    const [closeTimeInput, setCloseTimeInput] = useState('20:00');
+    const [opsLoading, setOpsLoading] = useState(false);
+
+    const fetchOperationsStats = async () => {
+        try {
+            const res = await fetch('/api/seller/dashboard', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setOperationsStats({
+                    derivedStatus: data.derivedStatus || 'CLOSED',
+                    isManualOverride: data.isManualOverride || false,
+                    operatingMode: data.operatingMode || 'GUARANTEED',
+                    openingTime: data.openingTime || '09:00',
+                    closingTime: data.closingTime || '20:00'
+                });
+                setOpenTimeInput(data.openingTime || '09:00');
+                setCloseTimeInput(data.closingTime || '20:00');
+            }
+        } catch (err) {
+            console.error("Failed to load operations status:", err);
+        }
+    };
+
+    const handleSaveSchedule = async () => {
+        setOpsLoading(true);
+        try {
+            const res = await fetch('/api/seller/schedule', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ openingTime: openTimeInput, closingTime: closeTimeInput })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setOperationsStats(prev => ({
+                    ...prev,
+                    openingTime: data.openingTime,
+                    closingTime: data.closingTime,
+                    derivedStatus: data.derivedStatus
+                }));
+                showStatus(`Timing updated to: ${data.openingTime} - ${data.closingTime}`, "success");
+                setEditTiming(false);
+            }
+        } catch (err) {
+            console.error(err);
+            showStatus("Failed to update timing schedule.", "error");
+        } finally {
+            setOpsLoading(false);
+        }
+    };
+
+    const handleToggleVisibility = async (isVisible) => {
+        setOpsLoading(true);
+        try {
+            const res = await fetch('/api/seller/visibility', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ isVisible })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setOperationsStats(prev => ({
+                    ...prev,
+                    derivedStatus: data.derivedStatus,
+                    isManualOverride: data.isManualOverride
+                }));
+                showStatus(`Shop manually set to ${isVisible ? 'OPEN' : 'CLOSED'}`, "success");
+            }
+        } catch (err) {
+            console.error(err);
+            showStatus("Error updating visibility.", "error");
+        } finally {
+            setOpsLoading(false);
+        }
+    };
+
+    const handleResetAutoTiming = async () => {
+        setOpsLoading(true);
+        try {
+            const res = await fetch('/api/seller/reset-status', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setOperationsStats(prev => ({
+                    ...prev,
+                    derivedStatus: data.derivedStatus,
+                    isManualOverride: data.isManualOverride
+                }));
+                showStatus("Automatic timing schedule activated.", "success");
+            }
+        } catch (err) {
+            console.error(err);
+            showStatus("Error resetting timing.", "error");
+        } finally {
+            setOpsLoading(false);
+        }
+    };
+
+    const handleUpdateOperatingMode = async (mode) => {
+        setOpsLoading(true);
+        try {
+            const res = await fetch('/api/seller/operating-mode', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ mode })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setOperationsStats(prev => ({
+                    ...prev,
+                    operatingMode: data.operatingMode
+                }));
+                showStatus(`Availability System set to: ${
+                    mode === 'GUARANTEED' ? 'Live Inventory' :
+                    mode === 'BEST_EFFORT' ? 'Verified Availability' : 'Check Before Visit'
+                }`, "success");
+            }
+        } catch (err) {
+            console.error("Failed to update operating mode:", err);
+            showStatus("Failed to update operating mode.", "error");
+        } finally {
+            setOpsLoading(false);
+        }
+    };
+
+    // Sessions State
+    const [sessions, setSessions] = useState([]);
+    const [loadingSessions, setLoadingSessions] = useState(true);
+
+    const fetchSessions = async () => {
+        try {
+            const currentDeviceId = localStorage.getItem('aisleDeviceId');
+            const res = await axios.get(`/api/auth/sessions?deviceId=${currentDeviceId}`);
+            setSessions(res.data);
+        } catch (err) {
+            console.error("Failed to load sessions", err);
+        } finally {
+            setLoadingSessions(false);
+        }
+    };
+
+    const handleRevokeSession = async (sessionId) => {
+        if (!window.confirm("Are you sure you want to log out this device?")) return;
+        try {
+            await axios.post('/api/auth/sessions/revoke', { sessionId });
+            setSessions(prev => prev.filter(s => s.id !== sessionId));
+        } catch (err) {
+            showStatus(err.response?.data?.message || "Failed to log out device", "error");
+        }
+    };
+
     useEffect(() => {
         if (user) {
             setPrefs({
@@ -33,9 +210,11 @@ const SellerSettings = () => {
                 paymentAlerts: user.notificationPreferences?.paymentAlerts ?? true,
                 autoAccept: user.shopDetails?.autoAccept || false
             });
+            fetchOperationsStats();
         }
         fetchFaceStatus();
-    }, [user]);
+        fetchSessions();
+    }, [user, token]);
 
     const fetchFaceStatus = async () => {
         try {
@@ -80,7 +259,17 @@ const SellerSettings = () => {
     };
 
     const captureService = () => {
-        const imageSrc = webcamRef.current.getScreenshot();
+        let imageSrc = webcamRef.current?.getScreenshot();
+        if (!imageSrc || imageSrc === 'data:,' || imageSrc.length < 100) {
+            console.warn("Webcam capture returned empty/invalid image.");
+            if (import.meta.env.DEV) {
+                imageSrc = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80";
+                console.log("[Dev Mode] Using fallback mockup image: ", imageSrc);
+            } else {
+                showStatus("Could not capture image. Please verify camera permission.", "error");
+                return;
+            }
+        }
         setCapturedImage(imageSrc);
     };
 
@@ -138,6 +327,144 @@ const SellerSettings = () => {
                 <h1 className="text-2xl font-black text-slate-800 tracking-tight">System Settings</h1>
                 <p className="text-sm text-slate-500 font-medium">Manage preferences, security, and automated behaviors.</p>
             </header>
+
+            {/* STORE OPERATIONS CENTER */}
+            <section className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-6">
+                <div className="flex items-center justify-between border-b border-slate-50 pb-4">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-lg">
+                            <FaStore />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-slate-800">Store Operations Center</h2>
+                            <p className="text-sm text-slate-500 font-medium">Configure storefront settings, timing schedules, and inventory availability modes.</p>
+                        </div>
+                    </div>
+                    <div>
+                        {operationsStats.derivedStatus === 'ONLINE' ? (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                STORE OPEN
+                            </span>
+                        ) : (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-rose-500/10 text-rose-600 border border-rose-500/20">
+                                <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                                STORE CLOSED
+                            </span>
+                        )}
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* 1. Inventory Mode */}
+                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col justify-between">
+                        <div className="space-y-1">
+                            <span className="text-[10px] font-black uppercase text-indigo-600 tracking-wider">Inventory Mode</span>
+                            <p className="text-xs font-bold text-slate-850 dark:text-neutral-200 mt-1.5">
+                                {operationsStats.operatingMode === 'GUARANTEED' && '🟢 Live Inventory'}
+                                {operationsStats.operatingMode === 'BEST_EFFORT' && '🔵 Verified Availability'}
+                                {operationsStats.operatingMode === 'RUSH' && '🟡 Check Before Visit'}
+                            </p>
+                        </div>
+                        <div className="mt-4">
+                            <select
+                                disabled={opsLoading}
+                                value={operationsStats.operatingMode || 'GUARANTEED'}
+                                onChange={(e) => handleUpdateOperatingMode(e.target.value)}
+                                className="w-full px-2.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider bg-white border border-slate-200 text-slate-650 focus:outline-none disabled:opacity-50 text-xs font-bold"
+                            >
+                                <option value="GUARANTEED">Live Inventory</option>
+                                <option value="BEST_EFFORT">Verified Availability</option>
+                                <option value="RUSH">Check Before Visit</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* 2. Auto Timing Schedule */}
+                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col justify-between">
+                        <div className="space-y-1">
+                            <span className="text-[10px] font-black uppercase text-indigo-600 tracking-wider">Auto Timing Settings</span>
+                            <p className="text-xs font-bold text-slate-850 dark:text-neutral-200 mt-1.5 leading-normal">
+                                {operationsStats.isManualOverride 
+                                    ? '🔴 Disabled (Manual Override)' 
+                                    : `🟢 Enabled (${operationsStats.openingTime || '09:00'} - ${operationsStats.closingTime || '20:00'})`}
+                            </p>
+                        </div>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                            {operationsStats.isManualOverride ? (
+                                <button
+                                    disabled={opsLoading}
+                                    onClick={handleResetAutoTiming}
+                                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[9px] font-black uppercase tracking-wider transition-all disabled:opacity-50 shadow-sm"
+                                >
+                                    Enable Auto
+                                </button>
+                            ) : (
+                                <button
+                                    disabled={opsLoading}
+                                    onClick={() => handleToggleVisibility(false)}
+                                    className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-[9px] font-black uppercase tracking-wider transition-all disabled:opacity-50 shadow-sm"
+                                >
+                                    Force Close
+                                </button>
+                            )}
+                            <button
+                                disabled={opsLoading}
+                                onClick={() => setEditTiming(!editTiming)}
+                                className="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all disabled:opacity-50 shadow-sm font-bold"
+                            >
+                                {editTiming ? 'Cancel' : 'Edit Timings'}
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* 3. Delivery Mode */}
+                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col justify-between">
+                        <div className="space-y-1">
+                            <span className="text-[10px] font-black uppercase text-indigo-600 tracking-wider">Delivery System Mode</span>
+                            <p className="text-xs font-bold text-slate-850 dark:text-neutral-200 mt-1.5">
+                                Self Pickup & Home Delivery
+                            </p>
+                        </div>
+                        <div className="mt-4">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                                ACTIVE DELIVERY
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {editTiming && (
+                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-4 animate-scale-up">
+                        <div className="flex items-center gap-3">
+                            <FaClock className="text-slate-400 text-sm" />
+                            <div className="flex items-center gap-2 text-xs font-bold">
+                                <span>Open:</span>
+                                <input 
+                                    type="text" 
+                                    value={openTimeInput} 
+                                    onChange={(e) => setOpenTimeInput(e.target.value)} 
+                                    className="w-16 px-2.5 py-1 border border-slate-200 rounded-lg text-center" 
+                                />
+                                <span className="ml-2">Close:</span>
+                                <input 
+                                    type="text" 
+                                    value={closeTimeInput} 
+                                    onChange={(e) => setCloseTimeInput(e.target.value)} 
+                                    className="w-16 px-2.5 py-1 border border-slate-200 rounded-lg text-center" 
+                                />
+                            </div>
+                        </div>
+                        <button 
+                            disabled={opsLoading}
+                            onClick={handleSaveSchedule} 
+                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-wider shadow"
+                        >
+                            Save Timings
+                        </button>
+                    </div>
+                )}
+            </section>
 
             {/* 1. NOTIFICATIONS */}
             <section className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
@@ -255,6 +582,60 @@ const SellerSettings = () => {
                 </div>
             </section>
 
+            {/* 4. ACTIVE SESSIONS */}
+            <section className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-lg">
+                        <FaShieldAlt />
+                    </div>
+                    <div>
+                        <h2 className="text-lg font-bold text-slate-800">Active Sessions</h2>
+                        <p className="text-sm text-slate-500">Manage all devices logged in to your seller portal.</p>
+                    </div>
+                </div>
+
+                {loadingSessions ? (
+                    <div className="text-slate-500 text-xs font-bold uppercase tracking-widest animate-pulse">Loading active sessions...</div>
+                ) : (
+                    <div className="space-y-4">
+                        {sessions.map(s => {
+                            const isMobile = /phone|android|mobile/i.test(s.deviceName);
+                            return (
+                                <div key={s.id} className={`flex items-center justify-between p-4 rounded-xl border transition-colors ${s.isCurrent ? 'border-amber-500 bg-amber-500/5' : 'border-slate-100 bg-slate-50 hover:bg-slate-100'}`}>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-lg text-slate-500">
+                                            {isMobile ? <FaMobileAlt /> : <FaLaptop />}
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-bold text-slate-700 text-sm">{s.deviceName}</span>
+                                                {s.isCurrent && (
+                                                    <span className="text-[9px] font-bold uppercase tracking-wider text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200">
+                                                        Current Device
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-slate-400">
+                                                {s.browser} • {s.ipAddress} • Last active: {new Date(s.lastSeen).toLocaleTimeString()}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {!s.isCurrent && (
+                                        <button
+                                            onClick={() => handleRevokeSession(s.id)}
+                                            className="p-2 text-red-500 hover:bg-red-50 hover:text-white rounded-lg transition-colors border border-transparent hover:border-red-100"
+                                        >
+                                            <FaTrash size={14} />
+                                        </button>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </section>
+
             {/* FACE UPDATE MODAL */}
             {showFaceModal && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -270,7 +651,7 @@ const SellerSettings = () => {
                                     <Webcam
                                         ref={webcamRef}
                                         screenshotFormat="image/jpeg"
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover mirror"
                                     />
                                     <button
                                         onClick={captureService}

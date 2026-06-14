@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
-const User = require('./models/User');
-
 dotenv.config({ path: path.resolve(__dirname, '.env') });
+
+const mongoose = require('mongoose');
+const User = require('./models/User');
 
 const createCustomer = async () => {
     try {
@@ -13,7 +13,7 @@ const createCustomer = async () => {
         });
         console.log('MongoDB Connected');
 
-        const email = 'customer@shoplens.com';
+        const email = 'customer@aisle.com';
         const password = 'password123';
 
         // Check if exists

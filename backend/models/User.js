@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { encrypt, encryptDeterministic, decrypt } = require('../utils/encryption');
 
 const userSchema = mongoose.Schema(
     {
@@ -11,10 +12,15 @@ const userSchema = mongoose.Schema(
             type: String,
             required: true,
             unique: true,
+            lowercase: true,
+            trim: true,
+            set: (v) => v ? encryptDeterministic(v.toLowerCase().trim()) : null,
+            get: (v) => v ? decrypt(v) : null
         },
         phone: {
             type: String,
-            // Not required globally yet to avoid breaking existing users, but frontend will enforce it for new ones
+            set: (v) => v ? encryptDeterministic(v.replace(/[\s-]/g, '')) : null,
+            get: (v) => v ? decrypt(v) : null
         },
         password: {
             type: String,
@@ -53,6 +59,8 @@ const userSchema = mongoose.Schema(
             shopCategory: { type: String },
             category: { type: String }, // Fix for Controller/Schema mismatch
             customCategoryInput: { type: String, default: null },
+            description: { type: String, default: '' },
+
             // Strict Category Logic Fields
             resolvedCategoryKey: { type: String, default: 'unmatched_other' },
             allowedSubCategories: [{ type: String }],
@@ -93,6 +101,7 @@ const userSchema = mongoose.Schema(
             photos: [{ type: String }], // Array of URLs or filenames
             visualAssets: [{
                 url: String,
+                deviceId: String,
                 type: {
                     type: String,
                     enum: ['SHOP_FRONT', 'SHOP_INTERIOR', 'PRODUCT_SHELF', 'OWNER']
@@ -117,6 +126,13 @@ const userSchema = mongoose.Schema(
                 type: String,
                 enum: ['GUARANTEED', 'BEST_EFFORT', 'RUSH'],
                 default: 'GUARANTEED'
+            },
+
+            // AI Automation Mode (Phase 7)
+            automationMode: {
+                type: String,
+                enum: ['MANUAL', 'ASSISTED', 'AUTONOMOUS'],
+                default: 'MANUAL'
             },
 
             // New "Conceptual Model" Fields
@@ -154,12 +170,15 @@ const userSchema = mongoose.Schema(
             // Payment Details (Step 4)
             paymentMethod: { type: String, enum: ['UPI'], default: 'UPI' },
             upiId: { type: String, default: null },
-            paymentDisplayName: { type: String, default: null }
+            paymentDisplayName: { type: String, default: null },
+            isOpen: { type: Boolean, default: false, index: true }
         },
         // Face Authentication Data (Base64 or URL)
         faceData: {
             type: String,
-            default: null
+            default: null,
+            set: (v) => v ? encrypt(v) : null,
+            get: (v) => v ? decrypt(v) : null
         },
         identityStatus: {
             type: String,
@@ -181,10 +200,34 @@ const userSchema = mongoose.Schema(
         addresses: [{
             id: { type: String }, // UUID generated on save
             itemType: { type: String, enum: ['Home', 'Work', 'Other'], default: 'Home' },
-            receiverName: { type: String, required: true },
-            houseNo: { type: String, required: true },
-            street: { type: String, required: true }, // Area / Colony
-            landmark: { type: String },
+            receiverName: {
+                type: String,
+                required: true,
+                set: (v) => v ? encrypt(v) : null,
+                get: (v) => v ? decrypt(v) : null
+            },
+            phone: {
+                type: String,
+                set: (v) => v ? encrypt(v) : null,
+                get: (v) => v ? decrypt(v) : null
+            },
+            houseNo: {
+                type: String,
+                required: true,
+                set: (v) => v ? encrypt(v) : null,
+                get: (v) => v ? decrypt(v) : null
+            },
+            street: {
+                type: String,
+                required: true,
+                set: (v) => v ? encrypt(v) : null,
+                get: (v) => v ? decrypt(v) : null
+            },
+            landmark: {
+                type: String,
+                set: (v) => v ? encrypt(v) : null,
+                get: (v) => v ? decrypt(v) : null
+            },
             city: { type: String, required: true },
             state: { type: String },
             pincode: { type: String, required: true },
@@ -251,11 +294,59 @@ const userSchema = mongoose.Schema(
             boostType: { type: String, enum: ['daily', 'weekly', null], default: null },
             startDate: { type: Date, default: null },
             endDate: { type: Date, default: null }
+        },
+        failedAttempts: {
+            type: Number,
+            default: 0
+        },
+        lockUntil: {
+            type: Date,
+            default: null
+        },
+        faceEnrollmentRequest: {
+            newFaceData: {
+                type: String,
+                default: null,
+                set: (v) => v ? encrypt(v) : null,
+                get: (v) => v ? decrypt(v) : null
+            },
+            status: { type: String, default: null },
+            requestedAt: { type: Date, default: null },
+            reason: { type: String, default: null }
+        },
+        mfaSecret: {
+            type: String,
+            default: null,
+            set: (v) => v ? encrypt(v) : null,
+            get: (v) => v ? decrypt(v) : null
+        },
+        mfaEnabled: {
+            type: Boolean,
+            default: false
+        },
+        mfaBackupCodes: [{
+            type: String,
+            set: (v) => v ? encrypt(v) : null,
+            get: (v) => v ? decrypt(v) : null
+        }],
+        lastDeviceId: {
+            type: String,
+            default: null
+        },
+        lastIp: {
+            type: String,
+            default: null
+        },
+        version: {
+            type: Number,
+            default: 1
         }
-
     },
     {
         timestamps: true,
+        toJSON: { getters: true, virtuals: true },
+        toObject: { getters: true, virtuals: true },
+        optimisticConcurrency: true
     }
 );
 
@@ -266,6 +357,10 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 
 // Encrypt password using bcrypt
 userSchema.pre('save', async function () {
+    if (this.isModified('name') || this.isModified('email') || this.isModified('phone') || this.isModified('accountStatus') || this.isModified('verificationStatus') || this.isModified('shopDetails')) {
+        this.version = (this.version || 0) + 1;
+    }
+
     if (!this.isModified('password')) {
         return;
     }
@@ -275,6 +370,8 @@ userSchema.pre('save', async function () {
 });
 
 userSchema.index({ "shopDetails.shopLocation": "2dsphere" }, { sparse: true });
+userSchema.index({ "shopDetails.shopCategory": 1, verificationStatus: 1, "shopDetails.isOpen": 1 }, { sparse: true });
+userSchema.index({ "shopDetails.shopType": 1, verificationStatus: 1, "shopDetails.isOpen": 1 }, { sparse: true });
 
 const User = mongoose.model('User', userSchema);
 

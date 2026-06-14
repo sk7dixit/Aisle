@@ -9,6 +9,15 @@ const { handleStockStatusChange } = require('../services/notificationHooks');
  * Triggers at 11:59 PM nightly.
  */
 const performDailyReset = async () => {
+    const { acquireLock } = require('./lockManager');
+    let lock;
+    try {
+        lock = await acquireLock('cron:stock_reset', 300000); // 5 minutes lock
+    } catch (lockErr) {
+        console.log("[Stock Reset] Already running or executed on another node. Skipping.");
+        return;
+    }
+
     try {
         console.log("=== STARTING DAILY STOCK RESET JOB ===");
 
@@ -33,7 +42,7 @@ const performDailyReset = async () => {
         const looseProducts = await Product.find({
             seller: { $in: sellerIds },
             productType: 'DAILY_ESSENTIAL',
-            countInStock: { $gt: 0 }
+            quantity: { $gt: 0 }
         });
 
         console.log(`Resetting ${looseProducts.length} loose products...`);
@@ -59,7 +68,7 @@ const performDailyReset = async () => {
         const linkedProducts = await SellerProduct.find({
             seller: { $in: sellerIds },
             productType: 'DAILY_ESSENTIAL',
-            countInStock: { $gt: 0 }
+            quantity: { $gt: 0 }
         });
 
         console.log(`Resetting ${linkedProducts.length} linked products...`);
@@ -84,6 +93,10 @@ const performDailyReset = async () => {
         console.log("=== DAILY STOCK RESET JOB COMPLETED ===");
     } catch (error) {
         console.error("CRITICAL: Daily Stock Reset Job Failed", error);
+    } finally {
+        if (lock) {
+            await lock.release().catch(err => console.error('[Redlock] Release failed:', err.message));
+        }
     }
 };
 
@@ -92,6 +105,11 @@ const performDailyReset = async () => {
  * Calculates time until 23:59 and sets timeout/interval.
  */
 const startStockScheduler = () => {
+    if (process.env.DISABLE_SCHEDULERS === 'true' || process.env.NODE_ENV === 'production') {
+        console.log('[Stock Scheduler] Running via background workers.');
+        return;
+    }
+
     const scheduleNext = () => {
         const now = new Date();
         const nextRun = new Date();

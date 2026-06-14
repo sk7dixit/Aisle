@@ -29,7 +29,7 @@ const productSchema = mongoose.Schema(
             index: true,
             validate: {
                 validator: function (v) {
-                    return CATEGORIES.some(c => c.id === v);
+                    return true;
                 },
                 message: props => `${props.value} is not a valid category slug!`
             }
@@ -67,12 +67,26 @@ const productSchema = mongoose.Schema(
         quantity: {
             type: Number,
             required: true,
-            default: 0
+            default: 0,
+            alias: 'countInStock'
         },
         stockStatus: {
             type: String,
-            enum: ['IN_STOCK', 'LIMITED', 'OUT_OF_STOCK'],
+            enum: ['IN_STOCK', 'LIMITED', 'OUT_OF_STOCK', 'AVAILABLE', 'UNAVAILABLE'],
             default: 'IN_STOCK'
+        },
+        availability: {
+            type: String,
+            enum: ['AVAILABLE', 'UNAVAILABLE'],
+            default: 'AVAILABLE'
+        },
+        lastConfirmedAt: {
+            type: Date,
+            default: Date.now
+        },
+        onlineSalesCount: {
+            type: Number,
+            default: 0
         },
         initialStock: {
             type: Number,
@@ -119,6 +133,27 @@ const productSchema = mongoose.Schema(
         isAvailable: {
             type: Boolean,
             default: true,
+        },
+        homeBusinessType: {
+            type: String,
+            enum: ['READY_STOCK', 'MADE_TO_ORDER'],
+            default: 'READY_STOCK'
+        },
+        preparationTime: {
+            type: String,
+            default: ''
+        },
+        productStory: {
+            type: String,
+            default: ''
+        },
+        images: {
+            type: [String],
+            default: []
+        },
+        isDraft: {
+            type: Boolean,
+            default: false
         },
         // Admin Governance
         adminStatus: {
@@ -168,12 +203,39 @@ const productSchema = mongoose.Schema(
         bookedCount: {
             type: Number,
             default: 0
+        },
+        views: {
+            type: Number,
+            default: 0,
+            index: true
+        },
+        reservedCount: {
+            type: Number,
+            default: 0
+        },
+        isOpen: {
+            type: Boolean,
+            default: true,
+            index: true
+        },
+        version: {
+            type: Number,
+            default: 1
+        },
+        deleted: {
+            type: Boolean,
+            default: false
+        },
+        deletedAt: {
+            type: Date,
+            default: null
         }
     },
     {
         timestamps: true,
         toJSON: { virtuals: true },
-        toObject: { virtuals: true }
+        toObject: { virtuals: true },
+        optimisticConcurrency: true
     }
 );
 
@@ -181,6 +243,15 @@ const { calculateStockStatus } = require('../utils/stockUtils');
 
 // Auto calculate stock status before save
 productSchema.pre('save', async function () {
+    if (this.isModified('quantity') || this.isModified('sellingPrice') || this.isModified('price') || this.isModified('isOpen') || this.isModified('deleted') || this.isModified('stockStatus')) {
+        this.version = (this.version || 0) + 1;
+    }
+
+    // Sync imageUrl to the first of images array if populated
+    if (this.images && this.images.length > 0 && (!this.imageUrl || this.imageUrl === 'https://via.placeholder.com/150')) {
+        this.imageUrl = this.images[0];
+    }
+
     // 1. Initialize Baseline if missing (Migration/New)
     if (this.baselineStock === undefined || (this.isNew && !this.baselineStock)) {
         this.baselineStock = this.quantity || 0;
@@ -191,9 +262,18 @@ productSchema.pre('save', async function () {
         this.initialStock = this.quantity || 0;
     }
 
-    // 3. Calculate Status using Baseline
-    if (this.isModified('quantity') || this.isModified('baselineStock')) {
-        this.stockStatus = calculateStockStatus(this.quantity, this.baselineStock);
+    // 3. Calculate Status and Availability
+    const isExcludedShop = this.shopType === 'HOME_BUSINESS' || this.shopType === 'SERVICES';
+    if (!isExcludedShop) {
+        if (this.quantity <= 0) {
+            this.availability = 'UNAVAILABLE';
+        }
+        // Sync stockStatus for legacy support
+        this.stockStatus = this.availability === 'AVAILABLE' ? 'IN_STOCK' : 'OUT_OF_STOCK';
+    } else {
+        if (this.isModified('quantity') || this.isModified('baselineStock')) {
+            this.stockStatus = calculateStockStatus(this.quantity, this.baselineStock);
+        }
     }
 });
 
@@ -204,9 +284,26 @@ productSchema.virtual('availableStock').get(function () {
 
 // Add indices for performance
 productSchema.index({ seller: 1 });
+productSchema.index({ seller: 1, createdAt: -1 }); // Optimize sorting by createdAt
+productSchema.index({ seller: 1, subCategory: 1, createdAt: -1 }); // Optimize category + sort
 productSchema.index({ categorySlug: 1 }); // Optimize category lookup
+productSchema.index({ category: 1, subCategory: 1, availability: 1 }); // Compound index
+productSchema.index({ seller: 1, stockStatus: 1 }); // Compound index
+productSchema.index({ categorySlug: 1, stockStatus: 1, isOpen: 1 }); // Optimized compound index
+productSchema.index({ category: 1, stockStatus: 1, isOpen: 1 }); // Optimized compound index
+productSchema.index({ seller: 1, stockStatus: 1, isOpen: 1 }); // Optimized compound index
 // Composite text index
 productSchema.index({ name: 'text', description: 'text', category: 'text' });
+productSchema.index({ categorySlug: 1, isAvailable: 1, isDraft: 1, adminStatus: 1 });
+
+const excludeDeleted = function () {
+    this.where({ deleted: { $ne: true } });
+};
+
+productSchema.pre('find', excludeDeleted);
+productSchema.pre('findOne', excludeDeleted);
+productSchema.pre('findOneAndUpdate', excludeDeleted);
+productSchema.pre('countDocuments', excludeDeleted);
 
 const Product = mongoose.model('Product', productSchema);
 

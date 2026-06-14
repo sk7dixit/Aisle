@@ -17,7 +17,7 @@ const SellerGuide = () => {
                         Seller Guide
                     </h1>
                     <p className="text-xl text-slate-500 max-w-2xl mx-auto font-medium leading-relaxed">
-                        Everything you need to know about selling on ShopLens.
+                        Everything you need to know about selling on Aisle.
                     </p>
                 </div>
 
@@ -63,7 +63,7 @@ const SellerGuide = () => {
                         </div>
                         <h3 className="text-xl font-bold text-slate-900 mb-3">No Delivery, No Commission</h3>
                         <p className="text-slate-500 leading-relaxed text-sm">
-                            We don't do delivery. Customers come to your shop. We don't charge commission on sales.
+                            We don't do delivery. Customers come to your store or pickup location. We don't charge commission on sales.
                         </p>
                     </div>
                 </div>

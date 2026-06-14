@@ -27,8 +27,8 @@ const connectDB = async () => {
       console.error(`[Database] Attempt ${retries + 1} Failed: ${error.message}`);
       retries++;
       if (retries === MAX_RETRIES) {
-        console.error('[Database] All attempts failed. Exiting.');
-        process.exit(1);
+        console.error('[Database] All attempts failed. Continuing without DB connection.');
+        return false;
       }
       await new Promise(res => setTimeout(res, 2000));
     }

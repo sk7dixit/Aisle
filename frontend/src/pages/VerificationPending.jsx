@@ -16,7 +16,7 @@ const VerificationPending = () => {
 
                     <h1 className="text-3xl font-bold text-white mb-4">We’re verifying your shop</h1>
                     <p className="text-text-secondary leading-relaxed mb-8">
-                        To keep ShopLens trustworthy, every shop is manually verified before going live. This helps customers rely on real inventory and real locations.
+                        To keep Aisle trustworthy, every shop is manually verified before going live. This helps customers rely on real inventory and real locations.
                     </p>
 
                     {/* Status Steps */}
@@ -41,7 +41,7 @@ const VerificationPending = () => {
                     {/* Actions */}
                     <div className="space-y-4">
                         <Link to="/guide" className="block w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2">
-                            <FaQuestionCircle /> Read “How ShopLens works”
+                            <FaQuestionCircle /> Read “How Aisle works”
                         </Link>
 
                         <p className="text-text-tertiary text-sm mt-6">

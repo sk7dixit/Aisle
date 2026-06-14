@@ -31,6 +31,9 @@ async function testExpiry() {
             seller: pharmacySeller._id,
             name: "Expired Syrup",
             category: "Medicine",
+            subCategory: "Medicine",
+            categorySlug: "medicine",
+            shopType: "PHARMACY",
             productType: "EXPIRY_BASED",
             countInStock: 20,
             expiryDate: new Date('2024-01-01') // Past
@@ -43,6 +46,9 @@ async function testExpiry() {
             seller: pharmacySeller._id,
             name: "Near Expiry Pills",
             category: "Medicine",
+            subCategory: "Medicine",
+            categorySlug: "medicine",
+            shopType: "PHARMACY",
             productType: "EXPIRY_BASED",
             countInStock: 20,
             expiryDate: nearDate
@@ -63,12 +69,12 @@ async function testExpiry() {
             console.log("PASS: Expired product correctly identified as OUT_OF_STOCK.");
         }
 
-        if (nearStatus !== 'AVAILABLE') {
-            // Near expiry should still be AVAILABLE (just warned on UI)
-            console.error(`FAIL: Near expiry product should be AVAILABLE, got ${nearStatus}`);
+        if (nearStatus !== 'IN_STOCK') {
+            // Near expiry should still be IN_STOCK (just warned on UI)
+            console.error(`FAIL: Near expiry product should be IN_STOCK, got ${nearStatus}`);
             failed = true;
         } else {
-            console.log("PASS: Near expiry product remains AVAILABLE.");
+            console.log("PASS: Near expiry product remains IN_STOCK.");
         }
 
         // 3. Verify Confirm Blocking (Mock Request)

@@ -12,12 +12,11 @@ const SHOP_CATEGORIES = {
     ],
 
     "ELECTRICAL_HARDWARE_AUTO": [
-        "Electrical & Lighting",
-        "Hardware & Furniture Fittings",
-        "Plumbing & Sanitaryware",
-        "Paints & Waterproofing",
-        "Automobile Spares & Care",
-        "Tools & Industrial Supply",
+        "Electrical Shop",
+        "Hardware & Sanitary",
+        "Paints & Decor",
+        "Automobile Spares",
+        "Industrial / Power Tools",
         "Other"
     ],
 
@@ -57,9 +56,9 @@ const SHOP_CATEGORIES = {
     ],
 
     "HOME_BUSINESS": [
-        "Homemade Food / Tiffin",
-        "Handicrafts & Art",
-        "Tuition / Coaching",
+        "Homemade Food, Bakery & Catering",
+        "Handmade Arts, Crafts & Jewelry",
+        "Tuition, Coaching & Skill Classes",
         "Other"
     ],
 

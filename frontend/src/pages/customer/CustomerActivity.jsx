@@ -244,7 +244,7 @@ const CustomerActivity = () => {
                                 </p>
                             ) : (
                                 <p className="text-[10px] text-[var(--text-muted)] leading-relaxed font-black uppercase tracking-widest opacity-60">
-                                    Verified via ShopLens Trust Protocol
+                                    Verified via Aisle Trust Protocol
                                 </p>
                             )}
                         </div>

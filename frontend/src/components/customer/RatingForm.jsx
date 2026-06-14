@@ -18,7 +18,7 @@ const RatingForm = ({ shopId, onFinish, onCancel }) => {
         setLoading(true);
         setError(null);
         try {
-            const userStr = localStorage.getItem('shoplensUser');
+            const userStr = localStorage.getItem('aisleUser');
             const token = userStr ? JSON.parse(userStr).token : null;
 
             await axios.post(`/api/customer/shop/${shopId}/review`,

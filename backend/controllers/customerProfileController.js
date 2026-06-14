@@ -50,6 +50,7 @@ const addAddress = async (req, res) => {
         const {
             itemType, // Home, Work, Other
             receiverName,
+            phone,
             houseNo,
             street,
             landmark,
@@ -70,6 +71,7 @@ const addAddress = async (req, res) => {
             id: uuidv4(),
             itemType: itemType || 'Home',
             receiverName,
+            phone,
             houseNo,
             street,
             landmark,

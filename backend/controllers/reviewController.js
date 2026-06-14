@@ -11,6 +11,13 @@ const createReview = async (req, res) => {
         const shopId = req.params.id;
         const customerId = req.user._id;
 
+        // Run Review Integrity Check
+        const { validateReviewIntegrity } = require('../services/trustService');
+        const integrityCheck = await validateReviewIntegrity(customerId, shopId, rating, comment, req);
+        if (integrityCheck.isFraud) {
+            return res.status(403).json({ success: false, message: integrityCheck.reason });
+        }
+
         // 1. Verify Visit
         const hasVisited = await Visit.findOne({
             shopId,
@@ -31,12 +38,17 @@ const createReview = async (req, res) => {
             return res.status(400).json({ message: 'You have already reviewed this shop.' });
         }
 
+        const clientIp = req.ip || req.headers['x-forwarded-for'] || 'unknown_ip';
+        const deviceId = req.headers['x-device-id'] || req.body?.deviceId || 'unknown_device';
+
         // 3. Create Review
         const review = await Review.create({
             shopId,
             customerId,
             rating,
-            comment
+            comment,
+            deviceId,
+            clientIp
         });
 
         // 4. Update Shop Average Rating
@@ -47,6 +59,14 @@ const createReview = async (req, res) => {
             'shopDetails.rating': parseFloat(avgRating.toFixed(1)),
             'shopDetails.numReviews': allReviews.length
         });
+
+        // Recalculate Trust Scores Automatically
+        try {
+            const { calculateSellerTrust } = require('../services/trustService');
+            await calculateSellerTrust(shopId);
+        } catch (trustErr) {
+            console.error('[ReviewController] Trust recalculate failed:', trustErr.message);
+        }
 
         res.status(201).json({
             message: 'Feedback submitted successfully!',

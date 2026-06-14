@@ -1,5 +1,166 @@
 /* Seller Panel Theme Utilities */
 
+/* Helper utility classes to bypass Tailwind hex opacity bug */
+.seller-primary-bg {
+  background-color: var(--primary) !important;
+}
+.seller-primary-bg-subtle {
+  background-color: rgba(201, 100, 66, 0.1) !important;
+}
+.dark .seller-primary-bg-subtle {
+  background-color: rgba(217, 119, 87, 0.15) !important;
+}
+.seller-primary-text {
+  color: var(--primary) !important;
+}
+.seller-border-color {
+  border-color: var(--border) !important;
+}
+.seller-background-bg {
+  background-color: var(--background) !important;
+}
+.seller-card-bg {
+  background-color: var(--card) !important;
+}
+.seller-header {
+  background-color: rgba(250, 249, 245, 0.9) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.dark .seller-header {
+  background-color: rgba(38, 38, 36, 0.9) !important;
+}
+
+.seller-theme {
+  --card: #faf9f5;
+  --ring: #c96442;
+  --input: #b4b2a7;
+  --muted: #ede9de;
+  --accent: #e9e6dc;
+  --border: #dad9d4;
+  --radius: 0.5rem;
+  --chart-1: #b05730;
+  --chart-2: #9c87f5;
+  --chart-3: #ded8c4;
+  --chart-4: #dbd3f0;
+  --chart-5: #b4552d;
+  --popover: #ffffff;
+  --primary: #c96442;
+  --sidebar: #f5f4ee;
+  --secondary: #e9e6dc;
+  --background: #faf9f5;
+  --foreground: #3d3929;
+  --destructive: #141413;
+  --sidebar-ring: #b5b5b5;
+  --sidebar-accent: #e9e6dc;
+  --sidebar-border: #ebebeb;
+  --card-foreground: #141413;
+  --sidebar-primary: #c96442;
+  --muted-foreground: #83827d;
+  --accent-foreground: #28261b;
+  --popover-foreground: #28261b;
+  --primary-foreground: #ffffff;
+  --sidebar-foreground: #3d3d3a;
+  --secondary-foreground: #535146;
+  --destructive-foreground: #ffffff;
+  --sidebar-accent-foreground: #343434;
+  --sidebar-primary-foreground: #fbfbfb;
+
+  /* Dynamic Design System Mappings */
+  --page-bg: var(--background);
+  --card-bg: var(--card);
+  --bg-secondary: var(--secondary);
+  --text-primary: var(--foreground);
+  --text-secondary: var(--muted-foreground);
+  --text-muted: var(--muted-foreground);
+  --accent-terracotta: var(--primary);
+  --accent-slate: var(--sidebar-foreground);
+  --primary: var(--primary);
+}
+
+.seller-theme.dark, .dark .seller-theme {
+  --card: #262624;
+  --ring: #d97757;
+  --input: #52514a;
+  --muted: #1b1b19;
+  --accent: #1a1915;
+  --border: #3e3e38;
+  --chart-1: #b05730;
+  --chart-2: #9c87f5;
+  --chart-3: #1a1915;
+  --chart-4: #2f2b48;
+  --chart-5: #b4552d;
+  --popover: #30302e;
+  --primary: #d97757;
+  --sidebar: #1f1e1d;
+  --secondary: #faf9f5;
+  --background: #262624;
+  --foreground: #c3c0b6;
+  --destructive: #ef4444;
+  --sidebar-ring: #b5b5b5;
+  --sidebar-accent: #0f0f0e;
+  --sidebar-border: #ebebeb;
+  --card-foreground: #faf9f5;
+  --sidebar-primary: #343434;
+  --muted-foreground: #b7b5a9;
+  --accent-foreground: #f5f4ee;
+  --popover-foreground: #e5e5e2;
+  --primary-foreground: #ffffff;
+  --sidebar-foreground: #c3c0b6;
+  --secondary-foreground: #30302e;
+  --destructive-foreground: #ffffff;
+  --sidebar-accent-foreground: #c3c0b6;
+  --sidebar-primary-foreground: #fbfbfb;
+
+  /* Dynamic Design System Mappings - Dark Mode */
+  --page-bg: var(--background);
+  --card-bg: var(--card);
+  --bg-secondary: var(--secondary);
+  --text-primary: var(--foreground);
+  --text-secondary: var(--muted-foreground);
+  --text-muted: var(--muted-foreground);
+  --accent-terracotta: var(--primary);
+  --accent-slate: var(--sidebar-foreground);
+  --primary: var(--primary);
+}
+
+@theme inline {
+  --color-card: var(--card);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-radius: var(--radius);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-popover: var(--popover);
+  --color-primary: var(--primary);
+  --color-sidebar: var(--sidebar);
+  --color-secondary: var(--secondary);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-card-foreground: var(--card-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+}
+
+
 /* Smooth Fade In Up Animation */
 @keyframes fadeInUp {
     from {
@@ -88,4 +249,350 @@
 
 .typing-dot:nth-child(3) {
     animation-delay: 0.4s;
+}
+
+/* =======================================================
+   Deep Dark Mode Overrides for Seller Side
+   Seamlessly themes hardcoded Tailwind light classes
+======================================================= */
+
+.seller-theme.dark {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+/* Background overrides */
+.seller-theme.dark .bg-white,
+.dark .seller-theme .bg-white {
+  background-color: var(--card) !important;
+}
+
+.seller-theme.dark .bg-slate-50,
+.seller-theme.dark .bg-gray-50,
+.seller-theme.dark .bg-slate-100,
+.seller-theme.dark .bg-gray-100,
+.dark .seller-theme .bg-slate-50,
+.dark .seller-theme .bg-gray-50,
+.dark .seller-theme .bg-slate-100,
+.dark .seller-theme .bg-gray-100 {
+  background-color: var(--muted) !important;
+}
+
+/* Border overrides */
+.seller-theme.dark .border-slate-100,
+.seller-theme.dark .border-slate-200,
+.seller-theme.dark .border-gray-200,
+.seller-theme.dark .border-slate-300,
+.seller-theme.dark .border-gray-300,
+.dark .seller-theme .border-slate-100,
+.dark .seller-theme .border-slate-200,
+.dark .seller-theme .border-gray-200 {
+  border-color: var(--border) !important;
+}
+
+/* Text overrides */
+.seller-theme.dark .text-slate-950,
+.seller-theme.dark .text-slate-900,
+.seller-theme.dark .text-slate-800,
+.seller-theme.dark .text-slate-700,
+.seller-theme.dark .text-gray-900,
+.seller-theme.dark .text-gray-800,
+.seller-theme.dark .text-gray-700,
+.dark .seller-theme .text-slate-950,
+.dark .seller-theme .text-slate-900,
+.dark .seller-theme .text-slate-800,
+.dark .seller-theme .text-slate-700,
+.dark .seller-theme .text-gray-900,
+.dark .seller-theme .text-gray-800,
+.dark .seller-theme .text-gray-700 {
+  color: var(--foreground) !important;
+}
+
+.seller-theme.dark .text-slate-500,
+.seller-theme.dark .text-slate-600,
+.seller-theme.dark .text-gray-500,
+.seller-theme.dark .text-gray-600,
+.dark .seller-theme .text-slate-500,
+.dark .seller-theme .text-slate-600,
+.dark .seller-theme .text-gray-500,
+.dark .seller-theme .text-gray-600 {
+  color: var(--muted-foreground) !important;
+}
+
+/* Form controls / inputs */
+.seller-theme.dark input,
+.seller-theme.dark select,
+.seller-theme.dark textarea,
+.dark .seller-theme input,
+.dark .seller-theme select,
+.dark .seller-theme textarea {
+  background-color: var(--muted) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+
+.seller-theme.dark input::placeholder,
+.dark .seller-theme input::placeholder {
+  color: var(--muted-foreground) !important;
+  opacity: 0.7;
+}
+
+/* Headings specifically */
+.seller-theme.dark h1,
+.seller-theme.dark h2,
+.seller-theme.dark h3,
+.seller-theme.dark h4,
+.dark .seller-theme h1,
+.dark .seller-theme h2,
+.dark .seller-theme h3,
+.dark .seller-theme h4 {
+  color: var(--foreground) !important;
+}
+
+/* Active links in dark sidebar */
+.seller-theme.dark .text-slate-400,
+.dark .seller-theme .text-slate-400 {
+  color: var(--muted-foreground) !important;
+}
+
+/* Premium Alert/Notification Card Overrides for Dark Mode */
+.seller-theme.dark .bg-emerald-50,
+.seller-theme.dark .bg-green-50,
+.dark .seller-theme .bg-emerald-50,
+.dark .seller-theme .bg-green-50 {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+}
+.seller-theme.dark .bg-emerald-50 *,
+.seller-theme.dark .bg-green-50 *,
+.dark .seller-theme .bg-emerald-50 *,
+.dark .seller-theme .bg-green-50 * {
+  color: #34d399 !important;
+}
+
+.seller-theme.dark .bg-amber-50,
+.seller-theme.dark .bg-yellow-50,
+.dark .seller-theme .bg-amber-50,
+.dark .seller-theme .bg-yellow-50 {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  border-color: rgba(245, 158, 11, 0.2) !important;
+  color: #fbbf24 !important;
+}
+.seller-theme.dark .bg-amber-50 *,
+.seller-theme.dark .bg-yellow-50 *,
+.dark .seller-theme .bg-amber-50 *,
+.dark .seller-theme .bg-yellow-50 * {
+  color: #fbbf24 !important;
+}
+
+.seller-theme.dark .bg-blue-50,
+.dark .seller-theme .bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  border-color: rgba(59, 130, 246, 0.2) !important;
+  color: #60a5fa !important;
+}
+.seller-theme.dark .bg-blue-50 *,
+.dark .seller-theme .bg-blue-50 * {
+  color: #60a5fa !important;
+}
+
+.seller-theme.dark .bg-red-50,
+.dark .seller-theme .bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+}
+.seller-theme.dark .bg-red-50 *,
+.dark .seller-theme .bg-red-50 * {
+  color: #f87171 !important;
+}
+
+/* Ring offset fix in dark mode */
+.seller-theme.dark .ring-offset-2,
+.dark .seller-theme .ring-offset-2 {
+  --tw-ring-offset-color: var(--background) !important;
+}
+
+/* Specific profile layout overrides */
+.seller-theme.dark .bg-\[\#FDFCF8\],
+.dark .seller-theme .bg-\[\#FDFCF8\],
+.seller-theme.dark div[class*="bg-[#FDFCF8]"],
+.dark .seller-theme div[class*="bg-[#FDFCF8]"] {
+  background-color: var(--background) !important;
+}
+
+.seller-theme.dark .border-stone-100,
+.seller-theme.dark .border-stone-200,
+.seller-theme.dark .border-stone-300,
+.dark .seller-theme .border-stone-100,
+.dark .seller-theme .border-stone-200,
+.dark .seller-theme .border-stone-300 {
+  border-color: var(--border) !important;
+}
+
+/* Active tabs inside dark mode */
+.seller-theme.dark .text-stone-800,
+.seller-theme.dark .border-stone-800,
+.dark .seller-theme .text-stone-800,
+.dark .seller-theme .border-stone-800 {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Form background elements inside dark mode */
+.seller-theme.dark .bg-slate-50\/50,
+.dark .seller-theme .bg-slate-50\/50 {
+  background-color: var(--muted) !important;
+}
+
+/* Secondary border overrides inside dark mode */
+.seller-theme.dark .border-slate-100,
+.seller-theme.dark .border-slate-200,
+.dark .seller-theme .border-slate-100,
+.dark .seller-theme .border-slate-200 {
+  border-color: var(--border) !important;
+}
+
+/* Specific subscription page overrides in dark mode */
+.seller-theme.dark .bg-gradient-to-br.from-indigo-50.to-purple-50,
+.dark .seller-theme .bg-gradient-to-br.from-indigo-50.to-purple-50 {
+  background-image: linear-gradient(to bottom right, rgba(156, 135, 245, 0.05), rgba(139, 92, 246, 0.05)) !important;
+  border-color: rgba(156, 135, 245, 0.2) !important;
+}
+
+.seller-theme.dark .border-indigo-100,
+.dark .seller-theme .border-indigo-100 {
+  border-color: rgba(156, 135, 245, 0.2) !important;
+}
+
+.seller-theme.dark .bg-indigo-100,
+.dark .seller-theme .bg-indigo-100 {
+  background-color: rgba(156, 135, 245, 0.15) !important;
+}
+
+.seller-theme.dark .text-indigo-600,
+.seller-theme.dark .text-indigo-700,
+.dark .seller-theme .text-indigo-600,
+.dark .seller-theme .text-indigo-700 {
+  color: #9c87f5 !important;
+}
+
+/* Modals inside dark mode (Confirm Upgrade and Terms) */
+.seller-theme.dark .bg-white,
+.dark .seller-theme .bg-white {
+  background-color: var(--card) !important;
+}
+.seller-theme.dark .bg-slate-50,
+.dark .seller-theme .bg-slate-50 {
+  background-color: var(--muted) !important;
+}
+
+/* Shop Operating Mode Dark Mode Overrides */
+.seller-theme.dark .bg-emerald-50\/50,
+.dark .seller-theme .bg-emerald-50\/50 {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+}
+.seller-theme.dark .bg-amber-50\/50,
+.dark .seller-theme .bg-amber-50\/50 {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+}
+.seller-theme.dark .bg-red-50\/50,
+.dark .seller-theme .bg-red-50\/50 {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+}
+
+.seller-theme.dark .text-emerald-800,
+.seller-theme.dark .text-emerald-600,
+.dark .seller-theme .text-emerald-800,
+.dark .seller-theme .text-emerald-600 {
+  color: #34d399 !important;
+}
+
+.seller-theme.dark .text-amber-800,
+.seller-theme.dark .text-amber-600,
+.dark .seller-theme .text-amber-800,
+.dark .seller-theme .text-amber-600 {
+  color: #fbbf24 !important;
+}
+
+.seller-theme.dark .text-red-800,
+.seller-theme.dark .text-red-600,
+.dark .seller-theme .text-red-800,
+.dark .seller-theme .text-red-600 {
+  color: #f87171 !important;
+}
+
+/* Unselected button styling in dark mode */
+.seller-theme.dark .border-slate-100,
+.dark .seller-theme .border-slate-100 {
+  border-color: var(--border) !important;
+}
+.seller-theme.dark .hover\:bg-slate-50:hover,
+.dark .seller-theme .hover\:bg-slate-50:hover {
+  background-color: var(--muted) !important;
+}
+
+/* Premium Dark Mode Styling for Shop Operating Mode Buttons */
+.dark .seller-theme .seller-operating-btn {
+  --tw-ring-offset-color: var(--card) !important;
+}
+
+/* Guaranteed Active State */
+.dark .seller-theme .seller-mode-guaranteed.active {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  border-color: #10b981 !important;
+}
+.dark .seller-theme .seller-mode-guaranteed.active span {
+  color: #34d399 !important;
+}
+.dark .seller-theme .seller-mode-guaranteed.active p {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.dark .seller-theme .seller-mode-guaranteed.active p span {
+  color: #34d399 !important;
+}
+
+/* Best-Effort Active State */
+.dark .seller-theme .seller-mode-best-effort.active {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border-color: #fbbf24 !important;
+}
+.dark .seller-theme .seller-mode-best-effort.active span {
+  color: #fbbf24 !important;
+}
+.dark .seller-theme .seller-mode-best-effort.active p {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.dark .seller-theme .seller-mode-best-effort.active p span {
+  color: #fbbf24 !important;
+}
+
+/* Rush Mode Active State */
+.dark .seller-theme .seller-mode-rush.active {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+  border-color: #f87171 !important;
+}
+.dark .seller-theme .seller-mode-rush.active span {
+  color: #f87171 !important;
+}
+.dark .seller-theme .seller-mode-rush.active p {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.dark .seller-theme .seller-mode-rush.active p span {
+  color: #f87171 !important;
+}
+
+/* Hover States for Shop Operating Mode Buttons in Dark Mode */
+.dark .seller-theme .seller-mode-guaranteed:not(.active):hover {
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  background-color: rgba(16, 185, 129, 0.05) !important;
+}
+.dark .seller-theme .seller-mode-best-effort:not(.active):hover {
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  background-color: rgba(245, 158, 11, 0.05) !important;
+}
+.dark .seller-theme .seller-mode-rush:not(.active):hover {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
 }

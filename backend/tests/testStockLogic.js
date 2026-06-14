@@ -5,23 +5,24 @@ console.log("=== WRITING TEST CASES FOR STOCK LOGIC ===");
 const testCases = [
     {
         name: "Standard In Stock",
-        input: { countInStock: 100, lowStockThreshold: 30, productType: 'STANDARD' },
-        expected: 'AVAILABLE'
+        input: { countInStock: 100, baselineStock: 100, lowStockThreshold: 30, productType: 'STANDARD' },
+        expected: 'IN_STOCK'
     },
     {
         name: "Standard Limited",
-        input: { countInStock: 20, lowStockThreshold: 30, productType: 'STANDARD' },
+        input: { countInStock: 20, baselineStock: 100, lowStockThreshold: 30, productType: 'STANDARD' },
         expected: 'LIMITED'
     },
     {
         name: "Standard Out",
-        input: { countInStock: 0, lowStockThreshold: 10, productType: 'STANDARD' },
+        input: { countInStock: 0, baselineStock: 100, lowStockThreshold: 10, productType: 'STANDARD' },
         expected: 'OUT_OF_STOCK'
     },
     {
         name: "Expiry Out (Expired)",
         input: {
             countInStock: 10,
+            baselineStock: 20,
             lowStockThreshold: 5,
             productType: 'EXPIRY_BASED',
             expiryDate: new Date('2020-01-01') // Past
@@ -32,15 +33,16 @@ const testCases = [
         name: "Expiry In (Valid)",
         input: {
             countInStock: 10,
+            baselineStock: 10,
             lowStockThreshold: 5,
             productType: 'EXPIRY_BASED',
             expiryDate: new Date('2099-01-01') // Future
         },
-        expected: 'AVAILABLE'
+        expected: 'IN_STOCK'
     },
     {
         name: "Daily Out",
-        input: { countInStock: 0, lowStockThreshold: 5, productType: 'DAILY_ESSENTIAL' },
+        input: { countInStock: 0, baselineStock: 10, lowStockThreshold: 5, productType: 'DAILY_ESSENTIAL' },
         expected: 'OUT_OF_STOCK'
     }
 ];

@@ -1,0 +1,14 @@
+{
+  "ignore": [
+    "backend/logs/*",
+    "backend/scratch/*",
+    "backend/data/*",
+    "*.log",
+    "node_modules/*",
+    "frontend/*"
+  ],
+  "watch": [
+    "backend/"
+  ],
+  "ext": "js,json"
+}

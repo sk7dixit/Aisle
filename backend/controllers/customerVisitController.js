@@ -106,6 +106,20 @@ const completeVisit = async (req, res) => {
 
         await visit.save();
 
+        // Broadcast REQUEST_COMPLETED event cluster-wide
+        try {
+            const { publishEvent } = require('../utils/eventBus');
+            await publishEvent('REQUEST_COMPLETED', {
+                requestId: visit._id.toString(),
+                customerId: visit.customerId.toString(),
+                sellerId: visit.sellerId.toString(),
+                productId: visit.products[0]?.productId?.toString(),
+                version: visit.version || 1
+            });
+        } catch (busErr) {
+            console.error('[CustomerVisitController-EventBus] REQUEST_COMPLETED publication failed:', busErr.message);
+        }
+
         res.json({ success: true, message: "Visit marked as completed." });
 
     } catch (error) {
@@ -120,7 +134,7 @@ const completeVisit = async (req, res) => {
 const getMyVisits = async (req, res) => {
     try {
         const visits = await CustomerVisit.find({ customerId: req.user._id })
-            .populate('sellerId', 'name shopDetails.shopName shopDetails.address')
+            .populate('sellerId', 'name shopDetails.shopName shopDetails.address shopDetails.shopType shopDetails.shopCategory')
             .sort({ visitTime: 1, createdAt: -1 });
 
         const formatted = visits.map(v => {

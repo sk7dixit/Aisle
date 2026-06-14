@@ -19,7 +19,7 @@ const ActivityLogs = () => {
 
     const fetchLogs = async () => {
         try {
-            const token = JSON.parse(localStorage.getItem('shoplensUser'))?.token;
+            const token = JSON.parse(localStorage.getItem('aisleUser'))?.token;
             const query = new URLSearchParams();
             if (filterSeverity !== 'All') query.append('severity', filterSeverity);
 
@@ -53,7 +53,7 @@ const ActivityLogs = () => {
         fetchLogs();
     }, [filterSeverity]); // Re-fetch on major filter change
 
-    const user = JSON.parse(localStorage.getItem('shoplensUser') || '{}');
+    const user = JSON.parse(localStorage.getItem('aisleUser') || '{}');
 
     // Frontend filtering for search/role/action (since backend only does severity for now)
     const filteredLogs = logs.filter(log => {
